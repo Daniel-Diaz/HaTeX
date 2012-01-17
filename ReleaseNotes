@@ -1,0 +1,43 @@
+HaTeX Release Notes
+-- From version 3.0.0
+
+>>> 3.1.1
+
+- Dependency relaxed from 'mtl == 2.*' to 'transformers == 0.2.*'.
+
+>>> 3.1.0
+
+Highlights:
+
++ Added warnings (See Text.LaTeX.Base.Warnings).
++ Added an "Examples" directory.
++ Num instance for LaTeX and LaTeXT.
++ New package implemented "AMSThm" (See Text.LaTeX.Packages.AMSThm).
+
+Changes by modules:
+
+** Base modules
+* Text.LaTeX.Base.Syntax:
+-- Added Eq instance to LaTeX and TeXArg.
+* Text.LaTeX.Base.Writer:
+-- Added MonadTrans instance to LaTeXT.
+-- New functions: execLaTeXTWarn, liftFun, liftOp.
+* Text.LaTeX.Base.Types:
+-- Added Eq instance to Label.
+* Text.LaTeX.Base:
+-- Added Num instance to LaTeX.
+* Text.LaTeX.Base.Monad:
+-- Added Num instance to LaTeXT.
+* Text.LaTeX.Base.Commands:
+-- New function: between.
+
+** Package modules:
+* Text.LaTeX.Packages.AMSMath
+-- New symbols: (=:) , (/=:) , forall
+              , dagger, ddagger, in_ , ni
+              , (<:) , (<=:)
+              , (>:) , (>=:)
+
+>>> 3.0.0
+
+* First release of the third version of HaTeX.
