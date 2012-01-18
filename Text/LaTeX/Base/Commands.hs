@@ -92,6 +92,7 @@ module Text.LaTeX.Base.Commands
  , hatex_meta
  , hatex_version
  -- ** Document layout
+ , par
  , newline
  , lnbk
  , lnbk_
@@ -232,6 +233,10 @@ usepackage lopt str = TeXComm "usepackage" [MOptArg lopt ,FixArg $ fromString st
 -- | The @LaTeX@ logo.
 latex :: LaTeX
 latex = TeXComm "LaTeX" []
+
+-- | Start a new paragraph
+par :: LaTeX
+par = TeXComm "par" []
 
 -- | Start a new line.
 newline :: LaTeX

@@ -98,6 +98,7 @@ module Text.LaTeX.Base.Commands.Monad
  , hatex_meta
  , hatex_version
  -- ** Document layout
+ , par
  , newline
  , lnbk
  , lnbk_
@@ -271,6 +272,11 @@ usepackage a1 a2
 
 latex ::   (Monad m) => LaTeXT_ m
 latex = do textell ( App.latex)
+
+-- | Start a new paragraph
+
+par ::   (Monad m) => LaTeXT_ m
+par = do textell ( App.par)
 
 -- | Start a new line.
 
