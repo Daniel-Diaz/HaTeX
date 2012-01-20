@@ -19,6 +19,7 @@ Cabal-version: >= 1.6
 Tested-with: GHC == 6.12.3 , GHC == 7.0.3
 Extra-source-files:
   ReleaseNotes
+  ReadMe
   -- Examples
   Examples/fibs.hs
 
