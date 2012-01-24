@@ -111,6 +111,9 @@ module Text.LaTeX.Base.Commands
  , bigskip
  , indent
  , noindent
+   -- *** Document measures
+ , textwidth
+ , linewidth
    -- ** Formatting text
  , verbatim
    -- *** Fonts
@@ -571,6 +574,12 @@ vspace m = TeXComm "vspace" [FixArg $ TeXRaw $ render m]
 
 protect :: LaTeX -> LaTeX
 protect l = TeXCommS "protect" <> l
+
+textwidth :: LaTeX
+textwidth = TeXComm "textwidth" []
+
+linewidth :: LaTeX
+linewidth = TeXComm "linewidth" []
 
 verbatim :: LaTeX -> LaTeX
 verbatim = TeXEnv "verbatim" []

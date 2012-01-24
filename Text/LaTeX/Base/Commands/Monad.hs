@@ -117,6 +117,9 @@ module Text.LaTeX.Base.Commands.Monad
  , bigskip
  , indent
  , noindent
+   -- *** Document measures
+ , textwidth
+ , linewidth
    -- ** Formatting text
  , verbatim
    -- *** Fonts
@@ -793,6 +796,14 @@ protect ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m
 protect a1
   = do a1 <- extractLaTeX_ a1
        textell ( App.protect a1)
+
+
+textwidth ::   (Monad m) => LaTeXT_ m
+textwidth = do textell ( App.textwidth)
+
+
+linewidth ::   (Monad m) => LaTeXT_ m
+linewidth = do textell ( App.linewidth)
 
 
 verbatim ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m
