@@ -153,6 +153,7 @@ module Text.LaTeX.Base.Commands
  , verse
  , cite
  , description
+ , minipage
    -- ** Page numbering
  , pagenumbering
  , arabic
@@ -308,6 +309,15 @@ quote = TeXEnv "quote" []
 
 verse :: LaTeX -> LaTeX
 verse = TeXEnv "verse" []
+
+-- | minipage environments
+minipage :: Maybe Pos           -- ^ Optional position
+         -> LaTeX               -- ^ Width
+         -> LaTeX               -- ^ Minipage content
+         -> LaTeX
+minipage Nothing  ts = TeXEnv "minipage" [ FixArg ts ]
+minipage (Just p) ts = TeXEnv "minipage" [ OptArg $ TeXRaw $ render p
+                                         , FixArg ts ]
 
 abstract :: LaTeX -> LaTeX
 abstract = TeXEnv "abstract" []

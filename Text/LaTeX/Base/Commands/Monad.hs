@@ -159,6 +159,7 @@ module Text.LaTeX.Base.Commands.Monad
  , verse
  , cite
  , description
+ , minipage
    -- ** Page numbering
  , pagenumbering
  , arabic
@@ -407,6 +408,14 @@ verse ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m
 verse a1
   = do a1 <- extractLaTeX_ a1
        textell ( App.verse a1)
+
+-- | minipage environments
+
+minipage ::   (Monad m) => Maybe Pos -> LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
+minipage a1 a2 a3
+  = do a2 <- extractLaTeX_ a2
+       a3 <- extractLaTeX_ a3
+       textell ( App.minipage a1 a2 a3)
 
 
 abstract ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m
