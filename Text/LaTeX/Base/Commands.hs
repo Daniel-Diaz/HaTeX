@@ -318,111 +318,111 @@ documentclass ls l = TeXComm "documentclass" [MOptArg ls , FixArg l]
 article :: LaTeX
 article = "article"
 
-proc:: LaTeX
+proc :: LaTeX
 proc = "proc"
 
-minimal:: LaTeX
+minimal :: LaTeX
 minimal = "minimal"
 
-report:: LaTeX
+report :: LaTeX
 report = "report"
 
-book:: LaTeX
+book :: LaTeX
 book = "book"
 
-slides:: LaTeX
+slides :: LaTeX
 slides = "slides"
 
-a0paper:: LaTeX
+a0paper :: LaTeX
 a0paper = "a0paper"
 
-a1paper:: LaTeX
+a1paper :: LaTeX
 a1paper = "a1paper"
 
-a2paper:: LaTeX
+a2paper :: LaTeX
 a2paper = "a2paper"
 
-a3paper:: LaTeX
+a3paper :: LaTeX
 a3paper = "a3paper"
 
-a4paper:: LaTeX
+a4paper :: LaTeX
 a4paper = "a4paper"
 
-a5paper:: LaTeX
+a5paper :: LaTeX
 a5paper = "a5paper"
 
-a6paper:: LaTeX
+a6paper :: LaTeX
 a6paper = "a6paper"
 
-b0paper:: LaTeX
+b0paper :: LaTeX
 b0paper = "b0paper"
 
-b1paper:: LaTeX
+b1paper :: LaTeX
 b1paper = "b1paper"
 
-b2paper:: LaTeX
+b2paper :: LaTeX
 b2paper = "b2paper"
 
-b3paper:: LaTeX
+b3paper :: LaTeX
 b3paper = "b3paper"
 
-b4paper:: LaTeX
+b4paper :: LaTeX
 b4paper = "b4paper"
 
-b5paper:: LaTeX
+b5paper :: LaTeX
 b5paper = "b5paper"
 
-b6paper:: LaTeX
+b6paper :: LaTeX
 b6paper = "b6paper"
 
-letterpaper:: LaTeX
+letterpaper :: LaTeX
 letterpaper = "letterpaper"
 
-executivepaper:: LaTeX
+executivepaper :: LaTeX
 executivepaper = "executivepaper"
 
-legalpaper:: LaTeX
+legalpaper :: LaTeX
 legalpaper = "legalpaper"
 
 draft :: LaTeX
 draft = "draft"
 
 -- | Typesets displayed formulae left-aligned instead of centred.
-fleqn:: LaTeX
+fleqn :: LaTeX
 fleqn = "fleqn"
 
 -- | Places the numbering of formulae on the left hand side instead of the right.
-leqno:: LaTeX
+leqno :: LaTeX
 leqno = "leqno"
 
-titlepage:: LaTeX
+titlepage :: LaTeX
 titlepage = "titlepage"
 
-notitlepage:: LaTeX
+notitlepage :: LaTeX
 notitlepage = "notitlepage"
 
-onecolumn:: LaTeX
+onecolumn :: LaTeX
 onecolumn = "onecolumn"
 
-twocolumn:: LaTeX
+twocolumn :: LaTeX
 twocolumn = "twocolumn"
 
 oneside :: LaTeX
 oneside = "oneside"
 
-twoside:: LaTeX
+twoside :: LaTeX
 twoside = "twoside"
 
 -- | Changes the layout of the document to print in landscape mode
-landscape:: LaTeX
+landscape :: LaTeX
 landscape = "landscape"
 
 -- | Makes chapters begin either only on right hand pages
-openright:: LaTeX
+openright :: LaTeX
 openright = "openright"
 
 -- | Makes chapters begin on the next page available.
-openany:: LaTeX
+openany :: LaTeX
 openany = "openany"
 
 document :: LaTeX -> LaTeX
