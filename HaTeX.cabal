@@ -23,6 +23,10 @@ Extra-source-files:
   -- Examples
   Examples/fibs.hs
 
+Source-repository head
+  type: git
+  location: git://github.com/Daniel-Diaz/HaTeX.git
+
 Library
   Build-depends: base ==4.*
                , bytestring
@@ -37,8 +41,8 @@ Library
         Text.LaTeX.Base.Monad
         Text.LaTeX.Base.Commands
           Text.LaTeX.Base.Commands.Monad
-        Text.LaTeX.Base.Parser
         Text.LaTeX.Base.Render
+        Text.LaTeX.Base.Parser
         Text.LaTeX.Base.Syntax
         Text.LaTeX.Base.Types
         Text.LaTeX.Base.Writer
