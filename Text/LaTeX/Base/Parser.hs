@@ -73,12 +73,12 @@ p_TeXNC = mconcat <$> many p_TeXUNC
 p_SimpleArg :: (Char,Char) -> (LaTeX -> TeXArg) -> Parser TeXArg
 p_SimpleArg (c1,c2) f = do
   char c1
-  f . mconcat <$> manyTill (p_TeXURaw <|> p_RawG [c2]) (char c2)
+  fmap (f . mconcat) $ manyTill (p_TeXURaw <|> p_RawG [c2]) $ char c2
 
 p_MultiArg :: (Char,Char) -> ([LaTeX] -> TeXArg) -> Parser TeXArg
 p_MultiArg (c1,c2) f = do
   char c1
-  f <$> sepBy1 (mconcat <$> manyTill p_TeXUNC (char c2)) (char ',')
+  fmap f $ sepBy1 (mconcat <$> manyTill p_TeXUNC (char c2)) $ char ','
 
 p_Opt :: Parser TeXArg
 p_Opt = p_SimpleArg ('[',']') OptArg
