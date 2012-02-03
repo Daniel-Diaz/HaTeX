@@ -1,4 +1,4 @@
-
+{-# LANGUAGE CPP #-}
 -- | LaTeX syntax description in the definition of the 'LaTeX' datatype.
 --   If you want to add new commands or environments not defined in
 --   the library, import this module and use 'LaTeX' data constructors. 
@@ -57,9 +57,12 @@ instance Monoid LaTeX where
  mappend x TeXEmpty = x
  mappend x y = TeXSeq x y
 
+-- GHC starting from 7.4 provides <> as synonim to mappend
+#if GHC_VERSION < 704
 -- | Alias for 'mappend'.
 (<>) :: Monoid a => a -> a -> a
 (<>) = mappend
+#endif
 
 -- | 'fromString' escapes LaTeX reserved characters.
 instance IsString LaTeX where
