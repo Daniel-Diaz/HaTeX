@@ -749,7 +749,7 @@ hatex_meta = hatex <> emph (textsc "-meta")
 hatex_version :: LaTeX
 hatex_version = hatex3
              <> hspace (Ex $ negate 0.3)
-             <> emph ".1.0"
+             <> emph ".2"
 
 label :: Label -> LaTeX
 label l = TeXComm "label" [FixArg $ TeXRaw $ render l]
