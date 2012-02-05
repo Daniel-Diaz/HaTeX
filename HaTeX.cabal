@@ -65,3 +65,4 @@ Library
           Text.LaTeX.Packages.Color.Monad
   Extensions: GeneralizedNewtypeDeriving
             , OverloadedStrings
+            , CPP
