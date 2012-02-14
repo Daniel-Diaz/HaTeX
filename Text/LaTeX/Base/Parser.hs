@@ -99,9 +99,7 @@ p_MSym = p_MultiArg ('<','>') MSymArg
 p_Arg :: Parser TeXArg
 p_Arg = choice $ try <$> [ p_MOpt , p_MSym , p_Opt , p_Fix , p_Sym ]
 
---
-
 -- | Parse a LaTeX expression written in 'Text', to a 'LaTeX' AST.
 --   It returns a 'ParseError' in case of parsing error.
 parseLaTeX :: Text -> Either ParseError LaTeX
-parseLaTeX = parse (p_TeX >>= \l -> eof >> return l) []
+parseLaTeX = parse (p_TeX >>= \l -> eof >> return l) "LaTeX input"

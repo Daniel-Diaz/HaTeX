@@ -1,4 +1,19 @@
-Notes about HaTeX 3:
+-- HaTeX ReadMe --
 
-* Parser is still untested and surely full of bugs.
-* A lot of documentation must to be added.
+HaTeX is the LaTeX syntax implementation done in Haskell.
+
+ToDo list:
+
+* Add more examples.
+* More testing on the parser.
+* Add more documentation.
+* A more complete AMSMath module.
+* Improve 'documentclass' arguments, so we don't have to do something like this:
+
+``Haskell
+documentclass [rendertex $ Pt 12]
+``
+
+in order to apply a size (using the Measure type) to the document font.
+
+* Implement the graphicx package.

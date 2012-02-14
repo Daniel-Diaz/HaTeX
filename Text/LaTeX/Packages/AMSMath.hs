@@ -282,6 +282,7 @@ omegau = TeXComm "Omega" []
 to :: LaTeX
 to = TeXComm "to" []
 
+-- | /For all/ symbol.
 forall :: LaTeX
 forall = TeXComm "forall" []
 

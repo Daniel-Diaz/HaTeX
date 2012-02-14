@@ -1,6 +1,10 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | This module provides functionality for check a 'LaTeX' value for
+--   possibly undesired things (like the call to an undefined label),
+--   returning 'Warning's. These are called 'Warning's because they
+--   never terminates the program execution.
 module Text.LaTeX.Base.Warnings (
    -- * Warnings datatype
    Warning (..)
@@ -45,6 +49,7 @@ instance Monoid TeXCheck where
  mempty = TC $ const []
  mappend (TC tc1) (TC tc2) = TC $ uncurry mappend . (tc1 &&& tc2)
 
+-- | Check with 'checkLabels', 'checkClass' and 'checkDoc'.
 checkAll :: TeXCheck
 checkAll = mconcat [ checkLabels , checkClass , checkDoc ]
 
