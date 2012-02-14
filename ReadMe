@@ -1,8 +1,8 @@
--- HaTeX ReadMe --
+== HaTeX ReadMe ==
 
 HaTeX is the LaTeX syntax implementation done in Haskell.
 
-ToDo list:
+-- ToDo list
 
 * Add more examples.
 * More testing on the parser.
@@ -10,9 +10,7 @@ ToDo list:
 * A more complete AMSMath module.
 * Improve 'documentclass' arguments, so we don't have to do something like this:
 
-``Haskell
 documentclass [rendertex $ Pt 12]
-``
 
 in order to apply a size (using the Measure type) to the document font.
 
