@@ -22,6 +22,26 @@ module Text.LaTeX.Packages.AMSMath
  , (>:) , (>=:)
  , (<:) , (<=:)
  , in_ , ni , notin
+   -- ** Greek alphabet
+   -- | Functions of greek alphabet symbols.
+   --
+   --   Uppercase versions are suffixed with @u@.
+   --   Variants are prefixed with @var@.
+   --   The function 'pi_' is ended by an underscore symbol to
+   --   distinguish it from the 'pi' Prelude function.
+ , alpha    , beta       , gamma
+ , gammau   , delta      , deltau
+ , epsilon  , varepsilon , zeta
+ , eta      , theta      , thetau
+ , iota     , kappa      , lambda
+ , lambdau  , mu         , nu
+ , xi       , xiu        , pi_
+ , varpi    , piu        , rho
+ , varrho   , sigma      , varsigma
+ , sigmau   , tau        , upsilon
+ , upsilonu , phi        , varphi
+ , phiu     , chi        , psi
+ , psiu     , omega      , omegau
    -- ** Other symbols
  , to
  , forall
@@ -136,6 +156,125 @@ ni  = between $ TeXComm "ni" []
 
 notin :: LaTeX -> LaTeX -> LaTeX
 notin = between $ TeXComm "notin" []
+
+---- Greek alphabet
+
+alpha :: LaTeX
+alpha = TeXComm "alpha" []
+
+beta :: LaTeX
+beta = TeXComm "beta" []
+
+gamma :: LaTeX
+gamma = TeXComm "gamma" []
+
+gammau :: LaTeX
+gammau = TeXComm "Gamma" []
+
+delta :: LaTeX
+delta = TeXComm "delta" []
+
+deltau :: LaTeX
+deltau = TeXComm "Delta" []
+
+epsilon :: LaTeX
+epsilon = TeXComm "epsilon" []
+
+varepsilon :: LaTeX
+varepsilon = TeXComm "epsilon" []
+
+zeta :: LaTeX
+zeta = TeXComm "zeta" []
+
+eta :: LaTeX
+eta = TeXComm "eta" []
+
+theta :: LaTeX
+theta = TeXComm "theta" []
+
+thetau :: LaTeX
+thetau = TeXComm "thetau" []
+
+iota :: LaTeX
+iota = TeXComm "iota" []
+
+kappa :: LaTeX
+kappa = TeXComm "kappa" []
+
+lambda :: LaTeX
+lambda = TeXComm "lambda" []
+
+lambdau :: LaTeX
+lambdau = TeXComm "Lambda" []
+
+mu :: LaTeX
+mu = TeXComm "mu" []
+
+nu :: LaTeX
+nu = TeXComm "nu" []
+
+xi :: LaTeX
+xi = TeXComm "xi" []
+
+xiu :: LaTeX
+xiu = TeXComm "Xi" []
+
+pi_ :: LaTeX
+pi_ = TeXComm "pi" []
+
+varpi :: LaTeX
+varpi = TeXComm "varpi" []
+
+piu :: LaTeX
+piu = TeXComm "Pi" []
+
+rho :: LaTeX
+rho = TeXComm "rho" []
+
+varrho :: LaTeX
+varrho = TeXComm "varrho" []
+
+sigma :: LaTeX
+sigma = TeXComm "sigma" []
+
+varsigma :: LaTeX
+varsigma = TeXComm "varsigma" []
+
+sigmau :: LaTeX
+sigmau = TeXComm "Sigma" []
+
+tau :: LaTeX
+tau = TeXComm "tau" []
+
+upsilon :: LaTeX
+upsilon = TeXComm "upsilon" []
+
+upsilonu :: LaTeX
+upsilonu = TeXComm "Upsilon" []
+
+phi :: LaTeX
+phi = TeXComm "phi" []
+
+varphi :: LaTeX
+varphi = TeXComm "varphi" []
+
+phiu :: LaTeX
+phiu = TeXComm "Phi" []
+
+chi :: LaTeX
+chi = TeXComm "chi" []
+
+psi :: LaTeX
+psi = TeXComm "psi" []
+
+psiu :: LaTeX
+psiu = TeXComm "Psi" []
+
+omega :: LaTeX
+omega = TeXComm "omega" []
+
+omegau :: LaTeX
+omegau = TeXComm "Omega" []
 
 ---- Other symbols
 

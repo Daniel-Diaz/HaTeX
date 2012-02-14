@@ -29,6 +29,26 @@ module Text.LaTeX.Packages.AMSMath.Monad
  , (>:) , (>=:)
  , (<:) , (<=:)
  , in_ , ni , notin
+   -- ** Greek alphabet
+   -- | Functions of greek alphabet symbols.
+   --
+   --   Uppercase versions are suffixed with @u@.
+   --   Variants are prefixed with @var@.
+   --   The function 'pi_' is ended by an underscore symbol to
+   --   distinguish it from the 'pi' Prelude function.
+ , alpha    , beta       , gamma
+ , gammau   , delta      , deltau
+ , epsilon  , varepsilon , zeta
+ , eta      , theta      , thetau
+ , iota     , kappa      , lambda
+ , lambdau  , mu         , nu
+ , xi       , xiu        , pi_
+ , varpi    , piu        , rho
+ , varrho   , sigma      , varsigma
+ , sigmau   , tau        , upsilon
+ , upsilonu , phi        , varphi
+ , phiu     , chi        , psi
+ , psiu     , omega      , omegau
    -- ** Other symbols
  , to
  , forall
@@ -185,6 +205,162 @@ notin a1 a2
   = do a1 <- extractLaTeX_ a1
        a2 <- extractLaTeX_ a2
        textell ( App.notin a1 a2)
+
+
+alpha ::   (Monad m) => LaTeXT_ m
+alpha = do textell ( App.alpha)
+
+
+beta ::   (Monad m) => LaTeXT_ m
+beta = do textell ( App.beta)
+
+
+gamma ::   (Monad m) => LaTeXT_ m
+gamma = do textell ( App.gamma)
+
+
+gammau ::   (Monad m) => LaTeXT_ m
+gammau = do textell ( App.gammau)
+
+
+delta ::   (Monad m) => LaTeXT_ m
+delta = do textell ( App.delta)
+
+
+deltau ::   (Monad m) => LaTeXT_ m
+deltau = do textell ( App.deltau)
+
+
+epsilon ::   (Monad m) => LaTeXT_ m
+epsilon = do textell ( App.epsilon)
+
+
+varepsilon ::   (Monad m) => LaTeXT_ m
+varepsilon = do textell ( App.varepsilon)
+
+
+zeta ::   (Monad m) => LaTeXT_ m
+zeta = do textell ( App.zeta)
+
+
+eta ::   (Monad m) => LaTeXT_ m
+eta = do textell ( App.eta)
+
+
+theta ::   (Monad m) => LaTeXT_ m
+theta = do textell ( App.theta)
+
+
+thetau ::   (Monad m) => LaTeXT_ m
+thetau = do textell ( App.thetau)
+
+
+iota ::   (Monad m) => LaTeXT_ m
+iota = do textell ( App.iota)
+
+
+kappa ::   (Monad m) => LaTeXT_ m
+kappa = do textell ( App.kappa)
+
+
+lambda ::   (Monad m) => LaTeXT_ m
+lambda = do textell ( App.lambda)
+
+
+lambdau ::   (Monad m) => LaTeXT_ m
+lambdau = do textell ( App.lambdau)
+
+
+mu ::   (Monad m) => LaTeXT_ m
+mu = do textell ( App.mu)
+
+
+nu ::   (Monad m) => LaTeXT_ m
+nu = do textell ( App.nu)
+
+
+xi ::   (Monad m) => LaTeXT_ m
+xi = do textell ( App.xi)
+
+
+xiu ::   (Monad m) => LaTeXT_ m
+xiu = do textell ( App.xiu)
+
+
+pi_ ::   (Monad m) => LaTeXT_ m
+pi_ = do textell ( App.pi_)
+
+
+varpi ::   (Monad m) => LaTeXT_ m
+varpi = do textell ( App.varpi)
+
+
+piu ::   (Monad m) => LaTeXT_ m
+piu = do textell ( App.piu)
+
+
+rho ::   (Monad m) => LaTeXT_ m
+rho = do textell ( App.rho)
+
+
+varrho ::   (Monad m) => LaTeXT_ m
+varrho = do textell ( App.varrho)
+
+
+sigma ::   (Monad m) => LaTeXT_ m
+sigma = do textell ( App.sigma)
+
+
+varsigma ::   (Monad m) => LaTeXT_ m
+varsigma = do textell ( App.varsigma)
+
+
+sigmau ::   (Monad m) => LaTeXT_ m
+sigmau = do textell ( App.sigmau)
+
+
+tau ::   (Monad m) => LaTeXT_ m
+tau = do textell ( App.tau)
+
+
+upsilon ::   (Monad m) => LaTeXT_ m
+upsilon = do textell ( App.upsilon)
+
+
+upsilonu ::   (Monad m) => LaTeXT_ m
+upsilonu = do textell ( App.upsilonu)
+
+
+phi ::   (Monad m) => LaTeXT_ m
+phi = do textell ( App.phi)
+
+
+varphi ::   (Monad m) => LaTeXT_ m
+varphi = do textell ( App.varphi)
+
+
+phiu ::   (Monad m) => LaTeXT_ m
+phiu = do textell ( App.phiu)
+
+
+chi ::   (Monad m) => LaTeXT_ m
+chi = do textell ( App.chi)
+
+
+psi ::   (Monad m) => LaTeXT_ m
+psi = do textell ( App.psi)
+
+
+psiu ::   (Monad m) => LaTeXT_ m
+psiu = do textell ( App.psiu)
+
+
+omega ::   (Monad m) => LaTeXT_ m
+omega = do textell ( App.omega)
+
+
+omegau ::   (Monad m) => LaTeXT_ m
+omegau = do textell ( App.omegau)
 
 -- | A right-arrow.
 
