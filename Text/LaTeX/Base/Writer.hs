@@ -13,6 +13,8 @@ module Text.LaTeX.Base.Writer
  , textell
  , liftFun
  , liftOp
+   -- * Re-export
+ , lift
    ) where
 
 import Control.Monad.Trans.Writer
