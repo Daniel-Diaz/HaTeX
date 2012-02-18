@@ -36,7 +36,7 @@ import qualified Text.LaTeX.Packages.Color as App
 import Text.LaTeX.Packages.Color(ColSpec,Color,ColorModel,ColorName)
 
 {-|
-The 'color' package.
+The 'pcolor' package.
 
 >  usepackage [] pcolor
 

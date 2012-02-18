@@ -8,6 +8,7 @@ module Text.LaTeX.Base.Render
    -- * Render class
  , Render (..)
  , renderAppend
+ , renderChars
  , renderCommas
  , renderFile
  , rendertex
@@ -37,9 +38,14 @@ renderAppend :: Render a => [a] -> Text
 renderAppend = mconcat . fmap render
 
 -- | Render every element of a list and append results,
+--   separated the given 'Char'.
+renderChars :: Render a => Char -> [a] -> Text
+renderChars c = mconcat . intersperse (fromString [c]) . fmap render
+
+-- | Render every element of a list and append results,
 --   separated by commas.
 renderCommas :: Render a => [a] -> Text
-renderCommas = mconcat . intersperse "," . fmap render
+renderCommas = renderChars ','
 
 -- | Use this function to render a 'LaTeX' (or another
 --   one in the 'Render' class) value directly

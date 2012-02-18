@@ -28,7 +28,7 @@ import Text.LaTeX.Base.Render
 --
 import Data.Monoid
 
--- | The 'color' package.
+-- | The 'pcolor' package.
 --
 -- > usepackage [] pcolor
 pcolor :: String

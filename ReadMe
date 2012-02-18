@@ -13,5 +13,3 @@ HaTeX is the LaTeX syntax implementation done in Haskell.
 documentclass [rendertex $ Pt 12]
 
 in order to apply a size (using the Measure type) to the document font.
-
-* Implement the graphicx package.

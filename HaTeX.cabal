@@ -63,6 +63,8 @@ Library
           Text.LaTeX.Packages.Inputenc.Monad
         Text.LaTeX.Packages.Color
           Text.LaTeX.Packages.Color.Monad
+        Text.LaTeX.Packages.Graphicx
+          Text.LaTeX.Packages.Graphicx.Monad
   Extensions: GeneralizedNewtypeDeriving
             , OverloadedStrings
             , CPP
