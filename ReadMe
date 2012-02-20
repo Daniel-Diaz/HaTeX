@@ -8,8 +8,3 @@ HaTeX is the LaTeX syntax implementation done in Haskell.
 * More testing on the parser.
 * Add more documentation.
 * A more complete AMSMath module.
-* Improve 'documentclass' arguments, so we don't have to do something like this:
-
-documentclass [rendertex $ Pt 12]
-
-in order to apply a size (using the Measure type) to the document font.
