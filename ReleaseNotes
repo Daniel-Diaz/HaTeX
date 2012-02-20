@@ -1,6 +1,24 @@
 HaTeX Release Notes
 -- From version 3.0.0
 
+>>> 3.2
+
+Highlights:
+
++ Parser implemented.
++ Greek alphabet added to AMSMath.
++ New LaTeX package: graphicx.
++ Function 'documentclass' changed.
+
+Other changes:
+
+- New commands: par, textwidth and linewidth.
+- New environment: minipage.
+- Compatibility with GHC 7.4 (with CPP extension).
+- Function 'lift' is now re-exported in Text.LaTeX.Base.Writer module.
+- New function 'renderChars' in the Render module.
+- ReadMe edited, now with ToDo list.
+
 >>> 3.1.1
 
 - Dependency relaxed from 'mtl == 2.*' to 'transformers == 0.2.*'.
