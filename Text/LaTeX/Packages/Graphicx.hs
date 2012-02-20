@@ -2,6 +2,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_HATEX MakeMonadic #-}
 
+-- | This module allows you to use the LaTeX graphicx library in order to
+--   insert graphics in a document.
 module Text.LaTeX.Packages.Graphicx
  ( -- * Graphicx package
    graphicx
@@ -35,6 +37,7 @@ pdftex = "pdftex"
 
 -- Including graphics
 
+-- | Include Graphics Option. This options can be passed as arguments to the 'includegraphics' function.
 data IGOption =
    IGWidth Measure -- ^ Specify the preferred width of the imported image.
  | IGHeight Measure -- ^ Specify the preferred height of the imported image.

@@ -979,7 +979,7 @@ tabular a1 a2 a3
 hline ::   (Monad m) => LaTeXT_ m
 hline = do textell ( App.hline)
 
--- | @cline i j@ writes a partial horizontal line beginning in column i and ending in column j.
+-- | @cline i j@ writes a partial horizontal line beginning in column @i@ and ending in column @j@.
 
 cline ::   (Monad m) => Int -> Int -> LaTeXT_ m
 cline a1 a2 = do textell ( App.cline a1 a2)

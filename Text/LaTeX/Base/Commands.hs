@@ -683,7 +683,7 @@ tabular (Just p) ts = TeXEnv "tabular" [ OptArg $ TeXRaw $ render p , FixArg $ T
 hline :: LaTeX
 hline = TeXCommS "hline "
 
--- | @cline i j@ writes a partial horizontal line beginning in column i and ending in column j.
+-- | @cline i j@ writes a partial horizontal line beginning in column @i@ and ending in column @j@.
 cline :: Int -> Int -> LaTeX
 cline i j = TeXComm "cline" [ FixArg $ TeXRaw $ render i <> "-" <> render j ]
 
