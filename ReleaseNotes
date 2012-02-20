@@ -5,13 +5,14 @@ HaTeX Release Notes
 
 Highlights:
 
-+ Parser implemented.
++ Parser implemented (New dependency on parsec).
 + Greek alphabet added to AMSMath.
 + New LaTeX package: graphicx.
 + Function 'documentclass' changed.
 
 Other changes:
 
+- Dependency changed from mtl to transformers.
 - New commands: par, textwidth and linewidth.
 - New environment: minipage.
 - Compatibility with GHC 7.4 (with CPP extension).
