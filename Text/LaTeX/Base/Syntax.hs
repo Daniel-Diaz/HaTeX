@@ -59,7 +59,7 @@ instance Monoid LaTeX where
 
 -- Since GHC starting from 7.4 provides (<>) as synonym to 'mappend',
 -- we avoid an overlapping definition with a CPP conditional.
-#if GHC_VERSION < 704
+#if __GLASGOW_HASKELL__ < 704
 -- | Alias for 'mappend'.
 (<>) :: Monoid a => a -> a -> a
 (<>) = mappend
