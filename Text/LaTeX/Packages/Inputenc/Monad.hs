@@ -29,7 +29,7 @@ Inputenc package.
 >  usepackage [utf8] inputenc
 
 -}
-inputenc :: String
+inputenc :: PackageName
 inputenc = App.inputenc
 
 -- | UTF-8 encoding.

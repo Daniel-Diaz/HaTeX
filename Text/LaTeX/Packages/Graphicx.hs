@@ -25,7 +25,7 @@ import Data.Char (toLower)
 -- | The 'graphicx' package.
 --
 -- > usepackage [] graphicx
-graphicx :: String
+graphicx :: PackageName
 graphicx = "graphicx"
 
 -- Package options

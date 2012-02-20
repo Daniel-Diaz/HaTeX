@@ -57,12 +57,13 @@ module Text.LaTeX.Packages.AMSMath
 
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Commands (raw,between)
+import Text.LaTeX.Base.Types
 
 -- | AMSMath package.
 -- Example:
 --
 -- > usepackage [] amsmath
-amsmath :: String
+amsmath :: PackageName
 amsmath = "amsmath"
 
 -- | Inline mathematical expressions.

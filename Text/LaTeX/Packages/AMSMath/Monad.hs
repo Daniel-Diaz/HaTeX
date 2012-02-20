@@ -75,7 +75,7 @@ AMSMath package.
 >  usepackage [] amsmath
 
 -}
-amsmath :: String
+amsmath :: PackageName
 amsmath = App.amsmath
 
 -- | Inline mathematical expressions.

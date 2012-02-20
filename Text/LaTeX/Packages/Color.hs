@@ -25,13 +25,14 @@ module Text.LaTeX.Packages.Color
 
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Render
+import Text.LaTeX.Base.Types
 --
 import Data.Monoid
 
 -- | The 'pcolor' package.
 --
 -- > usepackage [] pcolor
-pcolor :: String
+pcolor :: PackageName
 pcolor = "color"
 
 -- | To convert all colour commands to black and white,

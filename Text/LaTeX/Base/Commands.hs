@@ -23,6 +23,8 @@ module Text.LaTeX.Base.Commands
  , book
  , slides
    -- *** Class options
+ , ClassOption (..)
+ , customopt
  , draft
  , titlepage
  , notitlepage
@@ -36,6 +38,7 @@ module Text.LaTeX.Base.Commands
  , fleqn
  , leqno
    -- ** Paper sizes
+ , PaperType (..)
  , a0paper
  , a1paper
  , a2paper
@@ -188,6 +191,7 @@ module Text.LaTeX.Base.Commands
 
 import Data.String
 import Data.Maybe (catMaybes)
+import Data.Text (toLower)
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
@@ -231,7 +235,7 @@ thanks x = TeXComm "thanks" [FixArg x]
 
 -- | Import a package. First argument is a list of options for
 -- the package named in the second argument.
-usepackage :: [LaTeX] -> String -> LaTeX
+usepackage :: [LaTeX] -> PackageName -> LaTeX
 usepackage lopt str = TeXComm "usepackage" [MOptArg lopt ,FixArg $ fromString str]
 
 -- | The @LaTeX@ logo.
@@ -310,7 +314,7 @@ quote = TeXEnv "quote" []
 verse :: LaTeX -> LaTeX
 verse = TeXEnv "verse" []
 
--- | minipage environments
+-- | Minipage environments.
 minipage :: Maybe Pos           -- ^ Optional position
          -> LaTeX               -- ^ Width
          -> LaTeX               -- ^ Minipage content
@@ -325,118 +329,163 @@ abstract = TeXEnv "abstract" []
 cite :: LaTeX -> LaTeX
 cite l = TeXComm "cite" [FixArg l]
 
-documentclass :: [LaTeX] -> LaTeX -> LaTeX
-documentclass ls l = TeXComm "documentclass" [MOptArg ls , FixArg l]
+-- Document class
 
-article :: LaTeX
+-- | A class option to be passed to the 'documentclass' function.
+data ClassOption =
+   Draft
+ | TitlePage
+ | NoTitlePage
+ | OneColumn
+ | TwoColumn
+ | OneSide
+ | TwoSide
+ | Landscape
+ | OpenRight
+ | OpenAny
+ | Fleqn
+ | Leqno
+ | FontSize Measure
+ | Paper PaperType
+ | CustomOption String
+   deriving Show
+
+instance Render ClassOption where
+ render (FontSize m) = render m
+ render (Paper pt) = toLower (render pt) <> "paper"
+ render (CustomOption str) = fromString str
+ render co = toLower $ fromString $ show co
+
+customopt :: String -> ClassOption
+customopt = CustomOption
+
+instance IsString ClassOption where
+ fromString = customopt
+
+-- | LaTeX available paper types.
+data PaperType =
+   A0 | A1 | A2 | A3 | A4 | A5 | A6
+ | B0 | B1 | B2 | B3 | B4 | B5 | B6
+ | Letter | Executive | Legal
+   deriving Show
+
+instance Render PaperType where
+
+-- | Set the document class. Needed in all documents.
+documentclass :: [ClassOption] -- ^ Class options
+              -> ClassName     -- ^ Class name
+              -> LaTeX 
+documentclass opts cn = TeXComm "documentclass" [MOptArg $ fmap rendertex opts , FixArg $ fromString cn]
+
+article :: ClassName
 article = "article"
 
-proc :: LaTeX
+proc :: ClassName
 proc = "proc"
 
-minimal :: LaTeX
+minimal :: ClassName
 minimal = "minimal"
 
-report :: LaTeX
+report :: ClassName
 report = "report"
 
-book :: LaTeX
+book :: ClassName
 book = "book"
 
-slides :: LaTeX
+slides :: ClassName
 slides = "slides"
 
-a0paper :: LaTeX
-a0paper = "a0paper"
+a0paper :: ClassOption
+a0paper = Paper A0
 
-a1paper :: LaTeX
-a1paper = "a1paper"
+a1paper :: ClassOption
+a1paper = Paper A1
 
-a2paper :: LaTeX
-a2paper = "a2paper"
+a2paper :: ClassOption
+a2paper = Paper A2
 
-a3paper :: LaTeX
-a3paper = "a3paper"
+a3paper :: ClassOption
+a3paper = Paper A3
 
-a4paper :: LaTeX
-a4paper = "a4paper"
+a4paper :: ClassOption
+a4paper = Paper A4
 
-a5paper :: LaTeX
-a5paper = "a5paper"
+a5paper :: ClassOption
+a5paper = Paper A5
 
-a6paper :: LaTeX
-a6paper = "a6paper"
+a6paper :: ClassOption
+a6paper = Paper A6
 
-b0paper :: LaTeX
-b0paper = "b0paper"
+b0paper :: ClassOption
+b0paper = Paper B0
 
-b1paper :: LaTeX
-b1paper = "b1paper"
+b1paper :: ClassOption
+b1paper = Paper B1
 
-b2paper :: LaTeX
-b2paper = "b2paper"
+b2paper :: ClassOption
+b2paper = Paper B2
 
-b3paper :: LaTeX
-b3paper = "b3paper"
+b3paper :: ClassOption
+b3paper = Paper B3
 
-b4paper :: LaTeX
-b4paper = "b4paper"
+b4paper :: ClassOption
+b4paper = Paper B4
 
-b5paper :: LaTeX
-b5paper = "b5paper"
+b5paper :: ClassOption
+b5paper = Paper B5
 
-b6paper :: LaTeX
-b6paper = "b6paper"
+b6paper :: ClassOption
+b6paper = Paper B6
 
-letterpaper :: LaTeX
-letterpaper = "letterpaper"
+letterpaper :: ClassOption
+letterpaper = Paper Letter
 
-executivepaper :: LaTeX
-executivepaper = "executivepaper"
+executivepaper :: ClassOption
+executivepaper = Paper Executive
 
-legalpaper :: LaTeX
-legalpaper = "legalpaper"
+legalpaper :: ClassOption
+legalpaper = Paper Legal
 
-draft :: LaTeX
-draft = "draft"
+draft :: ClassOption
+draft = Draft
 
 -- | Typesets displayed formulae left-aligned instead of centred.
-fleqn :: LaTeX
-fleqn = "fleqn"
+fleqn :: ClassOption
+fleqn = Fleqn
 
 -- | Places the numbering of formulae on the left hand side instead of the right.
-leqno :: LaTeX
-leqno = "leqno"
+leqno :: ClassOption
+leqno = Leqno
 
-titlepage :: LaTeX
-titlepage = "titlepage"
+titlepage :: ClassOption
+titlepage = TitlePage
 
-notitlepage :: LaTeX
-notitlepage = "notitlepage"
+notitlepage :: ClassOption
+notitlepage = NoTitlePage
 
-onecolumn :: LaTeX
-onecolumn = "onecolumn"
+onecolumn :: ClassOption
+onecolumn = OneColumn
 
-twocolumn :: LaTeX
-twocolumn = "twocolumn"
+twocolumn :: ClassOption
+twocolumn = TwoColumn
 
-oneside :: LaTeX
-oneside = "oneside"
+oneside :: ClassOption
+oneside = OneSide
 
-twoside :: LaTeX
-twoside = "twoside"
+twoside :: ClassOption
+twoside = TwoSide
 
 -- | Changes the layout of the document to print in landscape mode
-landscape :: LaTeX
-landscape = "landscape"
+landscape :: ClassOption
+landscape = Landscape
 
 -- | Makes chapters begin either only on right hand pages
-openright :: LaTeX
-openright = "openright"
+openright :: ClassOption
+openright = OpenRight
 
 -- | Makes chapters begin on the next page available.
-openany :: LaTeX
-openany = "openany"
+openany :: ClassOption
+openany = OpenAny
 
 document :: LaTeX -> LaTeX
 document = TeXEnv "document" []

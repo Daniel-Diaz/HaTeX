@@ -29,6 +29,8 @@ module Text.LaTeX.Base.Commands.Monad
  , book
  , slides
    -- *** Class options
+ , ClassOption (..)
+ , customopt
  , draft
  , titlepage
  , notitlepage
@@ -42,6 +44,7 @@ module Text.LaTeX.Base.Commands.Monad
  , fleqn
  , leqno
    -- ** Paper sizes
+ , PaperType (..)
  , a0paper
  , a1paper
  , a2paper
@@ -196,7 +199,7 @@ import Text.LaTeX.Base.Writer
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import qualified Text.LaTeX.Base.Commands as App
-import Text.LaTeX.Base.Commands()
+import Text.LaTeX.Base.Commands(ClassOption,PaperType)
 
 {-|
 Insert a raw piece of 'Text'.
@@ -267,7 +270,7 @@ thanks a1
 Import a package. First argument is a list of options for
  the package named in the second argument.
 -}
-usepackage ::   (Monad m) => [LaTeXT_ m] -> String -> LaTeXT_ m
+usepackage ::   (Monad m) => [LaTeXT_ m] -> PackageName -> LaTeXT_ m
 usepackage a1 a2
   = do a1 <- mapM extractLaTeX_ a1
        textell ( App.usepackage a1 a2)
@@ -409,7 +412,7 @@ verse a1
   = do a1 <- extractLaTeX_ a1
        textell ( App.verse a1)
 
--- | minipage environments
+-- | Minipage environments.
 
 minipage ::   (Monad m) => Maybe Pos -> LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
 minipage a1 a2 a3
@@ -430,156 +433,158 @@ cite a1
        textell ( App.cite a1)
 
 
-documentclass ::   (Monad m) => [LaTeXT_ m] -> LaTeXT_ m -> LaTeXT_ m
-documentclass a1 a2
-  = do a1 <- mapM extractLaTeX_ a1
-       a2 <- extractLaTeX_ a2
-       textell ( App.documentclass a1 a2)
+customopt :: String -> ClassOption
+customopt = App.customopt
+
+-- | Set the document class. Needed in all documents.
+
+documentclass ::   (Monad m) => [ClassOption] -> ClassName -> LaTeXT_ m
+documentclass a1 a2 = do textell ( App.documentclass a1 a2)
 
 
-article ::   (Monad m) => LaTeXT_ m
-article = do textell ( App.article)
+article :: ClassName
+article = App.article
 
 
-proc ::   (Monad m) => LaTeXT_ m
-proc = do textell ( App.proc)
+proc :: ClassName
+proc = App.proc
 
 
-minimal ::   (Monad m) => LaTeXT_ m
-minimal = do textell ( App.minimal)
+minimal :: ClassName
+minimal = App.minimal
 
 
-report ::   (Monad m) => LaTeXT_ m
-report = do textell ( App.report)
+report :: ClassName
+report = App.report
 
 
-book ::   (Monad m) => LaTeXT_ m
-book = do textell ( App.book)
+book :: ClassName
+book = App.book
 
 
-slides ::   (Monad m) => LaTeXT_ m
-slides = do textell ( App.slides)
+slides :: ClassName
+slides = App.slides
 
 
-a0paper ::   (Monad m) => LaTeXT_ m
-a0paper = do textell ( App.a0paper)
+a0paper :: ClassOption
+a0paper = App.a0paper
 
 
-a1paper ::   (Monad m) => LaTeXT_ m
-a1paper = do textell ( App.a1paper)
+a1paper :: ClassOption
+a1paper = App.a1paper
 
 
-a2paper ::   (Monad m) => LaTeXT_ m
-a2paper = do textell ( App.a2paper)
+a2paper :: ClassOption
+a2paper = App.a2paper
 
 
-a3paper ::   (Monad m) => LaTeXT_ m
-a3paper = do textell ( App.a3paper)
+a3paper :: ClassOption
+a3paper = App.a3paper
 
 
-a4paper ::   (Monad m) => LaTeXT_ m
-a4paper = do textell ( App.a4paper)
+a4paper :: ClassOption
+a4paper = App.a4paper
 
 
-a5paper ::   (Monad m) => LaTeXT_ m
-a5paper = do textell ( App.a5paper)
+a5paper :: ClassOption
+a5paper = App.a5paper
 
 
-a6paper ::   (Monad m) => LaTeXT_ m
-a6paper = do textell ( App.a6paper)
+a6paper :: ClassOption
+a6paper = App.a6paper
 
 
-b0paper ::   (Monad m) => LaTeXT_ m
-b0paper = do textell ( App.b0paper)
+b0paper :: ClassOption
+b0paper = App.b0paper
 
 
-b1paper ::   (Monad m) => LaTeXT_ m
-b1paper = do textell ( App.b1paper)
+b1paper :: ClassOption
+b1paper = App.b1paper
 
 
-b2paper ::   (Monad m) => LaTeXT_ m
-b2paper = do textell ( App.b2paper)
+b2paper :: ClassOption
+b2paper = App.b2paper
 
 
-b3paper ::   (Monad m) => LaTeXT_ m
-b3paper = do textell ( App.b3paper)
+b3paper :: ClassOption
+b3paper = App.b3paper
 
 
-b4paper ::   (Monad m) => LaTeXT_ m
-b4paper = do textell ( App.b4paper)
+b4paper :: ClassOption
+b4paper = App.b4paper
 
 
-b5paper ::   (Monad m) => LaTeXT_ m
-b5paper = do textell ( App.b5paper)
+b5paper :: ClassOption
+b5paper = App.b5paper
 
 
-b6paper ::   (Monad m) => LaTeXT_ m
-b6paper = do textell ( App.b6paper)
+b6paper :: ClassOption
+b6paper = App.b6paper
 
 
-letterpaper ::   (Monad m) => LaTeXT_ m
-letterpaper = do textell ( App.letterpaper)
+letterpaper :: ClassOption
+letterpaper = App.letterpaper
 
 
-executivepaper ::   (Monad m) => LaTeXT_ m
-executivepaper = do textell ( App.executivepaper)
+executivepaper :: ClassOption
+executivepaper = App.executivepaper
 
 
-legalpaper ::   (Monad m) => LaTeXT_ m
-legalpaper = do textell ( App.legalpaper)
+legalpaper :: ClassOption
+legalpaper = App.legalpaper
 
 
-draft ::   (Monad m) => LaTeXT_ m
-draft = do textell ( App.draft)
+draft :: ClassOption
+draft = App.draft
 
 -- | Typesets displayed formulae left-aligned instead of centred.
 
-fleqn ::   (Monad m) => LaTeXT_ m
-fleqn = do textell ( App.fleqn)
+fleqn :: ClassOption
+fleqn = App.fleqn
 
 -- | Places the numbering of formulae on the left hand side instead of the right.
 
-leqno ::   (Monad m) => LaTeXT_ m
-leqno = do textell ( App.leqno)
+leqno :: ClassOption
+leqno = App.leqno
 
 
-titlepage ::   (Monad m) => LaTeXT_ m
-titlepage = do textell ( App.titlepage)
+titlepage :: ClassOption
+titlepage = App.titlepage
 
 
-notitlepage ::   (Monad m) => LaTeXT_ m
-notitlepage = do textell ( App.notitlepage)
+notitlepage :: ClassOption
+notitlepage = App.notitlepage
 
 
-onecolumn ::   (Monad m) => LaTeXT_ m
-onecolumn = do textell ( App.onecolumn)
+onecolumn :: ClassOption
+onecolumn = App.onecolumn
 
 
-twocolumn ::   (Monad m) => LaTeXT_ m
-twocolumn = do textell ( App.twocolumn)
+twocolumn :: ClassOption
+twocolumn = App.twocolumn
 
 
-oneside ::   (Monad m) => LaTeXT_ m
-oneside = do textell ( App.oneside)
+oneside :: ClassOption
+oneside = App.oneside
 
 
-twoside ::   (Monad m) => LaTeXT_ m
-twoside = do textell ( App.twoside)
+twoside :: ClassOption
+twoside = App.twoside
 
 -- | Changes the layout of the document to print in landscape mode
 
-landscape ::   (Monad m) => LaTeXT_ m
-landscape = do textell ( App.landscape)
+landscape :: ClassOption
+landscape = App.landscape
 
 -- | Makes chapters begin either only on right hand pages
 
-openright ::   (Monad m) => LaTeXT_ m
-openright = do textell ( App.openright)
+openright :: ClassOption
+openright = App.openright
 
 -- | Makes chapters begin on the next page available.
 
-openany ::   (Monad m) => LaTeXT_ m
-openany = do textell ( App.openany)
+openany :: ClassOption
+openany = App.openany
 
 
 document ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m

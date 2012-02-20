@@ -9,12 +9,13 @@ module Text.LaTeX.Packages.AMSFonts
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Types
 
 -- | AMSFonts package.
 -- Example:
 --
 -- > usepackage [] amsfonts
-amsfonts :: String
+amsfonts :: ClassName
 amsfonts = "amsfonts"
 
 --

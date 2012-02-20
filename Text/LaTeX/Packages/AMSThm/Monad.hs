@@ -33,7 +33,7 @@ AMSThm package.
 >  usepackage [] amsthm
 
 -}
-amsthm :: String
+amsthm :: PackageName
 amsthm = App.amsthm
 
 {-|

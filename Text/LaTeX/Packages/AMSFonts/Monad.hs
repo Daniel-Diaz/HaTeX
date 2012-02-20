@@ -27,7 +27,7 @@ AMSFonts package.
 >  usepackage [] amsfonts
 
 -}
-amsfonts :: String
+amsfonts :: ClassName
 amsfonts = App.amsfonts
 
 {-|

@@ -11,12 +11,13 @@ module Text.LaTeX.Packages.Inputenc
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Types
 
 -- | Inputenc package.
 -- Example:
 --
 -- > usepackage [utf8] inputenc
-inputenc :: String
+inputenc :: PackageName
 inputenc = "inputenc"
 
 -- | UTF-8 encoding.

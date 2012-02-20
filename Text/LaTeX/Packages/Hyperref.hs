@@ -24,7 +24,7 @@ import Text.LaTeX.Base.Types
 -- | The 'hyperref' package.
 --
 -- > usepackage [] hyperref
-hyperref :: String
+hyperref :: PackageName
 hyperref = "hyperref"
 
 data HRefOption =

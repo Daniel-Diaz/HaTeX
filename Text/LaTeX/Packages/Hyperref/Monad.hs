@@ -35,7 +35,7 @@ The 'hyperref' package.
 >  usepackage [] hyperref
 
 -}
-hyperref :: String
+hyperref :: PackageName
 hyperref = App.hyperref
 
 

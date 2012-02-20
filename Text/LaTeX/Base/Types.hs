@@ -2,7 +2,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.LaTeX.Base.Types (
-   Label
+   ClassName
+ , PackageName
+ , Label
  , createLabel , labelName
  , Pos (..)
  , TableSpec (..)
@@ -11,6 +13,11 @@ module Text.LaTeX.Base.Types (
 
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Render
+
+-- | Class names are represented by a 'String'.
+type ClassName = String
+
+type PackageName = String
 
 newtype Label = Label String deriving (Eq, Show)
 
@@ -72,4 +79,3 @@ instance Render Measure where
  render (Ex x) = render x <> "ex"
  render (Em x) = render x <> "em"
  render (CustomMeasure x) = render x
-

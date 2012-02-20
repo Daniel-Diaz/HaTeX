@@ -34,7 +34,7 @@ The 'graphicx' package.
 >  usepackage [] graphicx
 
 -}
-graphicx :: String
+graphicx :: PackageName
 graphicx = App.graphicx
 
 

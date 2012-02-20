@@ -40,7 +40,7 @@ The 'beamer' document class. Importing a package is not required. Example:
 >  documentclass [] beamer
 
 -}
-beamer :: String
+beamer :: ClassName
 beamer = App.beamer
 
 -- | A presentation is composed of a sequence of frames. Each frame is created with this function.

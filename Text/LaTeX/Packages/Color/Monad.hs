@@ -41,7 +41,7 @@ The 'pcolor' package.
 >  usepackage [] pcolor
 
 -}
-pcolor :: String
+pcolor :: PackageName
 pcolor = App.pcolor
 
 {-|

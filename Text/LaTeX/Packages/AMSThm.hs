@@ -17,12 +17,13 @@ module Text.LaTeX.Packages.AMSThm
 
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Render
+import Text.LaTeX.Base.Types
 
 -- | AMSThm package.
 -- Example:
 --
 -- > usepackage [] amsthm
-amsthm :: String
+amsthm :: PackageName
 amsthm = "amsthm"
 
 -- | Create a new 'theorem' environment type.
