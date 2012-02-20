@@ -1,6 +1,10 @@
 HaTeX Release Notes
 -- From version 3.0.0
 
+>>> 3.2.0.1
+
+- This version only fix the patch that makes HaTeX compatible with GHC 7.4.
+
 >>> 3.2
 
 Highlights:

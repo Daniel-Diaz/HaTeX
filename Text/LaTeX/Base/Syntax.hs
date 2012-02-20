@@ -65,7 +65,7 @@ instance Monoid LaTeX where
 (<>) = mappend
 #endif
 
--- | 'fromString' escapes LaTeX reserved characters.
+-- | Method 'fromString' escapes LaTeX reserved characters.
 instance IsString LaTeX where
  fromString = TeXRaw . fromString . protectString
 
