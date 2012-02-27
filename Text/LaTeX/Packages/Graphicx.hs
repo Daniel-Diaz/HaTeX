@@ -37,7 +37,7 @@ pdftex = "pdftex"
 
 -- Including graphics
 
--- | Include Graphics Option. This options can be passed as arguments to the 'includegraphics' function.
+-- | Include Graphics Option. These options can be passed as arguments to the 'includegraphics' function.
 data IGOption =
    IGWidth Measure -- ^ Specify the preferred width of the imported image.
  | IGHeight Measure -- ^ Specify the preferred height of the imported image.
@@ -62,5 +62,7 @@ instance Render IGOption where
  render (IGPage p) = "page=" <> render p
 
 -- | Include an image in the document.
-includegraphics :: [IGOption] -> FilePath -> LaTeX
+includegraphics :: [IGOption] -- ^ Options
+                -> FilePath -- ^ Image file
+                -> LaTeX
 includegraphics opts fp = TeXComm "includegraphics" [ MOptArg $ fmap rendertex opts , FixArg $ TeXRaw $ fromString fp ]

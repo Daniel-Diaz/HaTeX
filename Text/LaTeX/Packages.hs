@@ -1,4 +1,5 @@
 
+-- | Re-export of all packages.
 module Text.LaTeX.Packages
  ( -- * Encoding packages
    module Text.LaTeX.Packages.Inputenc

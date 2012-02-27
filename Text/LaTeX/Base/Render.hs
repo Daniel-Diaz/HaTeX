@@ -38,7 +38,7 @@ renderAppend :: Render a => [a] -> Text
 renderAppend = mconcat . fmap render
 
 -- | Render every element of a list and append results,
---   separated the given 'Char'.
+--   separated by the given 'Char'.
 renderChars :: Render a => Char -> [a] -> Text
 renderChars c = mconcat . intersperse (fromString [c]) . fmap render
 

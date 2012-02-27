@@ -12,9 +12,12 @@ module Text.LaTeX.Base.Syntax
    -- * Utils
  , braces
  , comm
+   -- * Escaping reserved characters
+ , protectString
+ , protectText
    ) where
 
-import Data.Text (Text)
+import Data.Text (Text,concatMap)
 import Data.Monoid
 import Data.String
 
@@ -73,6 +76,10 @@ instance IsString LaTeX where
 protectString :: String -> String
 protectString = mconcat . fmap protectChar
 
+-- | Escape LaTeX reserved characters in a 'Text'.
+protectText :: Text -> Text
+protectText = Data.Text.concatMap (fromString . protectChar)
+
 protectChar :: Char -> String
 protectChar '#'  = "\\#"
 protectChar '$'  = "\\$"
@@ -94,5 +101,7 @@ braces = TeXBraces
 
 -- | A simple (without arguments) command generator,
 --   given the name of the command.
+--
+-- > comm str = TeXComm str []
 comm :: String -> LaTeX
 comm str = TeXComm str []

@@ -1,4 +1,5 @@
 
+-- | Re-export of all packages.
 module Text.LaTeX.Packages.Monad
  ( -- * Encoding packages
    module Text.LaTeX.Packages.Inputenc.Monad
@@ -12,6 +13,7 @@ module Text.LaTeX.Packages.Monad
  , module Text.LaTeX.Packages.AMSThm.Monad
    -- * Graphics packages
  , module Text.LaTeX.Packages.Color.Monad
+ , module Text.LaTeX.Packages.Graphicx.Monad
    ) where
 
 import Text.LaTeX.Packages.Inputenc.Monad
@@ -21,3 +23,4 @@ import Text.LaTeX.Packages.AMSMath.Monad
 import Text.LaTeX.Packages.AMSFonts.Monad
 import Text.LaTeX.Packages.AMSThm.Monad
 import Text.LaTeX.Packages.Color.Monad
+import Text.LaTeX.Packages.Graphicx.Monad

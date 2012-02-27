@@ -21,22 +21,24 @@ to work with HaTeX. Those things are:
 Here is also defined a 'Num' instance for 'LaTeXT'.
 -}
 module Text.LaTeX.Base.Monad
- ( LaTeX , (<>)
+ ( -- * @LaTeX@ datatype
+   LaTeX , (<>)
+   -- * Escaping reserved characters
+ , protectString , protectText
+   -- * Internal re-exports
  , module Text.LaTeX.Base.Render
  , module Text.LaTeX.Base.Types
  , module Text.LaTeX.Base.Writer
  , module Text.LaTeX.Base.Commands.Monad
    ) where
 
-import Text.LaTeX.Base.Syntax (LaTeX,(<>))
+import Text.LaTeX.Base.Syntax (LaTeX (..),(<>),protectString,protectText)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Writer
 import Text.LaTeX.Base.Commands.Monad
 -- Import LaTeX Num instance
 import Text.LaTeX.Base ()
--- Import 'lift' function
-import Control.Monad.Trans.Class (lift)
 
 -- Num instance for LaTeXT
 
