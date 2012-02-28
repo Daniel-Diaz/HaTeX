@@ -17,6 +17,7 @@ module Text.LaTeX.Packages.Inputenc.Monad
    ) where
 
 import Text.LaTeX.Base.Writer
+import Control.Monad (liftM)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import qualified Text.LaTeX.Packages.Inputenc as App

@@ -23,7 +23,7 @@ exampleBody = do
    textbf "Fibonacci number" & textbf "Value"
    lnbk
    hline
-   foldr (\n l -> do fromString (show n) & fromString (show $ fib n)
+   foldr (\n l -> do rendertexM n & rendertexM (fib n)
                      lnbk
                      l ) (return ()) [0..12]
 

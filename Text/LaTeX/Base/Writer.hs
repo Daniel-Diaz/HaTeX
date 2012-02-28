@@ -11,6 +11,7 @@ module Text.LaTeX.Base.Writer
  , extractLaTeX
  , extractLaTeX_
  , textell
+ , rendertexM
  , liftFun
  , liftOp
    -- * Re-export
@@ -95,6 +96,12 @@ liftOp op ml1 ml2 = do
             return (a,l')
  textell l'
  return a
+
+-- | Just like 'rendertex', but with 'LaTeXT' output.
+--
+-- > rendertexM = textell . rendertex
+rendertexM :: (Render a, Monad m) => a -> LaTeXT_ m
+rendertexM = textell . rendertex
 
 -- Overloaded Strings
 

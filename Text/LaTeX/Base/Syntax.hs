@@ -35,7 +35,8 @@ data LaTeX =
  | TeXMath LaTeX -- ^ Mathematical expressions.
  | TeXNewLine Bool -- ^ Newline character.
  | TeXOp String LaTeX LaTeX -- ^ Operators.
- | TeXBraces LaTeX -- A expression between braces.
+ | TeXBraces LaTeX -- ^ A expression between braces.
+ | TeXComment Text -- ^ Comments.
  | TeXSeq LaTeX LaTeX -- ^ Sequencing of 'LaTeX' expressions.
                       -- Use '<>' preferably.
  | TeXEmpty -- ^ An empty expression.

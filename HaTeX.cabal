@@ -22,6 +22,7 @@ Extra-source-files:
   ReadMe
   -- Examples
   Examples/fibs.hs
+  Examples/comments.hs
 
 Source-repository head
   type: git

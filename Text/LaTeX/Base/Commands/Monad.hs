@@ -10,7 +10,7 @@
 
 module Text.LaTeX.Base.Commands.Monad
  ( -- * Basic functions
-   raw , between
+   raw , between , comment , (%)
    -- * Preamble commands
  , title
  , author
@@ -196,6 +196,7 @@ module Text.LaTeX.Base.Commands.Monad
    ) where
 
 import Text.LaTeX.Base.Writer
+import Control.Monad (liftM)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import qualified Text.LaTeX.Base.Commands as App
@@ -219,6 +220,26 @@ between a1 a2 a3
        a2 <- extractLaTeX_ a2
        a3 <- extractLaTeX_ a3
        textell ( App.between a1 a2 a3)
+
+-- | Create a comment.
+
+comment ::   (Monad m) => Text -> LaTeXT_ m
+comment a1 = do textell ( App.comment a1)
+
+{-|
+This operator appends a comment after a expression.
+   For example:
+
+>  textbf "I'm just an example." % "Insert a few words here."
+
+Since you are writing in Haskell, you may not need to output comments
+ as you can add them in the Haskell source. I added this feature
+ for completeness.
+-}
+(%) ::   (Monad m) => LaTeXT_ m -> Text -> LaTeXT_ m
+(%) a1 a2
+  = do a1 <- extractLaTeX_ a1
+       textell ( (App.%) a1 a2)
 
 {-|
 Generate the title. It normally contains the 'title' name
@@ -254,9 +275,7 @@ Set either an institute or an organization
 -}
 institute ::   (Monad m) => Maybe (LaTeXT_ m) -> LaTeXT_ m -> LaTeXT_ m
 institute a1 a2
-  = do a1 <- maybe (return Nothing)
-               ((>>= return . Just) . extractLaTeX_)
-               a1
+  = do a1 <- maybe (return Nothing) (liftM Just . extractLaTeX_) a1
        a2 <- extractLaTeX_ a2
        textell ( App.institute a1 a2)
 
@@ -347,9 +366,7 @@ appendix = do textell ( App.appendix)
 
 item ::   (Monad m) => Maybe (LaTeXT_ m) -> LaTeXT_ m
 item a1
-  = do a1 <- maybe (return Nothing)
-               ((>>= return . Just) . extractLaTeX_)
-               a1
+  = do a1 <- maybe (return Nothing) (liftM Just . extractLaTeX_) a1
        textell ( App.item a1)
 
 
@@ -972,6 +989,7 @@ tabular a1 a2 a3
   = do a3 <- extractLaTeX_ a3
        textell ( App.tabular a1 a2 a3)
 
+-- | Column separator.
 
 (&) ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
 (&) a1 a2

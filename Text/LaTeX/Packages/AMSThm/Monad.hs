@@ -21,6 +21,7 @@ module Text.LaTeX.Packages.AMSThm.Monad
    ) where
 
 import Text.LaTeX.Base.Writer
+import Control.Monad (liftM)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import qualified Text.LaTeX.Packages.AMSThm as App
@@ -65,9 +66,7 @@ The 'proof' environment. The first optional argument
 -}
 proof ::   (Monad m) => Maybe (LaTeXT_ m) -> LaTeXT_ m -> LaTeXT_ m
 proof a1 a2
-  = do a1 <- maybe (return Nothing)
-               ((>>= return . Just) . extractLaTeX_)
-               a1
+  = do a1 <- maybe (return Nothing) (liftM Just . extractLaTeX_) a1
        a2 <- extractLaTeX_ a2
        textell ( App.proof a1 a2)
 

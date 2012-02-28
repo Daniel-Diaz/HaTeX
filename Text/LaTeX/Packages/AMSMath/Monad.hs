@@ -63,6 +63,7 @@ module Text.LaTeX.Packages.AMSMath.Monad
    ) where
 
 import Text.LaTeX.Base.Writer
+import Control.Monad (liftM)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import qualified Text.LaTeX.Packages.AMSMath as App
@@ -85,6 +86,7 @@ math a1
   = do a1 <- extractLaTeX_ a1
        textell ( App.math a1)
 
+-- | Superscript.
 
 (^:) ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
 (^:) a1 a2
@@ -92,6 +94,7 @@ math a1
        a2 <- extractLaTeX_ a2
        textell ( (App.^:) a1 a2)
 
+-- | Subscript.
 
 (!:) ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
 (!:) a1 a2
@@ -157,6 +160,7 @@ ln = do textell ( App.ln)
        a2 <- extractLaTeX_ a2
        textell ( (App./=:) a1 a2)
 
+-- | Greater.
 
 (>:) ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
 (>:) a1 a2
@@ -164,6 +168,7 @@ ln = do textell ( App.ln)
        a2 <- extractLaTeX_ a2
        textell ( (App.>:) a1 a2)
 
+-- | Greater or equal.
 
 (>=:) ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
 (>=:) a1 a2
@@ -171,6 +176,7 @@ ln = do textell ( App.ln)
        a2 <- extractLaTeX_ a2
        textell ( (App.>=:) a1 a2)
 
+-- | Lesser.
 
 (<:) ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
 (<:) a1 a2
@@ -178,6 +184,7 @@ ln = do textell ( App.ln)
        a2 <- extractLaTeX_ a2
        textell ( (App.<:) a1 a2)
 
+-- | Lesser or equal.
 
 (<=:) ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m -> LaTeXT_ m
 (<=:) a1 a2

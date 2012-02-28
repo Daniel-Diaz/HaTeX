@@ -16,7 +16,7 @@ module Text.LaTeX.Base.Render
  , readFileTex
    ) where
 
-import Data.Text (Text)
+import Data.Text (Text,lines,unlines)
 import Text.LaTeX.Base.Syntax
 import Data.String
 import Data.Monoid (Monoid (..))
@@ -90,6 +90,9 @@ instance Render LaTeX where
  render (TeXNewLine b) = " \\\\" <> ( if b then "*" else mempty ) <> " "
  render (TeXOp sym l1 l2) = render l1 <> fromString sym <> render l2
  render (TeXBraces l) = "{" <> render l <> "}"
+ render (TeXComment c) =
+  let xs = Data.Text.lines c
+  in  (" " <>) $ Data.Text.unlines $ fmap ("% " <>) xs
  render (TeXSeq l1 l2) = render l1 <> render l2
  render TeXEmpty = mempty
 
