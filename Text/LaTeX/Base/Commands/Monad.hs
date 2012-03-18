@@ -163,6 +163,7 @@ module Text.LaTeX.Base.Commands.Monad
  , cite
  , description
  , minipage
+ , figure
    -- ** Page numbering
  , pagenumbering
  , arabic
@@ -179,6 +180,7 @@ module Text.LaTeX.Base.Commands.Monad
  , raisebox
  , rule
    -- * Cross references
+ , caption
  , label
  , ref
  , pageref
@@ -187,7 +189,7 @@ module Text.LaTeX.Base.Commands.Monad
  , (&)
  , hline
  , cline
- -- ** Others
+   -- ** Others
  , footnote
  , protect
  , hyphenation
@@ -436,6 +438,13 @@ minipage a1 a2 a3
   = do a2 <- extractLaTeX_ a2
        a3 <- extractLaTeX_ a3
        textell ( App.minipage a1 a2 a3)
+
+-- | Figure environment
+
+figure ::   (Monad m) => Maybe Pos -> LaTeXT_ m -> LaTeXT_ m
+figure a1 a2
+  = do a2 <- extractLaTeX_ a2
+       textell ( App.figure a1 a2)
 
 
 abstract ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m
@@ -1056,6 +1065,12 @@ hatex_meta = do textell ( App.hatex_meta)
 
 hatex_version ::   (Monad m) => LaTeXT_ m
 hatex_version = do textell ( App.hatex_version)
+
+
+caption ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m
+caption a1
+  = do a1 <- extractLaTeX_ a1
+       textell ( App.caption a1)
 
 
 label ::   (Monad m) => Label -> LaTeXT_ m
