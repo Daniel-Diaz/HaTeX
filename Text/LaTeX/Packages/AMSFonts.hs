@@ -25,6 +25,10 @@ amsfonts = "amsfonts"
 --
 -- > "The set of real numbers are represented by " <> mathbb "R" <> "."
 --
+-- Or in monadic form:
+--
+-- > "The set of real numbers are represented by " >> mathbb "R" >> "."
+--
 -- /Note the use of overloaded strings./
 mathbb :: LaTeX -> LaTeX
 mathbb l = TeXComm "mathbb" [FixArg l]

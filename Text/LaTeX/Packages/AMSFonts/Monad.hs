@@ -37,6 +37,10 @@ This font is useful for representing sets like
 
 >  "The set of real numbers are represented by " <> mathbb "R" <> "."
 
+Or in monadic form:
+
+>  "The set of real numbers are represented by " >> mathbb "R" >> "."
+
 /Note the use of overloaded strings./
 -}
 mathbb ::   (Monad m) => LaTeXT_ m -> LaTeXT_ m
