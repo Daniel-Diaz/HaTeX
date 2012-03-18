@@ -157,6 +157,7 @@ module Text.LaTeX.Base.Commands
  , cite
  , description
  , minipage
+ , figure
    -- ** Page numbering
  , pagenumbering
  , arabic
@@ -173,6 +174,7 @@ module Text.LaTeX.Base.Commands
  , raisebox
  , rule
    -- * Cross references
+ , caption
  , label
  , ref
  , pageref
@@ -181,7 +183,7 @@ module Text.LaTeX.Base.Commands
  , (&)
  , hline
  , cline
- -- ** Others
+   -- ** Others
  , footnote
  , protect
  , hyphenation
@@ -337,6 +339,13 @@ minipage :: Maybe Pos           -- ^ Optional position
 minipage Nothing  ts = TeXEnv "minipage" [ FixArg ts ]
 minipage (Just p) ts = TeXEnv "minipage" [ OptArg $ TeXRaw $ render p
                                          , FixArg ts ]
+
+-- | Figure environment
+figure :: Maybe Pos             -- ^ Optional position
+       -> LaTeX                 -- ^ Figure content
+       -> LaTeX
+figure Nothing  = TeXEnv "figure" []
+figure (Just p) = TeXEnv "figure" [ OptArg $ TeXRaw $ render p ]
 
 abstract :: LaTeX -> LaTeX
 abstract = TeXEnv "abstract" []
@@ -814,6 +823,9 @@ hatex_version :: LaTeX
 hatex_version = hatex3
              <> hspace (Ex $ negate 0.3)
              <> emph ".2.0.1"
+
+caption :: LaTeX -> LaTeX
+caption l = TeXComm "caption" [FixArg l]
 
 label :: Label -> LaTeX
 label l = TeXComm "label" [FixArg $ TeXRaw $ render l]
