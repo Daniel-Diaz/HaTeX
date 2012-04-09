@@ -9,20 +9,23 @@ Maintainer: Daniel Díaz (danieldiaz <at> dhelta <dot> net)
 Stability: Experimental
 Homepage: http://dhelta.net/hprojects/HaTeX
 Bug-reports: danieldiaz <at> dhelta <dot> net
-Synopsis: LaTeX code writer.
-Description: HaTeX consists in a set of combinators which allow you to build LaTeX code,
+Synopsis: The Haskell LaTeX library.
+Description: HaTeX consists in a set of combinators which allow you to build (or parse) LaTeX code,
              following the LaTeX syntax in a type-safe manner.
              .
              This allows you to build programs which generates LaTeX code automatically
              for any purpose you can figure out.
+             .
+             See the @examples@ directory in the source distribution to look some trivial examples.
 Cabal-version: >= 1.6
-Tested-with: GHC == 6.12.3 , GHC == 7.0.3
+Tested-with: GHC == 6.12.3 , GHC == 7.0.3 , GHC == 7.4.1
 Extra-source-files:
   ReleaseNotes
   ReadMe
   -- Examples
   Examples/fibs.hs
   Examples/comments.hs
+  Examples/simple.hs
 
 Source-repository head
   type: git
