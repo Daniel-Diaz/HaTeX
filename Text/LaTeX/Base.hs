@@ -43,5 +43,5 @@ instance Num LaTeX where
  negate = (TeXEmpty -)
  fromInteger = TeXRaw . fromString . show
  -- Non-defined methods
- abs _    = "Cannot use \"abs\" Num method with a LaTeX value."
- signum _ = "Cannot use \"signum\" Num method with a LaTeX value."
+ abs _    = error "Cannot use \"abs\" Num method with a LaTeX value."
+ signum _ = error "Cannot use \"signum\" Num method with a LaTeX value."
