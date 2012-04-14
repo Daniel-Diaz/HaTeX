@@ -21,18 +21,18 @@ import Data.List (intersperse)
 qtree :: PackageName
 qtree = "qtree"
 
-tree_ :: (a -> LaTeX) -> Tree a -> LaTeX
-tree_ f (Leaf x) = braces $ f x
+tree_ :: LaTeXTree l => (a -> l) -> Tree a -> l
+tree_ f (Leaf x) = texbraces $ f x
 tree_ f (Node mx ts) =
   mconcat [ "["
-          , maybe mempty (("." <>) . braces . f) mx
+          , maybe mempty (("." <>) . texbraces . f) mx
           , " "
           , mconcat $ intersperse " " $ fmap (tree_ f) ts
           , " ]"
             ]
 
-tree :: (a -> LaTeX) -> Tree a -> LaTeX
-tree f t = TeXCommS "Tree" <> " " <> tree_ f t
+tree :: LaTeXTree l => (a -> l) -> Tree a -> l
+tree f t = texcomms "Tree" <> " " <> tree_ f t
 
-rendertree :: Render a => Tree a -> LaTeX
-rendertree = tree rendertex
+rendertree :: (Render a, LaTeXTree l) => Tree a -> l
+rendertree = tree totex

@@ -25,6 +25,7 @@ import Control.Monad.Trans.Class
 import Control.Applicative
 import Control.Arrow
 import Data.String
+import Data.Monoid
 --
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Render
@@ -109,3 +110,7 @@ rendertexM = textell . rendertex
 --   the returned value of the computation is bottom (i.e. 'undefined').
 instance Monad m => IsString (LaTeXT m a) where
  fromString = (>> return undefined) . textell . fromString
+
+instance Monad m => Monoid (LaTeXT m a) where
+ mempty = return undefined
+ mappend = (>>)
