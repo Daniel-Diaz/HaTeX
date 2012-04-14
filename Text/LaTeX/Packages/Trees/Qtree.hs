@@ -2,8 +2,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.LaTeX.Packages.Trees.Qtree (
+    -- * Tree re-export
+    module Text.LaTeX.Packages.Trees
+    -- * Qtree package
+  , qtree
     -- * Tree to LaTeX rendering
-    tree
+  , tree
   , rendertree
   ) where
 
@@ -13,6 +17,9 @@ import Text.LaTeX.Packages.Trees
 --
 import Data.Monoid
 import Data.List (intersperse)
+
+qtree :: PackageName
+qtree = "qtree"
 
 tree_ :: (a -> LaTeX) -> Tree a -> LaTeX
 tree_ f (Leaf x) = braces $ f x

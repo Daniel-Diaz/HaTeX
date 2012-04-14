@@ -26,6 +26,7 @@ Extra-source-files:
   Examples/fibs.hs
   Examples/comments.hs
   Examples/simple.hs
+  Examples/tree.hs
 
 Source-repository head
   type: git
