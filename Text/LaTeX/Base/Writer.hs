@@ -1,6 +1,34 @@
 
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
+-- | The writer monad applied to 'LaTeX' values. Useful to compose 'LaTeX' values
+--   using the @do@ notation:
+--
+-- > anExample :: Monad m => LaTeXT m ()
+-- > anExample = do
+-- >   documentclass [] article
+-- >   author "Daniel Monad"
+-- >   title "LaTeX and do notation"
+-- >   document $ do
+-- >     maketitle
+-- >     section "Some words"
+-- >     "Using " ; texttt "do" ; " notation "
+-- >     "you avoid many ocurrences of the "
+-- >     texttt "(<>)" ; " operator and a lot of "
+-- >     "parentheses. With the cost of a monad."
+--
+-- Since 'LaTeXT' is a monad transformer, you can do also:
+--
+-- > anotherExample :: Monad m => LaTeXT m ()
+-- > anotherExample = lift (readFile "foo") >>= verbatim . fromString
+--
+-- This way, it is easy (without carrying arguments) to include IO outputs
+-- in the LaTeX document, like files, times or random objects.
+--
+-- Another approach could be to have custom counters, label management
+-- or any other user-defined feature.
+--
+-- Of course, you can always use the simpler interface provided by the plain 'LaTeX' type.
 module Text.LaTeX.Base.Writer
  ( -- * @LaTeXT@ writer
    LaTeXT
@@ -111,6 +139,7 @@ rendertexM = textell . rendertex
 instance Monad m => IsString (LaTeXT m a) where
  fromString = (>> return undefined) . textell . fromString
 
+-- | 'mappend' @=@ '>>'.
 instance Monad m => Monoid (LaTeXT m a) where
  mempty = return undefined
  mappend = (>>)

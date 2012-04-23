@@ -1,6 +1,7 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | Some types shared along the library.
 module Text.LaTeX.Base.Types (
    ClassName
  , PackageName
@@ -17,6 +18,7 @@ import Text.LaTeX.Base.Render
 -- | Class names are represented by a 'String'.
 type ClassName = String
 
+-- | Package names are represented by a 'String'.
 type PackageName = String
 
 newtype Label = Label String deriving (Eq, Show)
@@ -33,6 +35,7 @@ instance Render Label where
 instance IsString Label where
  fromString = createLabel
 
+-- | A vertical position.
 data Pos = Bottom | Center | Top deriving Show
 
 instance Render Pos where
