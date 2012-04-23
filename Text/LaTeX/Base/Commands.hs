@@ -120,6 +120,8 @@ module Text.LaTeX.Base.Commands
    -- ** Formatting text
  , verbatim
    -- *** Fonts
+   --
+   -- Different font styles.
  , textbf
  , textit
  , texttt
@@ -133,6 +135,8 @@ module Text.LaTeX.Base.Commands
  , underline
  , emph
    -- *** Sizes
+   --
+   -- | Sizes are sorted from smallest to biggest.
  , tiny
  , scriptsize
  , footnotesize
@@ -331,7 +335,7 @@ quote = TeXEnv "quote" []
 verse :: LaTeX -> LaTeX
 verse = TeXEnv "verse" []
 
--- | Minipage environments.
+-- | Minipage environment.
 minipage :: Maybe Pos           -- ^ Optional position
          -> LaTeX               -- ^ Width
          -> LaTeX               -- ^ Minipage content
@@ -340,7 +344,7 @@ minipage Nothing  ts = TeXEnv "minipage" [ FixArg ts ]
 minipage (Just p) ts = TeXEnv "minipage" [ OptArg $ TeXRaw $ render p
                                          , FixArg ts ]
 
--- | Figure environment
+-- | Figure environment.
 figure :: Maybe Pos             -- ^ Optional position
        -> LaTeX                 -- ^ Figure content
        -> LaTeX
@@ -679,24 +683,28 @@ textrm l = TeXComm "textrm" [FixArg l]
 textsf :: LaTeX -> LaTeX
 textsf l = TeXComm "textsf" [FixArg l]
 
+-- | Set the given argument to monospaced font.
 texttt :: LaTeX -> LaTeX
 texttt l = TeXComm "texttt" [FixArg l]
 
 textmd :: LaTeX -> LaTeX
 textmd l = TeXComm "textmd" [FixArg l]
 
+-- | Set the given argument to bold font face.
 textbf :: LaTeX -> LaTeX
 textbf l = TeXComm "textbf" [FixArg l]
 
 textup :: LaTeX -> LaTeX
 textup l = TeXComm "textup" [FixArg l]
 
+-- Set the given argument to italic font face.
 textit :: LaTeX -> LaTeX
 textit l = TeXComm "textit" [FixArg l]
 
 textsl :: LaTeX -> LaTeX
 textsl l = TeXComm "textsl" [FixArg l]
 
+-- | Set the given argument to small caps format.
 textsc :: LaTeX -> LaTeX
 textsc l = TeXComm "textsc" [FixArg l]
 
@@ -741,7 +749,7 @@ bigskip = TeXComm "bigskip" []
 
 -- | The 'tabular' environment can be used to typeset tables with optional horizontal and vertical lines.
 tabular :: Maybe Pos   -- ^ This optional parameter can be used to specify the vertical position of the table.
-                       -- Defaulted to 'Center'.
+                       --   Defaulted to 'Center'.
         -> [TableSpec] -- ^ Table specification of columns and vertical lines.
         -> LaTeX       -- ^ Table content. See '&', 'lnbk', 'hline' and 'cline'.
         -> LaTeX       -- ^ Resulting table syntax.
@@ -768,7 +776,7 @@ parbox (Just p) w t = TeXComm "parbox" [ OptArg $ TeXRaw $ render p
                                        , FixArg t]
 
 makebox :: Maybe Measure -> Maybe Pos -> LaTeX -> LaTeX
-makebox Nothing Nothing t  = TeXComm "makebox" [ FixArg t]
+makebox Nothing  Nothing t  = TeXComm "makebox" [ FixArg t]
 makebox Nothing (Just p) t  = TeXComm "makebox" [ OptArg $ TeXRaw $ render p, FixArg t]
 makebox (Just w) Nothing t  = TeXComm "makebox" [ OptArg $ TeXRaw $ render w, FixArg t]
 makebox (Just w) (Just p) t = TeXComm "makebox" [ OptArg $ TeXRaw $ render w
@@ -822,7 +830,7 @@ hatex_meta = hatex <> emph (textsc "-meta")
 hatex_version :: LaTeX
 hatex_version = hatex3
              <> hspace (Ex $ negate 0.3)
-             <> emph ".2.0.1"
+             <> emph ".2.1"
 
 caption :: LaTeX -> LaTeX
 caption l = TeXComm "caption" [FixArg l]

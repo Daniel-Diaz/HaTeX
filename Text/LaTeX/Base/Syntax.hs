@@ -61,7 +61,7 @@ instance Monoid LaTeX where
  mappend x TeXEmpty = x
  mappend x y = TeXSeq x y
 
--- Since GHC starting from 7.4 provides (<>) as synonym to 'mappend',
+-- Since GHC starting from 7.4 provides (<>) as synonym to 'mappend' (see "Data.Monoid"),
 -- we avoid an overlapping definition with a CPP conditional.
 #if __GLASGOW_HASKELL__ < 704
 -- | Alias for 'mappend'.
@@ -69,7 +69,7 @@ instance Monoid LaTeX where
 (<>) = mappend
 #endif
 
--- | Method 'fromString' escapes LaTeX reserved characters.
+-- | Method 'fromString' escapes LaTeX reserved characters using 'protectString'.
 instance IsString LaTeX where
  fromString = TeXRaw . fromString . protectString
 
@@ -104,5 +104,6 @@ braces = TeXBraces
 --   given the name of the command.
 --
 -- > comm str = TeXComm str []
+--
 comm :: String -> LaTeX
 comm str = TeXComm str []

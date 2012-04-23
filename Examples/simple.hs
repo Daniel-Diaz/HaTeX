@@ -1,7 +1,7 @@
 
 {- Simple example
 
-This is example is intended to be simplest as possible, but containing the most significant parts.
+This example is intended to be simplest as possible, but containing the most significant parts.
 
 The Overloaded Strings language extension is quite handy, because it allows you to write text without
 using 'fromString' each time.

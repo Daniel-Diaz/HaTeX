@@ -27,7 +27,8 @@ import qualified Data.ByteString as B
 
 -- | Class of values that can be transformed to 'Text'.
 -- You mainly will use this to obtain the 'Text' output
--- of a 'LaTeX' value.
+-- of a 'LaTeX' value. If you are going to write the result
+-- in a file, consider to use 'renderFile'.
 class Show a => Render a where
  render :: a -> Text
  --
@@ -63,7 +64,8 @@ readFileTex = fmap decodeUtf8 . B.readFile
 --   insert that 'Text' in your 'LaTeX' code.
 --   That is what this function does.
 --
--- /Warning: /'rendertex'/ does not escape LaTeX reserver characters./
+-- /Warning: /'rendertex'/ does not escape LaTeX reserved characters./
+-- /Use /'protectText'/ to escape them./
 rendertex :: Render a => a -> LaTeX
 rendertex = TeXRaw . render
 
@@ -100,15 +102,13 @@ instance Render TeXArg where
  render (OptArg l) = "[" <> render l <> "]"
  render (FixArg l) = "{" <> render l <> "}"
  render (MOptArg []) = mempty
- render (MOptArg ls) =
-     fromString "["
-  <> renderCommas ls
-  <> fromString "]"
+ render (MOptArg ls) = "[" <> renderCommas ls <> "]"
  render (SymArg l) = "<" <> render l <> ">"
  render (MSymArg ls) = "<" <> renderCommas ls <> ">"
 
 -- Other instances
 
 instance Render Int where
+instance Render Integer where
 instance Render Float where
-
+instance Render Double where

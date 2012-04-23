@@ -26,12 +26,19 @@ module Text.LaTeX.Base
  , module Text.LaTeX.Base.Render
  , module Text.LaTeX.Base.Types
  , module Text.LaTeX.Base.Commands
+   -- * External re-exports
+   --
+   -- | Since the 'Monoid' instance is the only way to append 'LaTeX'
+   --   values, a re-export of "Data.Monoid" is given here.
+ , module Data.Monoid
    ) where
 
 import Text.LaTeX.Base.Syntax (LaTeX (..),(<>),protectString,protectText)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands
+--
+import Data.Monoid
 
 -- Num instance for LaTeX
 
