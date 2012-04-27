@@ -1,5 +1,5 @@
 Name: HaTeX
-Version: 3.2.1
+Version: 3.3
 Author: Daniel Díaz
 Category: Text
 Build-type: Simple
@@ -41,14 +41,11 @@ Library
                , transformers ==0.3.*
                , text
                , parsec >=3.1.2 && <3.2
-  GHC-Options: -fno-warn-unrecognised-pragmas
   Exposed-modules:
     Text.LaTeX
-      Text.LaTeX.Monad
       Text.LaTeX.Base
-        Text.LaTeX.Base.Monad
+        Text.LaTeX.Base.Class
         Text.LaTeX.Base.Commands
-          Text.LaTeX.Base.Commands.Monad
         Text.LaTeX.Base.Render
         Text.LaTeX.Base.Parser
         Text.LaTeX.Base.Syntax
@@ -56,26 +53,18 @@ Library
         Text.LaTeX.Base.Writer
         Text.LaTeX.Base.Warnings
       Text.LaTeX.Packages
-        Text.LaTeX.Packages.Monad
         Text.LaTeX.Packages.AMSFonts
-          Text.LaTeX.Packages.AMSFonts.Monad
         Text.LaTeX.Packages.AMSMath
-          Text.LaTeX.Packages.AMSMath.Monad
         Text.LaTeX.Packages.AMSThm
-          Text.LaTeX.Packages.AMSThm.Monad
         Text.LaTeX.Packages.Beamer
-          Text.LaTeX.Packages.Beamer.Monad
         Text.LaTeX.Packages.Hyperref
-          Text.LaTeX.Packages.Hyperref.Monad
         Text.LaTeX.Packages.Inputenc
-          Text.LaTeX.Packages.Inputenc.Monad
         Text.LaTeX.Packages.Color
-          Text.LaTeX.Packages.Color.Monad
         Text.LaTeX.Packages.Graphicx
-          Text.LaTeX.Packages.Graphicx.Monad
         -- Trees
         Text.LaTeX.Packages.Trees
           Text.LaTeX.Packages.Trees.Qtree
+  Other-modules: Paths_HaTeX
   Extensions: GeneralizedNewtypeDeriving
             , OverloadedStrings
             , CPP

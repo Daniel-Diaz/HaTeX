@@ -1,5 +1,4 @@
 
-{-# OPTIONS_HATEX MakeMonadic #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | Package for theorem environments.
@@ -16,6 +15,7 @@ module Text.LaTeX.Packages.AMSThm
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 
@@ -35,21 +35,21 @@ amsthm = "amsthm"
 -- > newtheorem "prop" "Proposition"
 --
 -- > theorem "prop" "This is it."
-newtheorem :: String -> LaTeX -> LaTeX
-newtheorem str l = TeXComm "newtheorem" [ FixArg $ fromString str , FixArg l ]
+newtheorem :: LaTeXC l => String -> l -> l
+newtheorem str = liftL $ \l -> TeXComm "newtheorem" [ FixArg $ fromString str , FixArg l ]
 
-theorem :: String -> LaTeX -> LaTeX
-theorem str l = TeXEnv str [] l
+theorem :: LaTeXC l => String -> l -> l
+theorem str = liftL $ TeXEnv str []
 
 -- | The 'proof' environment. The first optional argument
 --   is used to put a custom title to the proof.
-proof :: Maybe LaTeX -> LaTeX -> LaTeX
-proof  Nothing l = TeXEnv "proof" [ ] l
-proof (Just n) l = TeXEnv "proof" [ OptArg n ] l
+proof :: LaTeXC l => Maybe l -> l -> l
+proof  Nothing = liftL $ TeXEnv "proof" []
+proof (Just n) = liftL2 (\n -> TeXEnv "proof" [ OptArg n ]) n
 
 -- | Insert the /QED/ symbol.
-qedhere :: LaTeX
-qedhere = TeXComm "qedhere" []
+qedhere :: LaTeXC l => l
+qedhere = comm0 "qedhere"
 
 data TheoremStyle =
    Plain
@@ -65,6 +65,5 @@ instance Render TheoremStyle where
  render (CustomThmStyle str) = fromString str
 
 -- | Set the theorem style. Call this function in the preamble.
-theoremstyle :: TheoremStyle -> LaTeX
-theoremstyle thmsty = TeXComm "theoremstyle" [ FixArg $ TeXRaw $ render thmsty ]
-
+theoremstyle :: LaTeXC l => TheoremStyle -> l
+theoremstyle thmsty = fromLaTeX $ TeXComm "theoremstyle" [ FixArg $ TeXRaw $ render thmsty ]

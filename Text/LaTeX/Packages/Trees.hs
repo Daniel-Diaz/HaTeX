@@ -3,8 +3,6 @@
 module Text.LaTeX.Packages.Trees (
    -- * Tree
    Tree (..)
-   -- * @LaTeXTree@ class
- , LaTeXTree (..)
  ) where
 
 import Data.Monoid
@@ -12,9 +10,6 @@ import Data.Foldable
 import Data.Traversable
 import Control.Applicative
 import Data.String
-import Text.LaTeX.Base.Syntax
-import Text.LaTeX.Base.Writer
-import Text.LaTeX.Base.Render
 
 -- | Tree datatype.
 data Tree a =
@@ -32,19 +27,3 @@ instance Foldable Tree where
 instance Traversable Tree where
  sequenceA (Leaf fa) = Leaf <$> fa
  sequenceA (Node mfa ts) = liftA2 Node (sequenceA mfa) $ sequenceA $ fmap sequenceA ts
-
--- This class is experimental and provisional. Please, don't use it yourself!
-class (Monoid l, IsString l) => LaTeXTree l where
- texbraces :: l -> l
- texcomms :: String -> l
- totex :: Render a => a -> l
-
-instance LaTeXTree LaTeX where
- texbraces = braces
- texcomms = TeXCommS
- totex = rendertex
-
-instance Monad m => LaTeXTree (LaTeXT m a) where
- texbraces = liftFun braces
- texcomms = (>> return undefined) . textell . texcomms
- totex = (>> return undefined) . textell . rendertex

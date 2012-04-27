@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_HATEX MakeMonadic #-}
 
 module Text.LaTeX.Packages.Beamer
  ( -- * Beamer package
@@ -22,6 +21,7 @@ module Text.LaTeX.Packages.Beamer
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Data.String
@@ -33,38 +33,38 @@ beamer :: ClassName
 beamer = "beamer"
 
 -- | A presentation is composed of a sequence of frames. Each frame is created with this function.
-frame :: LaTeX -> LaTeX
-frame = TeXEnv "frame" []
+frame :: LaTeXC l => l -> l
+frame = liftL $ TeXEnv "frame" []
 
 -- | Set the title of the current frame. Use it within a 'frame'.
-frametitle :: LaTeX -> LaTeX
-frametitle l = TeXComm "frametitle" [FixArg l]
+frametitle :: LaTeXC l => l -> l
+frametitle = liftL $ \l -> TeXComm "frametitle" [FixArg l]
 
 -- | Set the subtitle of the current frame. Use it within a 'frame'.
-framesubtitle :: LaTeX -> LaTeX
-framesubtitle l = TeXComm "framesubtitle" [FixArg l]
+framesubtitle :: LaTeXC l => l -> l
+framesubtitle = liftL $ \l -> TeXComm "framesubtitle" [FixArg l]
 
 -- | Highlight in red a piece text. With the 'OverlaySpec's, you can specify the slides where
 -- the text will be highlighted.
-alert :: [OverlaySpec] -> LaTeX -> LaTeX
-alert os l = TeXComm "alert" [ MSymArg $ fmap (TeXRaw . render) os, FixArg l]
+alert :: LaTeXC l => [OverlaySpec] -> l -> l
+alert os = liftL $ \l -> TeXComm "alert" [ MSymArg $ fmap (TeXRaw . render) os, FixArg l]
 
 -- | Introduces a pause in a slide.
-pause :: LaTeX
-pause = TeXComm "pause" []
+pause :: LaTeXC l => l
+pause = comm0 "pause"
 
 -- | 'beameritem' works like 'item', but allows you to specify the slides where
 -- the item will be displayed.
-beameritem :: [OverlaySpec] -> LaTeX
-beameritem os = TeXComm "item" [ MSymArg $ fmap (TeXRaw . render) os ]
+beameritem :: LaTeXC l => [OverlaySpec] -> l
+beameritem os = fromLaTeX $ TeXComm "item" [ MSymArg $ fmap (TeXRaw . render) os ]
 
 -- | With 'uncover', show a piece of text only in the slides you want.
-uncover :: [OverlaySpec] -> LaTeX -> LaTeX
-uncover os l = TeXComm "uncover" [ MSymArg $ fmap (TeXRaw . render) os , FixArg l ]
+uncover :: LaTeXC l => [OverlaySpec] -> l -> l
+uncover os = liftL $ \l -> TeXComm "uncover" [ MSymArg $ fmap (TeXRaw . render) os , FixArg l ]
 
 -- | Similar to 'uncover'.
-only :: [OverlaySpec] -> LaTeX -> LaTeX
-only os l = TeXComm "only" [ MSymArg $ fmap (TeXRaw . render) os , FixArg l ]
+only :: LaTeXC l => [OverlaySpec] -> l -> l
+only os = liftL $ \l -> TeXComm "only" [ MSymArg $ fmap (TeXRaw . render) os , FixArg l ]
 
 data OverlaySpec =
    OneSlide Int
@@ -80,10 +80,11 @@ instance Render OverlaySpec where
  render (FromToSlide n m) = render n <> "-" <> render m
 
 -- | A 'block' will be displayed surrounding a text.
-block :: LaTeX -- ^ Title for the block
-      -> LaTeX -- ^ Content of the block
-      -> LaTeX -- ^ Result
-block tit = TeXEnv "block" [ FixArg tit ]
+block :: LaTeXC l =>
+         l -- ^ Title for the block
+      -> l -- ^ Content of the block
+      -> l -- ^ Result
+block = liftL2 $ \tit -> TeXEnv "block" [ FixArg tit ]
 
 -- THEMES --
 
@@ -128,6 +129,6 @@ instance Render Theme where
  render x = fromString $ show x
 
 -- | Set the 'Theme' employed in your presentation (in the preamble).
-usetheme :: Theme -> LaTeX
-usetheme th = TeXComm "usetheme" [ FixArg $ TeXRaw $ render th ]
+usetheme :: LaTeXC l => Theme -> l
+usetheme th = fromLaTeX $ TeXComm "usetheme" [ FixArg $ TeXRaw $ render th ]
 

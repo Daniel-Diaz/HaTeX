@@ -1,6 +1,5 @@
 
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_HATEX MakeMonadic #-}
 
 module Text.LaTeX.Packages.Hyperref
  ( -- * Hyperref package
@@ -18,6 +17,7 @@ module Text.LaTeX.Packages.Hyperref
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 
@@ -47,29 +47,28 @@ createURL :: String -> URL
 createURL = URL
 
 -- | Reference to an 'URL'.
-href :: [HRefOption] -> URL -> LaTeX -> LaTeX
-href options u t = TeXComm "href" [ MOptArg $ fmap (TeXRaw . render) options
-                                  , FixArg  $ TeXRaw $ render u
-                                  , FixArg t ]
+href :: LaTeXC l => [HRefOption] -> URL -> l -> l
+href options u = liftL $ \t -> TeXComm "href" [ MOptArg $ fmap rendertex options
+                                              , FixArg  $ rendertex u
+                                              , FixArg t ]
 
 -- | Write an 'URL' hyperlinked.
-url :: URL -> LaTeX
-url u = TeXComm "url" [ FixArg $ TeXRaw $ render u ]
+url :: LaTeXC l => URL -> l
+url u = fromLaTeX $ TeXComm "url" [ FixArg $ rendertex u ]
 
 -- | Write an 'URL' without creating a hyperlink.
-nolinkurl :: URL -> LaTeX
-nolinkurl u = TeXComm "nolinkurl" [ FixArg $ TeXRaw $ render u ]
+nolinkurl :: LaTeXC l => URL -> l
+nolinkurl u = fromLaTeX $ TeXComm "nolinkurl" [ FixArg $ rendertex u ]
 
 -- | Establish a base 'URL'.
-hyperbaseurl :: URL -> LaTeX
-hyperbaseurl u = TeXComm "hyperbaseurl" [ FixArg $ TeXRaw $ render u ]
+hyperbaseurl :: LaTeXC l => URL -> l
+hyperbaseurl u = fromLaTeX $ TeXComm "hyperbaseurl" [ FixArg $ rendertex u ]
 
 -- | @hyperimage imgURL t@:
 --  The link to the image referenced by the @imgURL@ is inserted, using @t@ as the anchor.
-hyperimage :: URL -> LaTeX -> LaTeX
-hyperimage u t = TeXComm "hyperimage" [ FixArg $ TeXRaw $ render u
-                                      , FixArg t ]
+hyperimage :: LaTeXC l => URL -> l -> l
+hyperimage u = liftL $ \t -> TeXComm "hyperimage" [ FixArg $ rendertex u , FixArg t ]
 
 -- | This is a replacement for the usual 'ref' command that places a contextual label in front of the reference.
-autoref :: Label -> LaTeX
-autoref l = TeXComm "autoref" [ FixArg $ TeXRaw $ render l ]
+autoref :: LaTeXC l => Label -> l
+autoref l = fromLaTeX $ TeXComm "autoref" [ FixArg $ rendertex l ]

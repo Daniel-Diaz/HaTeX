@@ -42,6 +42,7 @@ module Text.LaTeX.Base.Writer
  , rendertexM
  , liftFun
  , liftOp
+ , merror
    -- * Re-export
  , lift
    ) where
@@ -56,6 +57,7 @@ import Data.String
 import Data.Monoid
 --
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Warnings (Warning,checkAll,check)
 --
@@ -67,6 +69,9 @@ newtype LaTeXT m a =
 
 instance MonadTrans LaTeXT where
  lift = LaTeXT . lift
+
+instance Monad m => LaTeXC (LaTeXT m a) where
+ liftListL f xs = mapM extractLaTeX_ xs >>= merror "liftListL" . textell . f
 
 type LaTeXT_ m = LaTeXT m ()
 
@@ -131,6 +136,11 @@ liftOp op ml1 ml2 = do
 -- > rendertexM = textell . rendertex
 rendertexM :: (Render a, Monad m) => a -> LaTeXT_ m
 rendertexM = textell . rendertex
+
+-- Error throwing
+
+merror :: Monad m => String -> LaTeXT m a -> LaTeXT m b
+merror = flip (>>) . return . error
 
 -- Overloaded Strings
 

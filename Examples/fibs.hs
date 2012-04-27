@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Text.LaTeX.Base.Monad
+import Text.LaTeX.Base
 
 main :: IO ()
 main = execLaTeXT example >>= renderFile "Fibs.tex"
@@ -25,7 +25,7 @@ exampleBody = do
    hline
    foldr (\n l -> do rendertexM n & rendertexM (fib n)
                      lnbk
-                     l ) (return ()) [0..12]
+                     l ) (return ()) [0 .. 12]
 
 fibs :: [Int]
 fibs = 1 : 1 : zipWith (+) fibs (tail fibs)

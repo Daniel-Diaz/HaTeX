@@ -1,6 +1,5 @@
 
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_HATEX MakeMonadic #-}
 
 module Text.LaTeX.Packages.Color
  ( -- * Color package
@@ -24,6 +23,7 @@ module Text.LaTeX.Packages.Color
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 --
@@ -37,16 +37,16 @@ pcolor = "color"
 
 -- | To convert all colour commands to black and white,
 --   for previewers that cannot handle colour.
-monochrome :: LaTeX
+monochrome :: LaTeXC l => l
 monochrome = "monochrome"
 
-dvipsnames :: LaTeX
+dvipsnames :: LaTeXC l => l
 dvipsnames = "dvipsnames"
 
-nodvipsnames :: LaTeX
+nodvipsnames :: LaTeXC l => l
 nodvipsnames = "nodvipsnames"
 
-usenames :: LaTeX
+usenames :: LaTeXC l => l
 usenames = "usenames"
 
 --
@@ -119,34 +119,34 @@ instance Render ColSpec where
 
 -- Commands
 
--- | Set the background color fot the current and following pages.
-pagecolor :: ColSpec -> LaTeX
-pagecolor = (TeXCommS "pagecolor" <>) . rendertex
+-- | Set the background color for the current and following pages.
+pagecolor :: LaTeXC l => ColSpec -> l
+pagecolor = (commS "pagecolor" <>) . rendertex
 
 -- | Switch to a new text color.
-color :: ColSpec -> LaTeX
-color = (TeXCommS "color" <>) . rendertex
+color :: LaTeXC l => ColSpec -> l
+color = (commS "color" <>) . rendertex
 
 -- | Set the text of its argument in the given colour.
-textcolor :: ColSpec -> LaTeX -> LaTeX
-textcolor cs l = TeXCommS "textcolor" <> rendertex cs
+textcolor :: LaTeXC l => ColSpec -> l -> l
+textcolor cs l = commS "textcolor" <> rendertex cs
               <> braces l
 
 -- | Put its argument in a box with the given colour as background.
-colorbox :: ColSpec -> LaTeX -> LaTeX
-colorbox cs l = TeXCommS "colorbox" <> rendertex cs
+colorbox :: LaTeXC l => ColSpec -> l -> l
+colorbox cs l = commS "colorbox" <> rendertex cs
              <> braces l
 
 -- | Application of @fcolorbox cs1 cs2 l@ put @l@ in a framed box with
 --   @cs1@ as frame color and @cs2@ as background color.
-fcolorbox :: ColSpec -> ColSpec -> LaTeX -> LaTeX
+fcolorbox :: LaTeXC l => ColSpec -> ColSpec -> l -> l
 fcolorbox cs1 cs2 l =
-    TeXCommS "fcolorbox" <> rendertex cs1
-                         <> rendertex cs2
+    commS "fcolorbox" <> rendertex cs1
+                      <> rendertex cs2
  <> braces l
 
 -- | Switch to the colour that was active at the end of the preamble.
 --   Thus, placing a 'color' command in the preamble can change the
 --   standard colour of the whole document.
-normalcolor :: LaTeX
-normalcolor = TeXComm "normalcolor" []
+normalcolor :: LaTeXC l => l
+normalcolor = comm0 "normalcolor"

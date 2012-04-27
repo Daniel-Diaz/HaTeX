@@ -9,9 +9,6 @@ module Text.LaTeX.Base.Syntax
    LaTeX (..)
  , TeXArg (..)
  , (<>)
-   -- * Utils
- , braces
- , comm
    -- * Escaping reserved characters
  , protectString
  , protectText
@@ -21,7 +18,7 @@ import Data.Text (Text,concatMap)
 import Data.Monoid
 import Data.String
 
--- | A 'LaTeX' object represents some expression written in LaTeX.
+-- | Type of @LaTeX@ blocks.
 data LaTeX =
    TeXRaw Text -- ^ Raw text.
  | TeXComm String [TeXArg] -- ^ Constructor for commands.
@@ -39,8 +36,8 @@ data LaTeX =
  | TeXComment Text -- ^ Comments.
  | TeXSeq LaTeX LaTeX -- ^ Sequencing of 'LaTeX' expressions.
                       -- Use '<>' preferably.
- | TeXEmpty -- ^ An empty expression.
-            -- Neutral element of '<>'.
+ | TeXEmpty -- ^ An empty block.
+            -- /Neutral element/ of '<>'.
    deriving (Eq,Show)
 
 -- | An argument for a 'LaTeX' command or environment.
@@ -93,17 +90,3 @@ protectChar '~'  = "\\~{}"
 protectChar '\\' = "\\textbackslash{}"
 protectChar '_'  = "\\_{}"
 protectChar x = [x]
-
----- UTILS
-
--- | Alias for 'TeXBraces'.
-braces :: LaTeX -> LaTeX
-braces = TeXBraces
-
--- | A simple (without arguments) command generator,
---   given the name of the command.
---
--- > comm str = TeXComm str []
---
-comm :: String -> LaTeX
-comm str = TeXComm str []

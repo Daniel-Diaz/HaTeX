@@ -1,6 +1,5 @@
 
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_HATEX MakeMonadic #-}
 
 module Text.LaTeX.Packages.Inputenc
  ( -- * Inputenc package
@@ -11,6 +10,7 @@ module Text.LaTeX.Packages.Inputenc
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Types
 
 -- | Inputenc package.
@@ -21,9 +21,9 @@ inputenc :: PackageName
 inputenc = "inputenc"
 
 -- | UTF-8 encoding.
-utf8 :: LaTeX
+utf8 :: LaTeXC l => l
 utf8 = "utf8"
 
 -- | Latin-1 encoding.
-latin1 :: LaTeX
+latin1 :: LaTeXC l => l
 latin1 = "latin1"

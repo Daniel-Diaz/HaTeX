@@ -1,4 +1,6 @@
 
+{-# LANGUAGE CPP #-}
+
 {- |
 This module exports those minimal things you need
 to work with HaTeX. Those things are:
@@ -19,24 +21,29 @@ Here is also defined a 'Num' instance for 'LaTeX'.
 -}
 module Text.LaTeX.Base
  ( -- * @LaTeX@ datatype
-   LaTeX , (<>)
+   LaTeX
    -- * Escaping reserved characters
  , protectString , protectText
    -- * Internal re-exports
  , module Text.LaTeX.Base.Render
  , module Text.LaTeX.Base.Types
  , module Text.LaTeX.Base.Commands
+ , module Text.LaTeX.Base.Writer
    -- * External re-exports
    --
    -- | Since the 'Monoid' instance is the only way to append 'LaTeX'
    --   values, a re-export of "Data.Monoid" is given here.
  , module Data.Monoid
+#if __GLASGOW_HASKELL__ < 704
+ , (<>)
+#endif
    ) where
 
 import Text.LaTeX.Base.Syntax (LaTeX (..),(<>),protectString,protectText)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands
+import Text.LaTeX.Base.Writer
 --
 import Data.Monoid
 
@@ -48,7 +55,7 @@ instance Num LaTeX where
  (-) = TeXOp "-"
  (*) = (<>)
  negate = (TeXEmpty -)
- fromInteger = TeXRaw . fromString . show
+ fromInteger = rendertex
  -- Non-defined methods
  abs _    = error "Cannot use \"abs\" Num method with a LaTeX value."
  signum _ = error "Cannot use \"signum\" Num method with a LaTeX value."

@@ -1,4 +1,4 @@
-# `HaTeX` README
+# HaTeX README
 
 `HaTeX` is the LaTeX syntax implementation done in Haskell.
 
@@ -13,3 +13,7 @@
 
 * To install `HaTeX`, use the typical `cabal install`.
 * Eventually you may require to install `parsec` or `mtl` first (there is a problem with the `transformers` dependency).
+
+## HaTeX User's Guide
+
+* The HaTeX User's Guide lives [here](https://github.com/Daniel-Diaz/HaTeX-Guide).

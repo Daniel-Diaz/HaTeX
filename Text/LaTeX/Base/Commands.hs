@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_HATEX MakeMonadic #-}
 
 -- | LaTeX standard commands and environments.
 module Text.LaTeX.Base.Commands
@@ -93,6 +92,7 @@ module Text.LaTeX.Base.Commands
  , hatex
  , hatex3
  , hatex_meta
+ , version
  , hatex_version
  -- ** Document layout
  , par
@@ -199,23 +199,28 @@ import Data.String
 import Data.Maybe (catMaybes)
 import Data.Text (toLower)
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
+import Data.Version
+import Data.List (intercalate)
+--
+import Paths_HaTeX
 
 -- | Insert a raw piece of 'Text'.
 -- This functions doesn't care about @LaTeX@ reserved characters,
 -- it insert the text just as it is received.
-raw :: Text -> LaTeX
-raw = TeXRaw
+raw :: LaTeXC l => Text -> l
+raw = fromLaTeX . TeXRaw
 
 -- | Calling 'between' @c l1 l2@ puts @c@ between @l1@ and @l2@ and
 --   appends them.
-between :: LaTeX -> LaTeX -> LaTeX -> LaTeX
+between :: Monoid m => m -> m -> m -> m
 between c l1 l2 = l1 <> c <> l2
 
 -- | Create a comment.
-comment :: Text -> LaTeX
-comment = TeXComment
+comment :: LaTeXC l => Text -> l
+comment = fromLaTeX . TeXComment
 
 -- | This operator appends a comment after a expression.
 --   For example:
@@ -225,137 +230,138 @@ comment = TeXComment
 -- Since you are writing in Haskell, you may not need to output comments
 -- as you can add them in the Haskell source. I added this feature
 -- for completeness.
-(%) :: LaTeX -> Text -> LaTeX
+(%) :: LaTeXC l => l -> Text -> l
 (%) l = (l <>) . comment
 
 -- | Generate the title. It normally contains the 'title' name
 -- of your document, the 'author'(s) and 'date'.
-maketitle :: LaTeX
-maketitle = TeXComm "maketitle" []
+maketitle :: LaTeXC l => l
+maketitle = comm0 "maketitle"
 
 -- | Set the title of your document.
-title :: LaTeX -> LaTeX
-title t = TeXComm "title" [FixArg t]
+title :: LaTeXC l => l -> l
+title = liftL $ \t -> TeXComm "title" [FixArg t]
 
 -- | Set a date for your document.
-date :: LaTeX -> LaTeX
-date t = TeXComm "date" [FixArg t]
+date :: LaTeXC l => l -> l
+date = liftL $ \t -> TeXComm "date" [FixArg t]
 
 -- | Set the author(s) of the document.
-author :: LaTeX -> LaTeX
-author t = TeXComm "author" [FixArg t]
+author :: LaTeXC l => l -> l
+author = liftL $ \t -> TeXComm "author" [FixArg t]
 
 -- | Set either an institute or an organization
 -- for the document.
-institute :: Maybe LaTeX -> LaTeX -> LaTeX
-institute  Nothing l = TeXComm "institute" [FixArg l]
-institute (Just s) l = TeXComm "institute" [OptArg s,FixArg l]
+institute :: LaTeXC l => Maybe l -> l -> l
+institute  Nothing = liftL $ \l -> TeXComm "institute" [FixArg l]
+institute (Just s) = liftL2 (\l1 l2 -> TeXComm "institute" [OptArg l1,FixArg l2]) s
 
-thanks :: LaTeX -> LaTeX
-thanks x = TeXComm "thanks" [FixArg x]
+thanks :: LaTeXC l => l -> l
+thanks = liftL $ \l -> TeXComm "thanks" [FixArg l]
 
 -- | Import a package. First argument is a list of options for
 -- the package named in the second argument.
-usepackage :: [LaTeX] -> PackageName -> LaTeX
-usepackage lopt str = TeXComm "usepackage" [MOptArg lopt ,FixArg $ fromString str]
+usepackage :: LaTeXC l => [l] -> PackageName -> l
+usepackage ls pn = liftListL (\ls -> TeXComm "usepackage" [MOptArg ls ,FixArg $ fromString pn]) ls
 
 -- | The @LaTeX@ logo.
-latex :: LaTeX
-latex = TeXComm "LaTeX" []
+latex :: LaTeXC l => l
+latex = comm0 "LaTeX"
 
 -- | Start a new paragraph
-par :: LaTeX
-par = TeXComm "par" []
+par :: LaTeXC l => l
+par = comm0 "par"
 
 -- | Start a new line.
-newline :: LaTeX
-newline = TeXComm "newline" []
+newline :: LaTeXC l => l
+newline = comm0 "newline"
 
-part :: LaTeX -> LaTeX
-part p = TeXComm "part" [FixArg p]
+part :: LaTeXC l => l -> l
+part = liftL $ \p -> TeXComm "part" [FixArg p]
 
-chapter :: LaTeX -> LaTeX
-chapter c = TeXComm "chapter" [FixArg c]
+chapter :: LaTeXC l => l -> l
+chapter = liftL $ \c -> TeXComm "chapter" [FixArg c]
 
 -- | Start a new section with a given title.
-section :: LaTeX -> LaTeX
-section s = TeXComm "section" [FixArg s]
+section :: LaTeXC l => l -> l
+section = liftL $ \s -> TeXComm "section" [FixArg s]
 
-subsection :: LaTeX -> LaTeX
-subsection sub = TeXComm "subsection" [FixArg sub]
+subsection :: LaTeXC l => l -> l
+subsection = liftL $ \sub -> TeXComm "subsection" [FixArg sub]
 
-subsubsection :: LaTeX -> LaTeX
-subsubsection sub = TeXComm "subsubsection" [FixArg sub]
+subsubsection :: LaTeXC l => l -> l
+subsubsection = liftL $ \sub -> TeXComm "subsubsection" [FixArg sub]
 
-paragraph :: LaTeX -> LaTeX
-paragraph p = TeXComm "paragraph" [FixArg p]
+paragraph :: LaTeXC l => l -> l
+paragraph = liftL $ \p -> TeXComm "paragraph" [FixArg p]
 
-subparagraph :: LaTeX -> LaTeX
-subparagraph p = TeXComm "subparagraph" [FixArg p]
+subparagraph :: LaTeXC l => l -> l
+subparagraph = liftL $ \p -> TeXComm "subparagraph" [FixArg p]
 
 -- | Create the table of contents, automatically generated
 -- from your 'section's, 'subsection's, and other related stuff.
-tableofcontents :: LaTeX
-tableofcontents = TeXComm "tableofcontents" []
+tableofcontents :: LaTeXC l => l
+tableofcontents = comm0 "tableofcontents"
 
-appendix :: LaTeX
-appendix = TeXComm "appendix" []
+appendix :: LaTeXC l => l
+appendix = comm0 "appendix"
 
-item :: Maybe LaTeX -> LaTeX
-item Nothing    = TeXCommS "item "
-item (Just opt) = TeXComm "item" [OptArg opt]
+item :: LaTeXC l => Maybe l -> l
+item Nothing    = commS "item "
+item (Just opt) = liftL (\opt -> TeXComm "item" [OptArg opt]) opt
 
-equation :: LaTeX -> LaTeX
-equation = TeXEnv "equation" []
+equation :: LaTeXC l => l -> l
+equation = liftL $ TeXEnv "equation" []
 
-equation_ :: LaTeX -> LaTeX
-equation_ = TeXEnv "equation*" []
+equation_ :: LaTeXC l => l -> l
+equation_ = liftL $ TeXEnv "equation*" []
 
-enumerate :: LaTeX -> LaTeX
-enumerate = TeXEnv "enumerate" []
+enumerate :: LaTeXC l => l -> l
+enumerate = liftL $ TeXEnv "enumerate" []
 
-itemize :: LaTeX -> LaTeX
-itemize = TeXEnv "itemize" []
+itemize :: LaTeXC l => l -> l
+itemize = liftL $ TeXEnv "itemize" []
 
-description :: LaTeX -> LaTeX
-description = TeXEnv "description" []
+description :: LaTeXC l => l -> l
+description = liftL $ TeXEnv "description" []
 
-flushleft :: LaTeX -> LaTeX
-flushleft = TeXEnv "flushleft" []
+flushleft :: LaTeXC l => l -> l
+flushleft = liftL $ TeXEnv "flushleft" []
 
-flushright :: LaTeX -> LaTeX
-flushright = TeXEnv "flushright" []
+flushright :: LaTeXC l => l -> l
+flushright = liftL $ TeXEnv "flushright" []
 
-center :: LaTeX -> LaTeX
-center = TeXEnv "center" []
+center :: LaTeXC l => l -> l
+center = liftL $ TeXEnv "center" []
 
-quote :: LaTeX -> LaTeX
-quote = TeXEnv "quote" []
+quote :: LaTeXC l => l -> l
+quote = liftL $ TeXEnv "quote" []
 
-verse :: LaTeX -> LaTeX
-verse = TeXEnv "verse" []
+verse :: LaTeXC l => l -> l
+verse = liftL $ TeXEnv "verse" []
 
 -- | Minipage environment.
-minipage :: Maybe Pos           -- ^ Optional position
-         -> LaTeX               -- ^ Width
-         -> LaTeX               -- ^ Minipage content
-         -> LaTeX
-minipage Nothing  ts = TeXEnv "minipage" [ FixArg ts ]
-minipage (Just p) ts = TeXEnv "minipage" [ OptArg $ TeXRaw $ render p
-                                         , FixArg ts ]
+minipage :: LaTeXC l =>
+            Maybe Pos -- ^ Optional position
+         -> l         -- ^ Width
+         -> l         -- ^ Minipage content
+         -> l
+minipage Nothing  = liftL2 $ \ts -> TeXEnv "minipage" [ FixArg ts ]
+minipage (Just p) = liftL2 $ \ts -> TeXEnv "minipage" [ OptArg $ rendertex p , FixArg ts ]
 
 -- | Figure environment.
-figure :: Maybe Pos             -- ^ Optional position
-       -> LaTeX                 -- ^ Figure content
-       -> LaTeX
-figure Nothing  = TeXEnv "figure" []
-figure (Just p) = TeXEnv "figure" [ OptArg $ TeXRaw $ render p ]
+figure :: LaTeXC l =>
+          Maybe Pos -- ^ Optional position
+       -> l         -- ^ Figure content
+       -> l
+figure Nothing  = liftL $ TeXEnv "figure" []
+figure (Just p) = liftL $ TeXEnv "figure" [ OptArg $ TeXRaw $ render p ]
 
-abstract :: LaTeX -> LaTeX
-abstract = TeXEnv "abstract" []
+abstract :: LaTeXC l => l -> l
+abstract = liftL $ TeXEnv "abstract" []
 
 cite :: LaTeX -> LaTeX
-cite l = TeXComm "cite" [FixArg l]
+cite = liftL $ \l -> TeXComm "cite" [FixArg l]
 
 -- Document class
 
@@ -400,10 +406,11 @@ data PaperType =
 instance Render PaperType where
 
 -- | Set the document class. Needed in all documents.
-documentclass :: [ClassOption] -- ^ Class options
-              -> ClassName     -- ^ Class name
-              -> LaTeX 
-documentclass opts cn = TeXComm "documentclass" [MOptArg $ fmap rendertex opts , FixArg $ fromString cn]
+documentclass :: LaTeXC l =>
+                [ClassOption] -- ^ Class options
+              -> ClassName    -- ^ Class name
+              -> l
+documentclass opts cn = fromLaTeX $ TeXComm "documentclass" [MOptArg $ fmap rendertex opts , FixArg $ fromString cn]
 
 article :: ClassName
 article = "article"
@@ -515,331 +522,339 @@ openright = OpenRight
 openany :: ClassOption
 openany = OpenAny
 
-document :: LaTeX -> LaTeX
-document = TeXEnv "document" []
+document :: LaTeXC l => l -> l
+document = liftL $ TeXEnv "document" []
 
-pagenumbering :: LaTeX -> LaTeX
-pagenumbering l = TeXComm "pagenumbering" [FixArg l]
+pagenumbering :: LaTeXC l => l -> l
+pagenumbering = liftL $ \l -> TeXComm "pagenumbering" [FixArg l]
 
 -- | Arabic numerals.
-arabic :: LaTeX
-arabic = "arabic"
+arabic :: LaTeXC l => l
+arabic = fromLaTeX "arabic"
 
 -- | Lowercase roman numerals.
-roman :: LaTeX
-roman = "roman"
+roman :: LaTeXC l => l
+roman = fromLaTeX "roman"
 
 -- | Uppercase roman numerals.
-roman_ :: LaTeX
-roman_ = "Roman"
+roman_ :: LaTeXC l => l
+roman_ = fromLaTeX "Roman"
 
 -- | Lowercase letters.
-alph :: LaTeX
-alph = "alph"
+alph :: LaTeXC l => l
+alph = fromLaTeX "alph"
 
 -- | Uppercase letters.
-alph_ :: LaTeX
-alph_ = "Alph"
+alph_ :: LaTeXC l => l
+alph_ = fromLaTeX "Alph"
 
-pagestyle :: LaTeX -> LaTeX
-pagestyle l = TeXComm "pagestyle" [FixArg l]
+pagestyle :: LaTeXC l => l -> l
+pagestyle = liftL $ \l -> TeXComm "pagestyle" [FixArg l]
 
 thispagestyle :: LaTeX -> LaTeX
-thispagestyle l  = TeXComm "thispagestyle" [FixArg l]
+thispagestyle = liftL $ \l -> TeXComm "thispagestyle" [FixArg l]
 
-plain :: LaTeX
-plain = "plain"
+plain :: LaTeXC l => l
+plain = fromLaTeX "plain"
 
-headings :: LaTeX
-headings = "headings"
+headings :: LaTeXC l => l
+headings = fromLaTeX "headings"
 
-empty :: LaTeX
-empty = "empty"
+empty :: LaTeXC l => l
+empty = fromLaTeX "empty"
 
-myheadings :: LaTeX
-myheadings = "myheadings"
+myheadings :: LaTeXC l => l
+myheadings = fromLaTeX "myheadings"
 
 -- | Used in conjunction with 'myheadings' for setting both the left and the right heading.
-markboth :: LaTeX -> LaTeX -> LaTeX
-markboth l1 l2 = TeXComm "markboth" [FixArg l1,FixArg l2]
+markboth :: LaTeXC l => l -> l -> l
+markboth = liftL2 $ \l1 l2 -> TeXComm "markboth" [FixArg l1 , FixArg l2]
 
 -- | Used in conjunction with 'myheadings' for setting the right heading.
-markright :: LaTeX -> LaTeX
-markright l = TeXComm "markright" [FixArg l]
+markright :: LaTeXC l => l -> l
+markright = liftL $ \l -> TeXComm "markright" [FixArg l]
 
 -- | Start a new line. In a 'tabular', it starts a new row, so use 'newline' instead.
-lnbk  :: LaTeX
-lnbk = TeXNewLine False
+lnbk  :: LaTeXC l => l
+lnbk = fromLaTeX $ TeXNewLine False
 
-lnbk_ :: LaTeX
-lnbk_ = TeXNewLine True
+lnbk_ :: LaTeXC l => l
+lnbk_ = fromLaTeX $ TeXNewLine True
 
-hyp :: LaTeX
-hyp = TeXCommS "-"
+hyp :: LaTeXC l => l
+hyp = fromLaTeX $ TeXCommS "-"
 
-cleardoublepage :: LaTeX
-cleardoublepage = TeXComm "cleardoublepage" []
+cleardoublepage :: LaTeXC l => l
+cleardoublepage = comm0 "cleardoublepage"
 
-clearpage :: LaTeX
-clearpage = TeXComm "clearpage" []
+clearpage :: LaTeXC l => l
+clearpage = comm0 "clearpage"
 
-newpage :: LaTeX
-newpage = TeXComm "newpage" []
+newpage :: LaTeXC l => l
+newpage = comm0 "newpage"
 
-linebreak :: LaTeX -> LaTeX
-linebreak l = TeXComm "linebreak" [OptArg l]
+linebreak :: LaTeXC l => l -> l
+linebreak = liftL $ \l -> TeXComm "linebreak" [OptArg l]
 
-nolinebreak :: LaTeX -> LaTeX
-nolinebreak l = TeXComm "nolinebreak" [OptArg l]
+nolinebreak :: LaTeXC l => l -> l
+nolinebreak = liftL $ \l -> TeXComm "nolinebreak" [OptArg l]
 
-nopagebreak :: LaTeX -> LaTeX
-nopagebreak l = TeXComm "nopagebreak" [OptArg l]
+nopagebreak :: LaTeXC l => l -> l
+nopagebreak = liftL $ \l -> TeXComm "nopagebreak" [OptArg l]
 
-pagebreak :: LaTeX -> LaTeX
-pagebreak l = TeXComm "pagebreak" [OptArg l]
+pagebreak :: LaTeXC l => l -> l
+pagebreak = liftL $ \l -> TeXComm "pagebreak" [OptArg l]
 
-hyphenation :: LaTeX -> LaTeX
-hyphenation l = TeXComm "hyphenation" [FixArg l]
+hyphenation :: LaTeXC l => l -> l
+hyphenation = liftL $ \l -> TeXComm "hyphenation" [FixArg l]
 
-mbox :: LaTeX -> LaTeX
-mbox l = TeXComm "mbox" [FixArg l]
+mbox :: LaTeXC l => l -> l
+mbox = liftL $ \l -> TeXComm "mbox" [FixArg l]
 
-fbox :: LaTeX -> LaTeX
-fbox l = TeXComm "fbox" [FixArg l]
+fbox :: LaTeXC l => l -> l
+fbox = liftL $ \l -> TeXComm "fbox" [FixArg l]
 
-today :: LaTeX
-today = TeXComm "today" []
+today :: LaTeXC l => l
+today = comm0 "today"
 
-tex :: LaTeX
-tex = TeXComm "TeX" []
+tex :: LaTeXC l => l
+tex = comm0 "TeX"
 
-laTeX2 :: LaTeX
-laTeX2 = TeXComm "LaTeX" []
+laTeX2 :: LaTeXC l => l
+laTeX2 = comm0 "LaTeX"
 
-laTeXe :: LaTeX
-laTeXe = TeXComm "LaTeXe" []
+laTeXe :: LaTeXC l => l
+laTeXe = comm0 "LaTeXe"
 
 -- | Horizontal dots.
-ldots :: LaTeX
-ldots = TeXComm "ldots" []
+ldots :: LaTeXC l => l
+ldots = comm0 "ldots"
 
 -- | Vertical dots.
-vdots :: LaTeX
-vdots = TeXComm "vdots" []
+vdots :: LaTeXC l => l
+vdots = comm0 "vdots"
 
 -- | Diagonal dots.
-ddots :: LaTeX
-ddots = TeXComm "ddots" []
+ddots :: LaTeXC l => l
+ddots = comm0 "ddots"
 
 -- | Quotation marks.
-qts :: LaTeX -> LaTeX
-qts l = raw "``" <> l <> raw "''"
+qts :: LaTeXC l => l -> l
+qts l = between l (raw "``") (raw "''")
 
-footnote :: LaTeX -> LaTeX
-footnote l = TeXComm "footnote" [FixArg l]
+footnote :: LaTeXC l => l -> l
+footnote = liftL $ \l -> TeXComm "footnote" [FixArg l]
 
-linespread :: Float -> LaTeX
-linespread f = TeXComm "linespread" [FixArg $ TeXRaw $ render f]
+linespread :: LaTeXC l => Float -> l
+linespread x = fromLaTeX $ TeXComm "linespread" [FixArg $ rendertex x]
 
-indent :: LaTeX
-indent = TeXComm "indent" []
+indent :: LaTeXC l => l
+indent = comm0 "indent"
 
-noindent :: LaTeX
-noindent = TeXComm "noindent" []
+noindent :: LaTeXC l => l
+noindent = comm0 "noindent"
 
-hspace :: Measure -> LaTeX
-hspace m = TeXComm "hspace" [FixArg $ TeXRaw $ render m]
+hspace :: LaTeXC l => Measure -> l
+hspace m = fromLaTeX $ TeXComm "hspace" [FixArg $ rendertex m]
 
-hspace_ :: Measure -> LaTeX
-hspace_ m = TeXComm "hspace*" [FixArg $ TeXRaw $ render m]
+hspace_ :: LaTeXC l => Measure -> l
+hspace_ m = fromLaTeX $ TeXComm "hspace*" [FixArg $ rendertex m]
 
-stretch :: Int -> LaTeX
-stretch n = TeXComm "stretch" [FixArg $ TeXRaw $ render n]
+stretch :: LaTeXC l => Int -> l
+stretch n = fromLaTeX $ TeXComm "stretch" [FixArg $ rendertex n]
 
-vspace :: Measure -> LaTeX
-vspace m = TeXComm "vspace" [FixArg $ TeXRaw $ render m]
+vspace :: LaTeXC l => Measure -> l
+vspace m = fromLaTeX $ TeXComm "vspace" [FixArg $ rendertex m]
 
-protect :: LaTeX -> LaTeX
-protect l = TeXCommS "protect" <> l
+protect :: LaTeXC l => l -> l
+protect l = commS "protect" <> l
 
-textwidth :: LaTeX
-textwidth = TeXComm "textwidth" []
+textwidth :: LaTeXC l => l
+textwidth = comm0 "textwidth"
 
-linewidth :: LaTeX
-linewidth = TeXComm "linewidth" []
+linewidth :: LaTeXC l => l
+linewidth = comm0 "linewidth"
 
-verbatim :: LaTeX -> LaTeX
-verbatim = TeXEnv "verbatim" []
+verbatim :: LaTeXC l => l -> l
+verbatim = liftL $ TeXEnv "verbatim" []
 
-underline :: LaTeX -> LaTeX
-underline l = TeXComm "underline" [FixArg l]
+underline :: LaTeXC l => l -> l
+underline = liftL $ \l -> TeXComm "underline" [FixArg l]
 
-emph :: LaTeX -> LaTeX
-emph l = TeXComm "emph" [FixArg l]
+emph :: LaTeXC l => l -> l
+emph = liftL $ \l -> TeXComm "emph" [FixArg l]
 
-textrm :: LaTeX -> LaTeX
-textrm l = TeXComm "textrm" [FixArg l]
+textrm :: LaTeXC l => l -> l
+textrm = liftL $ \l -> TeXComm "textrm" [FixArg l]
 
-textsf :: LaTeX -> LaTeX
-textsf l = TeXComm "textsf" [FixArg l]
+textsf :: LaTeXC l => l -> l
+textsf = liftL $ \l -> TeXComm "textsf" [FixArg l]
 
 -- | Set the given argument to monospaced font.
-texttt :: LaTeX -> LaTeX
-texttt l = TeXComm "texttt" [FixArg l]
+texttt :: LaTeXC l => l -> l
+texttt = liftL $ \l -> TeXComm "texttt" [FixArg l]
 
-textmd :: LaTeX -> LaTeX
-textmd l = TeXComm "textmd" [FixArg l]
+textmd :: LaTeXC l => l -> l
+textmd = liftL $ \l -> TeXComm "textmd" [FixArg l]
 
 -- | Set the given argument to bold font face.
-textbf :: LaTeX -> LaTeX
-textbf l = TeXComm "textbf" [FixArg l]
+textbf :: LaTeXC l => l -> l
+textbf = liftL $ \l -> TeXComm "textbf" [FixArg l]
 
-textup :: LaTeX -> LaTeX
-textup l = TeXComm "textup" [FixArg l]
+textup :: LaTeXC l => l -> l
+textup = liftL $ \l -> TeXComm "textup" [FixArg l]
 
 -- Set the given argument to italic font face.
-textit :: LaTeX -> LaTeX
-textit l = TeXComm "textit" [FixArg l]
+textit :: LaTeXC l => l -> l
+textit = liftL $ \l -> TeXComm "textit" [FixArg l]
 
-textsl :: LaTeX -> LaTeX
-textsl l = TeXComm "textsl" [FixArg l]
+textsl :: LaTeXC l => l -> l
+textsl = liftL $ \l -> TeXComm "textsl" [FixArg l]
 
 -- | Set the given argument to small caps format.
-textsc :: LaTeX -> LaTeX
-textsc l = TeXComm "textsc" [FixArg l]
+textsc :: LaTeXC l => l -> l
+textsc = liftL $ \l -> TeXComm "textsc" [FixArg l]
 
-textnormal :: LaTeX -> LaTeX
-textnormal l = TeXComm "textnormal" [FixArg l]
+textnormal :: LaTeXC l => l -> l
+textnormal = liftL $ \l -> TeXComm "textnormal" [FixArg l]
 
-tiny :: LaTeX -> LaTeX
-tiny l = TeXComm "tiny" [FixArg l]
+tiny :: LaTeXC l => l -> l
+tiny = liftL $ \l -> TeXComm "tiny" [FixArg l]
 
-scriptsize :: LaTeX -> LaTeX
-scriptsize l = TeXComm "scriptsize" [FixArg l]		
+scriptsize :: LaTeXC l => l -> l
+scriptsize = liftL $ \l -> TeXComm "scriptsize" [FixArg l]		
 
-footnotesize :: LaTeX -> LaTeX
-footnotesize l = TeXComm "footnotesize" [FixArg l]
+footnotesize :: LaTeXC l => l -> l
+footnotesize = liftL $ \l -> TeXComm "footnotesize" [FixArg l]
 
-small :: LaTeX -> LaTeX
-small l = TeXComm "small" [FixArg l]
+small :: LaTeXC l => l -> l
+small = liftL $ \l -> TeXComm "small" [FixArg l]
 
-normalsize :: LaTeX -> LaTeX
-normalsize l = TeXComm "normalsize" [FixArg l]
+normalsize :: LaTeXC l => l -> l
+normalsize = liftL $ \l -> TeXComm "normalsize" [FixArg l]
 
-large :: LaTeX -> LaTeX
-large l = TeXComm "large" [FixArg l]
+large :: LaTeXC l => l -> l
+large = liftL $ \l -> TeXComm "large" [FixArg l]
 
-large2 :: LaTeX -> LaTeX
-large2 l = TeXComm "Large" [FixArg l]
+large2 :: LaTeXC l => l -> l
+large2 = liftL $ \l -> TeXComm "Large" [FixArg l]
 
-large3 :: LaTeX -> LaTeX
-large3 l = TeXComm "LARGE" [FixArg l]
+large3 :: LaTeXC l => l -> l
+large3 = liftL $ \l -> TeXComm "LARGE" [FixArg l]
 
-huge :: LaTeX -> LaTeX
-huge l = TeXComm "huge" [FixArg l]
+huge :: LaTeXC l => l -> l
+huge = liftL $ \l -> TeXComm "huge" [FixArg l]
 
-huge2 :: LaTeX -> LaTeX
-huge2 l = TeXComm "Huge" [FixArg l]
+huge2 :: LaTeXC l => l -> l
+huge2 = liftL $ \l -> TeXComm "Huge" [FixArg l]
 
-smallskip :: LaTeX
-smallskip = TeXComm "smallskip" []
+smallskip :: LaTeXC l => l
+smallskip = comm0 "smallskip"
 
-bigskip :: LaTeX
-bigskip = TeXComm "bigskip" []
+bigskip :: LaTeXC l => l
+bigskip = comm0 "bigskip"
 
 -- | The 'tabular' environment can be used to typeset tables with optional horizontal and vertical lines.
-tabular :: Maybe Pos   -- ^ This optional parameter can be used to specify the vertical position of the table.
+tabular :: LaTeXC l =>
+           Maybe Pos   -- ^ This optional parameter can be used to specify the vertical position of the table.
                        --   Defaulted to 'Center'.
         -> [TableSpec] -- ^ Table specification of columns and vertical lines.
-        -> LaTeX       -- ^ Table content. See '&', 'lnbk', 'hline' and 'cline'.
-        -> LaTeX       -- ^ Resulting table syntax.
-tabular Nothing ts  = TeXEnv "tabular" [ FixArg $ TeXRaw $ renderAppend ts ]
-tabular (Just p) ts = TeXEnv "tabular" [ OptArg $ TeXRaw $ render p , FixArg $ TeXRaw $ renderAppend ts ]
+        -> l       -- ^ Table content. See '&', 'lnbk', 'hline' and 'cline'.
+        -> l       -- ^ Resulting table syntax.
+tabular Nothing ts  = liftL $ TeXEnv "tabular" [ FixArg $ TeXRaw $ renderAppend ts ]
+tabular (Just p) ts = liftL $ TeXEnv "tabular" [ OptArg $ TeXRaw $ render p , FixArg $ TeXRaw $ renderAppend ts ]
 
 -- | Column separator.
-(&) :: LaTeX -> LaTeX -> LaTeX
-(&) = TeXOp "&"
+(&) :: LaTeXC l => l -> l -> l
+(&) = liftL2 $ TeXOp "&"
 
 -- | Horizontal line.
-hline :: LaTeX
-hline = TeXCommS "hline "
+hline :: LaTeXC l => l
+hline = commS "hline "
 
 -- | @cline i j@ writes a partial horizontal line beginning in column @i@ and ending in column @j@.
-cline :: Int -> Int -> LaTeX
-cline i j = TeXComm "cline" [ FixArg $ TeXRaw $ render i <> "-" <> render j ]
+cline :: LaTeXC l => Int -> Int -> l
+cline i j = fromLaTeX $ TeXComm "cline" [ FixArg $ TeXRaw $ render i <> "-" <> render j ]
 
-parbox :: Maybe Pos -> Measure -> LaTeX -> LaTeX
-parbox Nothing w t  = TeXComm "parbox" [ FixArg $ TeXRaw $ render w
-                                       , FixArg t]
-parbox (Just p) w t = TeXComm "parbox" [ OptArg $ TeXRaw $ render p
-                                       , FixArg $ TeXRaw $ render w
-                                       , FixArg t]
+parbox :: LaTeXC l => Maybe Pos -> Measure -> l -> l
+parbox Nothing w = liftL $ \t -> TeXComm "parbox" [ FixArg $ rendertex w , FixArg t ]
+parbox (Just p) w = liftL $ \t -> TeXComm "parbox" [ OptArg $ TeXRaw $ render p
+                                                   , FixArg $ TeXRaw $ render w
+                                                   , FixArg t ]
 
-makebox :: Maybe Measure -> Maybe Pos -> LaTeX -> LaTeX
-makebox Nothing  Nothing t  = TeXComm "makebox" [ FixArg t]
-makebox Nothing (Just p) t  = TeXComm "makebox" [ OptArg $ TeXRaw $ render p, FixArg t]
-makebox (Just w) Nothing t  = TeXComm "makebox" [ OptArg $ TeXRaw $ render w, FixArg t]
-makebox (Just w) (Just p) t = TeXComm "makebox" [ OptArg $ TeXRaw $ render w
-                                                , OptArg $ TeXRaw $ render p
-                                                , FixArg t]	
+makebox :: LaTeXC l => Maybe Measure -> Maybe Pos -> l -> l
+makebox Nothing  Nothing  = liftL $ \t -> TeXComm "makebox" [ FixArg t ]
+makebox (Just w) Nothing  = liftL $ \t -> TeXComm "makebox" [ OptArg $ TeXRaw $ render w
+                                                            , FixArg t ]
+makebox Nothing (Just p)  = liftL $ \t -> TeXComm "makebox" [ OptArg $ TeXRaw $ render p
+                                                            , FixArg t ]
+makebox (Just w) (Just p) = liftL $ \t -> TeXComm "makebox" [ OptArg $ TeXRaw $ render w
+                                                            , OptArg $ TeXRaw $ render p
+                                                            , FixArg t ]	
 
-framebox :: Maybe Measure -> Maybe Pos -> LaTeX -> LaTeX
-framebox Nothing Nothing t  = TeXComm "framebox" [ FixArg t]
-framebox Nothing (Just p) t  = TeXComm "framebox" [ OptArg $ TeXRaw $ render p, FixArg t]
-framebox (Just w) Nothing t  = TeXComm "framebox" [ OptArg $ TeXRaw $ render w, FixArg t]
-framebox (Just w) (Just p) t = TeXComm "framebox" [ OptArg $ TeXRaw $ render w
-                                                  , OptArg $ TeXRaw $ render p
-                                                  , FixArg t]
+framebox :: LaTeXC l =>  Maybe Measure -> Maybe Pos -> l -> l
+framebox Nothing Nothing   = liftL $ \t -> TeXComm "framebox" [ FixArg t ]
+framebox (Just w) Nothing  = liftL $ \t -> TeXComm "framebox" [ OptArg $ TeXRaw $ render w
+                                                              , FixArg t ]
+framebox Nothing (Just p)  = liftL $ \t -> TeXComm "framebox" [ OptArg $ TeXRaw $ render p
+                                                              , FixArg t ]
+framebox (Just w) (Just p) = liftL $ \t -> TeXComm "framebox" [ OptArg $ TeXRaw $ render w
+                                                              , OptArg $ TeXRaw $ render p
+                                                              , FixArg t ]
 
-raisebox ::  Measure -> Maybe Measure -> Maybe Measure -> LaTeX -> LaTeX
-raisebox l ma mb t = TeXComm "raisebox" $
-    [ FixArg $ TeXRaw $ render l ]
- ++   fmap (OptArg . TeXRaw . render) (catMaybes [ma,mb])
- ++ [ FixArg t ]
+raisebox :: LaTeXC l => Measure -> Maybe Measure -> Maybe Measure -> l -> l
+raisebox m ma mb = liftL $ \l -> TeXComm "raisebox" $
+    [ FixArg $ rendertex m ]
+ ++   fmap (OptArg . rendertex) (catMaybes [ma,mb])
+ ++ [ FixArg l ]
 
 -- | Produce a simple black box.
-rule :: Maybe Measure -- ^ Optional lifting.
+rule :: LaTeXC l =>
+        Maybe Measure -- ^ Optional lifting.
      -> Measure       -- ^ Width.
      -> Measure       -- ^ Height.
-     -> LaTeX
-rule Nothing w h  = TeXComm "rule" [ FixArg $ TeXRaw $ render w
-                                   , FixArg $ TeXRaw $ render h ]
-rule (Just l) w h = TeXComm "rule" [ OptArg $ TeXRaw $ render l
-                                   , FixArg $ TeXRaw $ render w
-                                   , FixArg $ TeXRaw $ render h ]
+     -> l
+rule Nothing w h  = fromLaTeX $ TeXComm "rule" [ FixArg $ TeXRaw $ render w
+                                               , FixArg $ TeXRaw $ render h ]
+rule (Just l) w h = fromLaTeX $ TeXComm "rule" [ OptArg $ TeXRaw $ render l
+                                               , FixArg $ TeXRaw $ render w
+                                               , FixArg $ TeXRaw $ render h ]
 
 -- HaTeX specific symbols
 
 -- | Print the HaTeX logo.
-hatex :: LaTeX
-hatex = "H"
+hatex :: LaTeXC l => l
+hatex = mbox $ "H"
      <> hspace (Ex $ negate 0.3)
      <> textsc "a"
      <> hspace (Ex $ negate 0.3)
      <> tex
 
 -- | Print the HaTeX 3 logo.
-hatex3 :: LaTeX
+hatex3 :: LaTeXC l => l
 hatex3 = hatex <> emph (textbf "3")
 
 -- | Print the HaTeX-meta logo.
-hatex_meta :: LaTeX
+hatex_meta :: LaTeXC l => l
 hatex_meta = hatex <> emph (textsc "-meta")
 
 -- | Print the HaTeX logo, beside the complete version number.
-hatex_version :: LaTeX
-hatex_version = hatex3
+hatex_version :: LaTeXC l => l
+hatex_version = hatex
+             <> emph (textbf $ rendertex x)
              <> hspace (Ex $ negate 0.3)
-             <> emph ".2.1"
+             <> emph ("." <> fromString (intercalate "." $ fmap show xs))
+ where
+  (x:xs) = versionBranch version
 
-caption :: LaTeX -> LaTeX
-caption l = TeXComm "caption" [FixArg l]
+caption :: LaTeXC l => l -> l
+caption = liftL $ \l -> TeXComm "caption" [FixArg l]
 
-label :: Label -> LaTeX
-label l = TeXComm "label" [FixArg $ TeXRaw $ render l]
+label :: LaTeXC l => l -> l
+label = liftL $ \l -> TeXComm "label" [FixArg $ TeXRaw $ render l]
 
-ref :: Label -> LaTeX
-ref l = TeXComm "ref" [FixArg $ TeXRaw $ render l]
+ref :: LaTeXC l => l -> l
+ref = liftL $ \l -> TeXComm "ref" [FixArg $ TeXRaw $ render l]
 
-pageref :: Label -> LaTeX
-pageref l = TeXComm "pageref" [FixArg $ TeXRaw $ render l]
+pageref :: LaTeXC l => l -> l
+pageref = liftL $ \l -> TeXComm "pageref" [FixArg $ TeXRaw $ render l]

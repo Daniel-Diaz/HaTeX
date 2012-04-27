@@ -1,6 +1,4 @@
 
-{-# OPTIONS_HATEX MakeMonadic #-}
-
 module Text.LaTeX.Packages.AMSFonts
  ( -- * AMSFonts package
    amsfonts
@@ -9,6 +7,7 @@ module Text.LaTeX.Packages.AMSFonts
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Types
 
 -- | AMSFonts package.
@@ -30,5 +29,5 @@ amsfonts = "amsfonts"
 -- > "The set of real numbers are represented by " >> mathbb "R" >> "."
 --
 -- /Note the use of overloaded strings./
-mathbb :: LaTeX -> LaTeX
-mathbb l = TeXComm "mathbb" [FixArg l]
+mathbb :: LaTeXC l => l -> l
+mathbb = liftL $ \l -> TeXComm "mathbb" [FixArg l]

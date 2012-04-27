@@ -12,7 +12,7 @@ module Text.LaTeX.Packages.Trees.Qtree (
   ) where
 
 import Text.LaTeX.Base
-import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Packages.Trees
 --
 import Data.Monoid
@@ -21,18 +21,18 @@ import Data.List (intersperse)
 qtree :: PackageName
 qtree = "qtree"
 
-tree_ :: LaTeXTree l => (a -> l) -> Tree a -> l
-tree_ f (Leaf x) = texbraces $ f x
+tree_ :: LaTeXC l => (a -> l) -> Tree a -> l
+tree_ f (Leaf x) = braces $ f x
 tree_ f (Node mx ts) =
   mconcat [ "["
-          , maybe mempty (("." <>) . texbraces . f) mx
+          , maybe mempty (("." <>) . braces . f) mx
           , " "
           , mconcat $ intersperse " " $ fmap (tree_ f) ts
           , " ]"
             ]
 
-tree :: LaTeXTree l => (a -> l) -> Tree a -> l
-tree f t = texcomms "Tree" <> " " <> tree_ f t
+tree :: LaTeXC l => (a -> l) -> Tree a -> l
+tree f t = commS "Tree" <> " " <> tree_ f t
 
-rendertree :: (Render a, LaTeXTree l) => Tree a -> l
-rendertree = tree totex
+rendertree :: (Render a, LaTeXC l) => Tree a -> l
+rendertree = tree (raw . render)

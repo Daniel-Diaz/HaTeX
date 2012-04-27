@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_HATEX MakeMonadic #-}
 
 module Text.LaTeX.Packages.AMSMath
  ( -- * AMSMath package
@@ -56,6 +55,7 @@ module Text.LaTeX.Packages.AMSMath
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Commands (raw,between)
 import Text.LaTeX.Base.Types
 
@@ -67,251 +67,253 @@ amsmath :: PackageName
 amsmath = "amsmath"
 
 -- | Inline mathematical expressions.
-math :: LaTeX -> LaTeX
-math = TeXMath
+math :: LaTeXC l => l -> l
+math = liftL TeXMath
 
 -------------------------------------
 ------- Symbols and utilities -------
 
 -- | Superscript.
-(^:) :: LaTeX -> LaTeX -> LaTeX
+(^:) :: LaTeXC l => l -> l -> l
 x ^: y = x <> raw "^"  <> braces y
 
 -- | Subscript.
-(!:) :: LaTeX -> LaTeX -> LaTeX
+(!:) :: LaTeXC l => l -> l -> l
 x !: y = x <> raw "_" <> braces y
 
 ---- Function symbols
 
 -- | Sine function symbol.
-tsin :: LaTeX
-tsin = TeXComm "sin" []
+tsin :: LaTeXC l => l
+tsin = comm0 "sin"
 
 -- | Arcsine function symbol.
-arcsin :: LaTeX
-arcsin = TeXComm "arcsin" []
+arcsin :: LaTeXC l => l
+arcsin = comm0 "arcsin"
 
 -- | Cosine function symbol.
-tcos :: LaTeX
-tcos = TeXComm "cos" []
+tcos :: LaTeXC l => l
+tcos = comm0 "cos"
 
 -- | Arccosine function symbol.
-arccos :: LaTeX
-arccos = TeXComm "arccos" []
+arccos :: LaTeXC l => l
+arccos = comm0 "arccos"
 
 -- | Tangent function symbol.
-ttan :: LaTeX
-ttan = TeXComm "tan" []
+ttan :: LaTeXC l => l
+ttan = comm0 "tan"
 
-arctan :: LaTeX
-arctan = TeXComm "arctan" []
+-- | Arctangent function symbol.
+arctan :: LaTeXC l => l
+arctan = comm0 "arctan"
 
 -- | Exponential function symbol.
-texp :: LaTeX
-texp = TeXComm "exp" []
+texp :: LaTeXC l => l
+texp = comm0 "exp"
 
 -- | Logarithm function symbol.
-tlog :: LaTeX
-tlog = TeXComm "log" []
+tlog :: LaTeXC l => l
+tlog = comm0 "log"
 
 -- | Natural logarithm symbol.
-ln :: LaTeX
-ln = TeXComm "ln" []
+ln :: LaTeXC l => l
+ln = comm0 "ln"
 
 ---- Operator symbols
 
 -- | Negative form of an operator.
-notop :: (LaTeX -> LaTeX -> LaTeX)
-      -> (LaTeX -> LaTeX -> LaTeX)
+notop :: LaTeXC l =>
+         (l -> l -> l)
+      -> (l -> l -> l)
 notop op =
  \l1 l2 ->
-   (l1 <> TeXCommS "not") `op` l2
+   (l1 <> commS "not") `op` l2
 
 infix 4 =: , /=:
 
-(=:),(/=:) :: LaTeX -> LaTeX -> LaTeX
-(=:)  = TeXOp "="
+(=:),(/=:) :: LaTeXC l => l -> l -> l
+(=:)  = liftL2 $ TeXOp "="
 (/=:) = notop (=:)
 
 -- | Greater.
-(>:) :: LaTeX -> LaTeX -> LaTeX
-(>:) = TeXOp ">"
+(>:) :: LaTeXC l => l -> l -> l
+(>:) = liftL2 $ TeXOp ">"
 
 -- | Greater or equal.
-(>=:) :: LaTeX -> LaTeX -> LaTeX
-(>=:) = between $ TeXComm "geq" []
+(>=:) :: LaTeXC l => l -> l -> l
+(>=:) = between $ comm0 "geq"
 
 -- | Lesser.
-(<:) :: LaTeX -> LaTeX -> LaTeX
-(<:) = TeXOp "<"
+(<:) :: LaTeXC l => l -> l -> l
+(<:) = liftL2 $ TeXOp "<"
 
 -- | Lesser or equal.
-(<=:) :: LaTeX -> LaTeX -> LaTeX
-(<=:) = between $ TeXComm "leq" []
+(<=:) :: LaTeXC l => l -> l -> l
+(<=:) = between $ comm0 "leq"
 
-in_ :: LaTeX -> LaTeX -> LaTeX
-in_ = between $ TeXComm "in" []
+in_ :: LaTeXC l => l -> l -> l
+in_ = between $ comm0 "in"
 
-ni :: LaTeX -> LaTeX -> LaTeX
-ni  = between $ TeXComm "ni" []
+ni :: LaTeXC l => l -> l -> l
+ni  = between $ comm0 "ni"
 
-notin :: LaTeX -> LaTeX -> LaTeX
-notin = between $ TeXComm "notin" []
+notin :: LaTeXC l => l -> l -> l
+notin = between $ comm0 "notin"
 
 ---- Greek alphabet
 
-alpha :: LaTeX
-alpha = TeXComm "alpha" []
+alpha :: LaTeXC l => l
+alpha = comm0 "alpha"
 
-beta :: LaTeX
-beta = TeXComm "beta" []
+beta :: LaTeXC l => l
+beta = comm0 "beta"
 
-gamma :: LaTeX
-gamma = TeXComm "gamma" []
+gamma :: LaTeXC l => l
+gamma = comm0 "gamma"
 
-gammau :: LaTeX
-gammau = TeXComm "Gamma" []
+gammau :: LaTeXC l => l
+gammau = comm0 "Gamma"
 
-delta :: LaTeX
-delta = TeXComm "delta" []
+delta :: LaTeXC l => l
+delta = comm0 "delta"
 
-deltau :: LaTeX
-deltau = TeXComm "Delta" []
+deltau :: LaTeXC l => l
+deltau = comm0 "Delta"
 
-epsilon :: LaTeX
-epsilon = TeXComm "epsilon" []
+epsilon :: LaTeXC l => l
+epsilon = comm0 "epsilon"
 
-varepsilon :: LaTeX
-varepsilon = TeXComm "epsilon" []
+varepsilon :: LaTeXC l => l
+varepsilon = comm0 "epsilon"
 
-zeta :: LaTeX
-zeta = TeXComm "zeta" []
+zeta :: LaTeXC l => l
+zeta = comm0 "zeta"
 
-eta :: LaTeX
-eta = TeXComm "eta" []
+eta :: LaTeXC l => l
+eta = comm0 "eta"
 
-theta :: LaTeX
-theta = TeXComm "theta" []
+theta :: LaTeXC l => l
+theta = comm0 "theta"
 
-thetau :: LaTeX
-thetau = TeXComm "thetau" []
+thetau :: LaTeXC l => l
+thetau = comm0 "thetau"
 
-iota :: LaTeX
-iota = TeXComm "iota" []
+iota :: LaTeXC l => l
+iota = comm0 "iota"
 
-kappa :: LaTeX
-kappa = TeXComm "kappa" []
+kappa :: LaTeXC l => l
+kappa = comm0 "kappa"
 
-lambda :: LaTeX
-lambda = TeXComm "lambda" []
+lambda :: LaTeXC l => l
+lambda = comm0 "lambda"
 
-lambdau :: LaTeX
-lambdau = TeXComm "Lambda" []
+lambdau :: LaTeXC l => l
+lambdau = comm0 "Lambda"
 
-mu :: LaTeX
-mu = TeXComm "mu" []
+mu :: LaTeXC l => l
+mu = comm0 "mu"
 
-nu :: LaTeX
-nu = TeXComm "nu" []
+nu :: LaTeXC l => l
+nu = comm0 "nu"
 
-xi :: LaTeX
-xi = TeXComm "xi" []
+xi :: LaTeXC l => l
+xi = comm0 "xi"
 
-xiu :: LaTeX
-xiu = TeXComm "Xi" []
+xiu :: LaTeXC l => l
+xiu = comm0 "Xi"
 
-pi_ :: LaTeX
-pi_ = TeXComm "pi" []
+pi_ :: LaTeXC l => l
+pi_ = comm0 "pi"
 
-varpi :: LaTeX
-varpi = TeXComm "varpi" []
+varpi :: LaTeXC l => l
+varpi = comm0 "varpi"
 
-piu :: LaTeX
-piu = TeXComm "Pi" []
+piu :: LaTeXC l => l
+piu = comm0 "Pi"
 
-rho :: LaTeX
-rho = TeXComm "rho" []
+rho :: LaTeXC l => l
+rho = comm0 "rho"
 
-varrho :: LaTeX
-varrho = TeXComm "varrho" []
+varrho :: LaTeXC l => l
+varrho = comm0 "varrho"
 
-sigma :: LaTeX
-sigma = TeXComm "sigma" []
+sigma :: LaTeXC l => l
+sigma = comm0 "sigma"
 
-varsigma :: LaTeX
-varsigma = TeXComm "varsigma" []
+varsigma :: LaTeXC l => l
+varsigma = comm0 "varsigma"
 
-sigmau :: LaTeX
-sigmau = TeXComm "Sigma" []
+sigmau :: LaTeXC l => l
+sigmau = comm0 "Sigma"
 
-tau :: LaTeX
-tau = TeXComm "tau" []
+tau :: LaTeXC l => l
+tau = comm0 "tau"
 
-upsilon :: LaTeX
-upsilon = TeXComm "upsilon" []
+upsilon :: LaTeXC l => l
+upsilon = comm0 "upsilon"
 
-upsilonu :: LaTeX
-upsilonu = TeXComm "Upsilon" []
+upsilonu :: LaTeXC l => l
+upsilonu = comm0 "Upsilon"
 
-phi :: LaTeX
-phi = TeXComm "phi" []
+phi :: LaTeXC l => l
+phi = comm0 "phi"
 
-varphi :: LaTeX
-varphi = TeXComm "varphi" []
+varphi :: LaTeXC l => l
+varphi = comm0 "varphi"
 
-phiu :: LaTeX
-phiu = TeXComm "Phi" []
+phiu :: LaTeXC l => l
+phiu = comm0 "Phi"
 
-chi :: LaTeX
-chi = TeXComm "chi" []
+chi :: LaTeXC l => l
+chi = comm0 "chi"
 
-psi :: LaTeX
-psi = TeXComm "psi" []
+psi :: LaTeXC l => l
+psi = comm0 "psi"
 
-psiu :: LaTeX
-psiu = TeXComm "Psi" []
+psiu :: LaTeXC l => l
+psiu = comm0 "Psi"
 
-omega :: LaTeX
-omega = TeXComm "omega" []
+omega :: LaTeXC l => l
+omega = comm0 "omega"
 
-omegau :: LaTeX
-omegau = TeXComm "Omega" []
+omegau :: LaTeXC l => l
+omegau = comm0 "Omega"
 
 ---- Other symbols
 
 -- | A right-arrow.
-to :: LaTeX
-to = TeXComm "to" []
+to :: LaTeXC l => l
+to = comm0 "to"
 
 -- | /For all/ symbol.
-forall :: LaTeX
-forall = TeXComm "forall" []
+forall :: LaTeXC l => l
+forall = comm0 "forall"
 
 -- | Dagger symbol.
-dagger :: LaTeX
-dagger = TeXComm "dagger" []
+dagger :: LaTeXC l => l
+dagger = comm0 "dagger"
 
 -- | Double dagger symbol.
-ddagger :: LaTeX
-ddagger = TeXComm "ddagger" []
+ddagger :: LaTeXC l => l
+ddagger = comm0 "ddagger"
 
 -------------------------------------
 ------------ Math Fonts -------------
 
-mathbf :: LaTeX -> LaTeX
-mathbf l = TeXComm "mathbf" [FixArg l]
+mathbf :: LaTeXC l => l -> l
+mathbf = liftL $ \l -> TeXComm "mathbf" [FixArg l]
 
-mathrm :: LaTeX -> LaTeX
-mathrm l = TeXComm "mathrm" [FixArg l]
+mathrm :: LaTeXC l => l -> l
+mathrm =liftL $ \l -> TeXComm "mathrm" [FixArg l]
 
-mathcal :: LaTeX -> LaTeX
-mathcal l = TeXComm "mathcal" [FixArg l]
+mathcal :: LaTeXC l => l -> l
+mathcal = liftL $ \l -> TeXComm "mathcal" [FixArg l]
 
-mathsf :: LaTeX -> LaTeX
-mathsf l = TeXComm "mathsf" [FixArg l]
+mathsf :: LaTeXC l => l -> l
+mathsf = liftL $ \l -> TeXComm "mathsf" [FixArg l]
 
-mathtt :: LaTeX -> LaTeX
-mathtt l = TeXComm "mathtt" [FixArg l]
+mathtt :: LaTeXC l => l -> l
+mathtt = liftL $ \l -> TeXComm "mathtt" [FixArg l]
 
-mathit :: LaTeX -> LaTeX
-mathit l = TeXComm "mathit" [FixArg l]
+mathit :: LaTeXC l => l -> l
+mathit = liftL $ \l -> TeXComm "mathit" [FixArg l]

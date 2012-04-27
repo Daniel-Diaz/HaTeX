@@ -18,6 +18,7 @@ module Text.LaTeX.Base.Render
 
 import Data.Text (Text,lines,unlines)
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Data.String
 import Data.Monoid (Monoid (..))
 import qualified Data.Text.IO as T
@@ -66,8 +67,8 @@ readFileTex = fmap decodeUtf8 . B.readFile
 --
 -- /Warning: /'rendertex'/ does not escape LaTeX reserved characters./
 -- /Use /'protectText'/ to escape them./
-rendertex :: Render a => a -> LaTeX
-rendertex = TeXRaw . render
+rendertex :: (Render a,LaTeXC l) => a -> l
+rendertex = fromLaTeX . TeXRaw . render
 
 -- LaTeX instances
 

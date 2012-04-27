@@ -1,6 +1,5 @@
 
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_HATEX MakeMonadic #-}
 
 -- | This module allows you to use the LaTeX graphicx library in order to
 --   insert graphics in a document.
@@ -14,9 +13,15 @@ module Text.LaTeX.Packages.Graphicx
    -- * Including graphics
  , IGOption (..)
  , includegraphics
+   -- * Transformations
+ , rotatebox
+ , scalebox
+ , reflectbox
+ , resizebox
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 --
@@ -30,7 +35,7 @@ graphicx = "graphicx"
 
 -- Package options
 
-dvips, dvipdfm, pdftex :: LaTeX
+dvips, dvipdfm, pdftex :: LaTeXC l => l
 dvips = "dvips"
 dvipdfm = "dvipdfm"
 pdftex = "pdftex"
@@ -48,7 +53,8 @@ data IGOption =
  | IGTrim Measure Measure Measure Measure -- ^ This option will crop the imported image. Arguments are from-left
                                           -- , from-bottom, from-right and from-top respectively.
  | IGClip Bool -- ^ For the 'IGTrim' option to work, you must set 'IGClip' to 'True'.
- | IGPage Int -- ^ If the image file is a pdf file with multiple pages, this parameter allows you to use a different page than the first.
+ | IGPage Int -- ^ If the image file is a pdf file with multiple pages,
+              --   this parameter allows you to use a different page than the first.
    deriving Show
 
 instance Render IGOption where
@@ -62,7 +68,33 @@ instance Render IGOption where
  render (IGPage p) = "page=" <> render p
 
 -- | Include an image in the document.
-includegraphics :: [IGOption] -- ^ Options
-                -> FilePath -- ^ Image file
-                -> LaTeX
-includegraphics opts fp = TeXComm "includegraphics" [ MOptArg $ fmap rendertex opts , FixArg $ TeXRaw $ fromString fp ]
+includegraphics :: LaTeXC l =>
+                  [IGOption] -- ^ Options
+                -> FilePath  -- ^ Image file
+                -> l
+includegraphics opts fp = fromLaTeX $ TeXComm "includegraphics"
+ [ MOptArg $ fmap rendertex opts , FixArg $ TeXRaw $ fromString fp ]
+
+rotatebox :: LaTeXC l => Float -> l -> l
+rotatebox a = liftL $ \l -> TeXComm "rotatebox" [FixArg $ rendertex a , FixArg l]
+
+scalebox :: LaTeXC l =>
+     Float       -- ^ Horizontal scale.
+  -> Maybe Float -- ^ Vertical scale.
+  -> l
+  -> l
+scalebox h mv = liftL $ \l ->
+  TeXComm "rotatebox" $ [FixArg $ rendertex h]
+                     ++  maybe [] ((:[]) . OptArg . rendertex) mv
+                     ++ [FixArg l]
+
+reflectbox :: LaTeXC l => l -> l
+reflectbox = liftL $ \l -> TeXComm "reflectbox" [FixArg l]
+
+resizebox :: LaTeXC l =>
+     Measure -- ^ Horizontal size.
+  -> Measure -- ^ Vertical size.
+  -> l
+  -> l
+resizebox h v = liftL $ \l ->
+  TeXComm "resizebox" [FixArg $ rendertex h,FixArg $ rendertex v,FixArg l]

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Text.LaTeX.Base.Monad
+import Text.LaTeX.Base
 
 main :: IO ()
 main = execLaTeXT example >>= renderFile "Comments.tex"
