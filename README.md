@@ -9,10 +9,10 @@
 * Add more documentation.
 * A more complete `AMSMath` module.
 
-## Instalation notes
+## Installation notes
 
 * To install `HaTeX`, use the typical `cabal install`.
-* Eventually you may require to install `parsec` or `mtl` first (there is a problem with the `transformers` dependency).
+* Eventually you may require to install `mtl` first (there is a problem with the `transformers` dependency).
 
 ## HaTeX User's Guide
 

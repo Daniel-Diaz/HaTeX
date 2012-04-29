@@ -27,7 +27,7 @@ simple = do
 thePreamble :: Monad m => LaTeXT_ m
 thePreamble = do
  documentclass [] article
- author "Daniel Díaz"
+ author "Daniel Diaz"
  title "Simple example"
 
 -- Body with a section.
@@ -38,4 +38,5 @@ theBody = do
  "This is a simple example using the "
  hatex
  " library. "
+ -- 'textbf' turns characters to bold font.
  textbf "Enjoy!"

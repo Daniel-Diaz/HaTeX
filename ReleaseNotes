@@ -1,6 +1,18 @@
 HaTeX Release Notes
 -- From version 3.0.0
 
+>>> 3.3
+
+- New functions 'protectString' and 'protectText'.
+- New function 'rendertexM'.
+- New environments: 'figure' and 'caption'.
+- New example: simple.hs.
+- Updated version of transfomers to 0.3.*.
+- Trees implemented: datatype and Qtree package.
+- Render instances for Integer and Double.
+- New docs.
+- Class system implemented. Monad modules dropped.
+
 >>> 3.2.0.1
 
 - This version only fix the patch that makes HaTeX compatible with GHC 7.4.

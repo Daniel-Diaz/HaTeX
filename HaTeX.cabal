@@ -19,7 +19,8 @@ Description: As it is said: \"LaTeX is a high-quality typesetting system\". This
              to pretty-printing values, ...
              .
              See the @examples@ directory in the source distribution to look some simple examples.
-             It would be good to get you started.
+             It would be good to get you started. Download the HaTeX User's Guide from
+             <https://github.com/downloads/Daniel-Diaz/HaTeX-Guide/HaTeX-Guide.pdf>.
 Cabal-version: >= 1.6
 Tested-with: GHC == 7.0.3 , GHC == 7.4.1
 Extra-source-files:
@@ -43,6 +44,7 @@ Library
                , parsec >=3.1.2 && <3.2
   Exposed-modules:
     Text.LaTeX
+      -- Base (Core of the library)
       Text.LaTeX.Base
         Text.LaTeX.Base.Class
         Text.LaTeX.Base.Commands
@@ -52,6 +54,7 @@ Library
         Text.LaTeX.Base.Types
         Text.LaTeX.Base.Writer
         Text.LaTeX.Base.Warnings
+      -- Packages
       Text.LaTeX.Packages
         Text.LaTeX.Packages.AMSFonts
         Text.LaTeX.Packages.AMSMath
