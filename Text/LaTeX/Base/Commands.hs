@@ -360,7 +360,7 @@ figure (Just p) = liftL $ TeXEnv "figure" [ OptArg $ TeXRaw $ render p ]
 abstract :: LaTeXC l => l -> l
 abstract = liftL $ TeXEnv "abstract" []
 
-cite :: LaTeX -> LaTeX
+cite :: LaTeXC l => l -> l
 cite = liftL $ \l -> TeXComm "cite" [FixArg l]
 
 -- Document class

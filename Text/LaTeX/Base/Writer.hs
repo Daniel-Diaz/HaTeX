@@ -45,6 +45,7 @@ module Text.LaTeX.Base.Writer
  , merror
    -- * Re-export
  , lift
+ , liftIO
    ) where
 
 import Control.Monad.Trans.Writer

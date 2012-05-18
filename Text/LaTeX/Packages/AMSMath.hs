@@ -184,7 +184,7 @@ epsilon :: LaTeXC l => l
 epsilon = comm0 "epsilon"
 
 varepsilon :: LaTeXC l => l
-varepsilon = comm0 "epsilon"
+varepsilon = comm0 "varepsilon"
 
 zeta :: LaTeXC l => l
 zeta = comm0 "zeta"

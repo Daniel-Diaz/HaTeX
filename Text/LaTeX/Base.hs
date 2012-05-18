@@ -17,7 +17,9 @@ to work with HaTeX. Those things are:
 * The "Text.LaTeX.Base.Commands" module, which exports the LaTeX standard commands
   and environments.
 
-Here is also defined a 'Num' instance for 'LaTeX'.
+* The "Text.LaTeX.Base.Writer" module, to work with the monad interface of the library.
+
+Here is also defined a 'Num' instance for both 'LaTeX' and 'LaTeXT'.
 -}
 module Text.LaTeX.Base
  ( -- * @LaTeX@ datatype
@@ -40,6 +42,7 @@ module Text.LaTeX.Base
    ) where
 
 import Text.LaTeX.Base.Syntax (LaTeX (..),(<>),protectString,protectText)
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands
@@ -47,7 +50,7 @@ import Text.LaTeX.Base.Writer
 --
 import Data.Monoid
 
--- Num instance for LaTeX
+-- Num instances for LaTeX and LaTeXT
 
 -- | Methods 'abs' and 'signum' are undefined. Don't use them!
 instance Num LaTeX where
@@ -59,3 +62,22 @@ instance Num LaTeX where
  -- Non-defined methods
  abs _    = error "Cannot use \"abs\" Num method with a LaTeX value."
  signum _ = error "Cannot use \"signum\" Num method with a LaTeX value."
+
+-- | Warning: this instance only exist for the 'Num' instance.
+instance Monad m => Eq (LaTeXT m a) where
+ _ == _ = error "Cannot use \"(==)\" Eq method with a LaTeXT value."
+
+-- | Warning: this instance only exist for the 'Num' instance.
+instance Monad m => Show (LaTeXT m a) where
+ show _ = error "Cannot use \"show\" Show method with a LaTeXT value."
+
+-- | Methods 'abs' and 'signum' are undefined. Don't use them!
+instance Monad m => Num (LaTeXT m a) where
+ (+) = liftOp (+)
+ (-) = liftOp (-)
+ (*) = (>>)
+ negate = (mempty -)
+ fromInteger = fromLaTeX . fromInteger
+ -- Non-defined methods
+ abs _    = error "Cannot use \"abs\" Num method with a LaTeXT value."
+ signum _ = error "Cannot use \"signum\" Num method with a LaTeXT value."
