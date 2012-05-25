@@ -129,7 +129,7 @@ notop op =
  \l1 l2 ->
    (l1 <> commS "not") `op` l2
 
-infix 4 =: , /=:
+infixr 4 =: , /=:
 
 (=:),(/=:) :: LaTeXC l => l -> l -> l
 (=:)  = liftL2 $ TeXOp "="
