@@ -39,7 +39,7 @@ Source-repository head
 Library
   Build-depends: base ==4.*
                , bytestring
-               , transformers ==0.3.*
+               , transformers >= 0.2.2 && < 0.4
                , text
                , parsec >=3.1.2 && <3.2
   Exposed-modules:
