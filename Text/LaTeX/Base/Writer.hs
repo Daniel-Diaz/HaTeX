@@ -140,7 +140,10 @@ rendertexM = textell . rendertex
 
 -- Error throwing
 
-merror :: Monad m => String -> LaTeXT m a -> LaTeXT m b
+-- | Function 'merror' casts a value contained in a monad @m@ to the
+--   bottom value of another type. If you try to evaluate this value, you will
+--   get an error message with the 'String' passed as argument to 'merror'.
+merror :: Monad m => String -> m a -> m b
 merror = flip (>>) . return . error
 
 -- Overloaded Strings
@@ -148,7 +151,7 @@ merror = flip (>>) . return . error
 -- | Be careful when using 'fromString' over a 'LaTeXT' value,
 --   the returned value of the computation is bottom (i.e. 'undefined').
 instance Monad m => IsString (LaTeXT m a) where
- fromString = (>> return undefined) . textell . fromString
+ fromString = merror "LaTeXT: fromString!" . textell . fromString
 
 -- | 'mappend' @=@ '>>'.
 instance Monad m => Monoid (LaTeXT m a) where

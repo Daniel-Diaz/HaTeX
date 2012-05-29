@@ -131,8 +131,16 @@ notop op =
 
 infixr 4 =: , /=:
 
-(=:),(/=:) :: LaTeXC l => l -> l -> l
+-- | Equal.
+--
+-- > infixr 4 =:
+(=:) :: LaTeXC l => l -> l -> l
 (=:)  = liftL2 $ TeXOp "="
+
+-- | Not equal.
+--
+-- > infixr 4 /=:
+(/=:) :: LaTeXC l => l -> l -> l
 (/=:) = notop (=:)
 
 -- | Greater.
