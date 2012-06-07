@@ -35,4 +35,4 @@ tree :: LaTeXC l => (a -> l) -> Tree a -> l
 tree f t = commS "Tree" <> " " <> tree_ f t
 
 rendertree :: (Render a, LaTeXC l) => Tree a -> l
-rendertree = tree (raw . render)
+rendertree = tree (raw . protectText . render)
