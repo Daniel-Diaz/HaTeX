@@ -1,4 +1,7 @@
 
+-- | Definition of the 'LaTeXC' class, used to combine the classic applicative and
+--   the latter monadic interfaces of /HaTeX 3/. The user can define new instances
+--   as well, adding flexibility to the way /HaTeX/ is used.
 module Text.LaTeX.Base.Class (
    LaTeXC (..)
  , Monoid (..)
@@ -31,28 +34,40 @@ instance LaTeXC LaTeX where
 
 -- COMBINATORS
 
+-- | Map a 'LaTeX' value to its equivalent in any 'LaTeXC' instance.
 fromLaTeX :: LaTeXC l => LaTeX -> l
 fromLaTeX l = liftListL (\_ -> l) []
 
+-- | Lift a inner function of 'LaTeX' values into any 'LaTeXC' instance.
 liftL :: LaTeXC l => (LaTeX -> LaTeX) -> l -> l
 liftL f x = liftListL (\[x] -> f x) [x]
 
+-- | Variant of 'liftL' with a two arguments function.
 liftL2 :: LaTeXC l => (LaTeX -> LaTeX -> LaTeX) -> l -> l -> l
 liftL2 f x y = liftListL (\[x,y] -> f x y) [x,y]
 
+-- | Variant of 'liftL' with a three arguments function.
 liftL3 :: LaTeXC l => (LaTeX -> LaTeX -> LaTeX -> LaTeX) -> l -> l -> l -> l
 liftL3 f x y z = liftListL (\[x,y,z] -> f x y z) [x,y,z]
 
--- | A simple (without arguments) command generator,
---   given the name of the command.
+-- | A simple (without arguments) and handy command generator
+--   using the name of the command.
 --
 -- > comm0 str = fromLaTeX $ TeXComm str []
 --
 comm0 :: LaTeXC l => String -> l
 comm0 str = fromLaTeX $ TeXComm str []
 
+-- | Like 'comm0' but using 'commS'.
+--
+-- > commS = fromLaTeX . TeXCommS
+--
 commS :: LaTeXC l => String -> l
 commS = fromLaTeX . TeXCommS
 
+-- | A lifted version of the 'TeXBraces' constructor.
+--
+-- > braces = liftL TeXBraces
+--
 braces :: LaTeXC l => l -> l
 braces = liftL TeXBraces

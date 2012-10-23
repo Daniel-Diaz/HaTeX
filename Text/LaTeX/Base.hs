@@ -19,7 +19,7 @@ to work with HaTeX. Those things are:
 
 * The "Text.LaTeX.Base.Writer" module, to work with the monad interface of the library.
 
-Here is also defined a 'Num' instance for both 'LaTeX' and 'LaTeXT'.
+Here are also defined 'Num' and 'Fractional' instances for both 'LaTeX' and 'LaTeXT'.
 -}
 module Text.LaTeX.Base
  ( -- * @LaTeX@ datatype
@@ -41,7 +41,7 @@ module Text.LaTeX.Base
 #endif
    ) where
 
-import Text.LaTeX.Base.Syntax (LaTeX (..),(<>),protectString,protectText)
+import Text.LaTeX.Base.Syntax (LaTeX (..), TeXArg (..),(<>),protectString,protectText)
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
@@ -50,18 +50,23 @@ import Text.LaTeX.Base.Writer
 --
 import Data.Monoid
 
--- Num instances for LaTeX and LaTeXT
+-- Num and Fractional instances for LaTeX and LaTeXT
 
--- | Methods 'abs' and 'signum' are undefined. Don't use them!
+-- | Careful! Method 'signum' is undefined. Don't use it!
 instance Num LaTeX where
  (+) = TeXOp "+"
  (-) = TeXOp "-"
  (*) = (<>)
  negate = (TeXEmpty -)
  fromInteger = rendertex
+ abs x = between x "|" "|"
  -- Non-defined methods
- abs _    = error "Cannot use \"abs\" Num method with a LaTeX value."
  signum _ = error "Cannot use \"signum\" Num method with a LaTeX value."
+
+-- | 
+instance Fractional LaTeX where
+ p / q = TeXComm "frac" [FixArg p, FixArg q]
+ fromRational = rendertex . (fromRational :: Rational -> Float)
 
 -- | Warning: this instance only exist for the 'Num' instance.
 instance Monad m => Eq (LaTeXT m a) where
@@ -71,13 +76,17 @@ instance Monad m => Eq (LaTeXT m a) where
 instance Monad m => Show (LaTeXT m a) where
  show _ = error "Cannot use \"show\" Show method with a LaTeXT value."
 
--- | Methods 'abs' and 'signum' are undefined. Don't use them!
+-- | Careful! Method 'signum' is undefined. Don't use it!
 instance Monad m => Num (LaTeXT m a) where
  (+) = liftOp (+)
  (-) = liftOp (-)
  (*) = (>>)
  negate = (mempty -)
  fromInteger = fromLaTeX . fromInteger
+ abs = liftL abs
  -- Non-defined methods
- abs _    = error "Cannot use \"abs\" Num method with a LaTeXT value."
  signum _ = error "Cannot use \"signum\" Num method with a LaTeXT value."
+
+instance Monad m => Fractional (LaTeXT m a) where
+ (/) = liftOp (/)
+ fromRational = fromLaTeX . fromRational

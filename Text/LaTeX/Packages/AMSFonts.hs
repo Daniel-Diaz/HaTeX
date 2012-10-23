@@ -1,4 +1,5 @@
 
+-- | Module for the package @amsfonts@.
 module Text.LaTeX.Packages.AMSFonts
  ( -- * AMSFonts package
    amsfonts

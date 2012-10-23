@@ -1,6 +1,10 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | The final purpose of this module is to render a Text value
+--   from a 'LaTeX' value. The interface is abstracted via a typeclass
+--   so you can cast to 'Text' other types as well. Also, some other
+--   handy 'Text'-related functions are defined.
 module Text.LaTeX.Base.Render
  ( -- * Re-exports
    Text

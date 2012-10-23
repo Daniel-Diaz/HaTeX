@@ -5,10 +5,9 @@ Category: Text
 Build-type: Simple
 License: BSD3
 License-file: license
-Maintainer: Daniel Díaz (danieldiaz `at` dhelta `dot` net)
+Maintainer: Daniel Díaz (dhelta `dot` diaz `at` gmail `dot` com)
 Stability: Experimental
-Homepage: http://dhelta.net/hprojects/HaTeX
-Bug-reports: danieldiaz `at` dhelta `dot` net
+Bug-reports: dhelta `dot` diaz `at` gmail `dot` com
 Synopsis: The Haskell LaTeX library.
 Description: As it is said: \"LaTeX is a high-quality typesetting system\". This library provides
              a bridge between that system and Haskell (i.e. it is a LaTeX DSL).
