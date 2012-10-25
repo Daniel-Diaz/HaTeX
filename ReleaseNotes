@@ -1,6 +1,19 @@
 HaTeX Release Notes
 -- From version 3.0.0
 
+>>> 3.4
+
+- Num instance for LaTeXT.
+- New re-exports: liftIO.
+- Relaxed transformers package dependency to: >= 0.2.2 && < 0.4
+- Changed infix rule of (=:) and (/=:).
+- More documentation notes.
+- New functions: hfill, vfill.
+- The internal representation of LaTeXT has changed to prevent
+  a set of errors.
+- Changes in Text.LaTeX.
+- Several minor fixes.
+
 >>> 3.3
 
 - New functions 'protectString' and 'protectText'.
