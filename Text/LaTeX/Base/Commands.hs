@@ -109,6 +109,8 @@ module Text.LaTeX.Base.Commands
  , hspace
  , hspace_
  , vspace
+ , hfill
+ , vfill
  , stretch
  , smallskip
  , bigskip
@@ -177,7 +179,7 @@ module Text.LaTeX.Base.Commands
  , makebox
  , raisebox
  , rule
-   -- * Cross references
+   -- ** Cross references
  , caption
  , label
  , ref
@@ -665,6 +667,14 @@ stretch n = fromLaTeX $ TeXComm "stretch" [FixArg $ rendertex n]
 
 vspace :: LaTeXC l => Measure -> l
 vspace m = fromLaTeX $ TeXComm "vspace" [FixArg $ rendertex m]
+
+-- | Fill out all available horizontal space.
+hfill :: LaTeXC l => l
+hfill = comm0 "hfill"
+
+-- | Fill out all available vertical space.
+vfill :: LaTeXC l => l
+vfill = comm0 "vfill"
 
 protect :: LaTeXC l => l -> l
 protect l = commS "protect" <> l

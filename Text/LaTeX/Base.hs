@@ -63,7 +63,7 @@ instance Num LaTeX where
  -- Non-defined methods
  signum _ = error "Cannot use \"signum\" Num method with a LaTeX value."
 
--- | 
+-- | Division uses the LaTeX @frac@ command.
 instance Fractional LaTeX where
  p / q = TeXComm "frac" [FixArg p, FixArg q]
  fromRational = rendertex . (fromRational :: Rational -> Float)
@@ -87,6 +87,7 @@ instance Monad m => Num (LaTeXT m a) where
  -- Non-defined methods
  signum _ = error "Cannot use \"signum\" Num method with a LaTeXT value."
 
+-- | Division uses the LaTeX @frac@ command.
 instance Monad m => Fractional (LaTeXT m a) where
  (/) = liftOp (/)
  fromRational = fromLaTeX . fromRational
