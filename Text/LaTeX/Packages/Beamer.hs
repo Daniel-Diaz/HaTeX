@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | Beamer is a LaTeX package for the creation of slides.
 module Text.LaTeX.Packages.Beamer
  ( -- * Beamer package
    beamer
@@ -44,7 +45,7 @@ frametitle = liftL $ \l -> TeXComm "frametitle" [FixArg l]
 framesubtitle :: LaTeXC l => l -> l
 framesubtitle = liftL $ \l -> TeXComm "framesubtitle" [FixArg l]
 
--- | Highlight in red a piece text. With the 'OverlaySpec's, you can specify the slides where
+-- | Highlight in red a piece of text. With the 'OverlaySpec's, you can specify the slides where
 -- the text will be highlighted.
 alert :: LaTeXC l => [OverlaySpec] -> l -> l
 alert os = liftL $ \l -> TeXComm "alert" [ MSymArg $ fmap (TeXRaw . render) os, FixArg l]
@@ -62,10 +63,13 @@ beameritem os = fromLaTeX $ TeXComm "item" [ MSymArg $ fmap (TeXRaw . render) os
 uncover :: LaTeXC l => [OverlaySpec] -> l -> l
 uncover os = liftL $ \l -> TeXComm "uncover" [ MSymArg $ fmap (TeXRaw . render) os , FixArg l ]
 
+-- TODO: What is the difference between 'uncover' and 'only'??
+
 -- | Similar to 'uncover'.
 only :: LaTeXC l => [OverlaySpec] -> l -> l
 only os = liftL $ \l -> TeXComm "only" [ MSymArg $ fmap (TeXRaw . render) os , FixArg l ]
 
+-- | Specifications for beamer functions.
 data OverlaySpec =
    OneSlide Int
  | FromSlide Int

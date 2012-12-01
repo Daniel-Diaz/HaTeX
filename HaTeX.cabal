@@ -30,6 +30,7 @@ Extra-source-files:
   Examples/comments.hs
   Examples/simple.hs
   Examples/tree.hs
+  Examples/beamer.hs
 
 Source-repository head
   type: git
