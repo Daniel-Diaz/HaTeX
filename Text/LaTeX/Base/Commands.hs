@@ -553,7 +553,7 @@ alph_ = fromLaTeX "Alph"
 pagestyle :: LaTeXC l => l -> l
 pagestyle = liftL $ \l -> TeXComm "pagestyle" [FixArg l]
 
-thispagestyle :: LaTeX -> LaTeX
+thispagestyle :: LaTeXC l => l -> l
 thispagestyle = liftL $ \l -> TeXComm "thispagestyle" [FixArg l]
 
 plain :: LaTeXC l => l
