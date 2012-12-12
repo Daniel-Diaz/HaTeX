@@ -41,7 +41,7 @@ Library
                , bytestring
                , transformers >= 0.2.2 && < 0.4
                , text
-               , parsec >=3.1.2 && <3.2
+               , parsec >=3.1.2 && < 3.2
   Exposed-modules:
     Text.LaTeX
       -- Base (Core of the library)
