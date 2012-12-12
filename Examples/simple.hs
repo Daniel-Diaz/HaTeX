@@ -1,10 +1,10 @@
 
 {- Simple example
 
-This example is intended to be simplest as possible, but containing the most significant parts.
+This example is intended to be as simple as possible, but containing the most significant parts.
 
-The Overloaded Strings language extension is quite handy, because it allows you to write text without
-using 'fromString' each time.
+The Overloaded Strings language extension is quite handy because it allows you to write text without
+using 'fromString' everywhere.
 
 -}
 
@@ -38,5 +38,7 @@ theBody = do
  "This is a simple example using the "
  hatex
  " library. "
- -- 'textbf' turns characters to bold font.
+ -- 'textbf' turns characters to bold font (as you already may know).
  textbf "Enjoy!"
+ -- This is how we nest commands.
+ textbf (large "Yoohoo!")
