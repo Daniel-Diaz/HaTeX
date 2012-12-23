@@ -74,6 +74,17 @@ readFileTex = fmap decodeUtf8 . B.readFile
 rendertex :: (Render a,LaTeXC l) => a -> l
 rendertex = fromLaTeX . TeXRaw . render
 
+-- Render instances
+
+instance Render Measure where
+ render (Pt x) = render x <> "pt"
+ render (Mm x) = render x <> "mm"
+ render (Cm x) = render x <> "cm"
+ render (In x) = render x <> "in"
+ render (Ex x) = render x <> "ex"
+ render (Em x) = render x <> "em"
+ render (CustomMeasure x) = render x
+
 -- LaTeX instances
 
 instance Render LaTeX where
@@ -94,7 +105,7 @@ instance Render LaTeX where
   <> fromString name
   <> "}"
  render (TeXMath l) = "$" <> render l <> "$"
- render (TeXNewLine b) = " \\\\" <> ( if b then "*" else mempty ) <> " "
+ render (TeXLineBreak m b) = " \\\\" <> maybe mempty (\x -> "[" <> render x <> "]") m <> ( if b then "*" else mempty ) <> " "
  render (TeXOp sym l1 l2) = render l1 <> fromString sym <> render l2
  render (TeXBraces l) = "{" <> render l <> "}"
  render (TeXComment c) =

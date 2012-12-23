@@ -578,10 +578,10 @@ markright = liftL $ \l -> TeXComm "markright" [FixArg l]
 
 -- | Start a new line. In a 'tabular', it starts a new row, so use 'newline' instead.
 lnbk  :: LaTeXC l => l
-lnbk = fromLaTeX $ TeXNewLine False
+lnbk = fromLaTeX $ TeXLineBreak Nothing False
 
 lnbk_ :: LaTeXC l => l
-lnbk_ = fromLaTeX $ TeXNewLine True
+lnbk_ = fromLaTeX $ TeXLineBreak Nothing True
 
 hyp :: LaTeXC l => l
 hyp = fromLaTeX $ TeXCommS "-"

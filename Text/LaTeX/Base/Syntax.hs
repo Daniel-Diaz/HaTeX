@@ -6,7 +6,9 @@
 --   the library, import this module and use 'LaTeX' data constructors.
 module Text.LaTeX.Base.Syntax
  ( -- * @LaTeX@ datatype
-   LaTeX (..)
+   Measure (..)
+ , MathType (..)
+ , LaTeX (..)
  , TeXArg (..)
  , (<>)
    -- * Escaping reserved characters
@@ -17,6 +19,19 @@ module Text.LaTeX.Base.Syntax
 import Data.Text (Text,concatMap)
 import Data.Monoid
 import Data.String
+
+data Measure =
+   Pt Int   -- ^ A point is 1/72.27 inch, that means about 0.0138 inch or 0.3515 mm.
+ | Mm Float -- ^ Millimeter.
+ | Cm Float -- ^ Centimeter.
+ | In Float -- ^ Inch.
+ | Ex Float -- ^ The height of an \"x\" in the current font.
+ | Em Float -- ^ The width of an \"M\" in the current font.
+ | CustomMeasure LaTeX -- ^ You can introduce a 'LaTeX' expression as a measure.
+   deriving (Eq, Show)
+
+data MathType = MathEnv | DispEnv | EqEnv | Parentheses | Square | Dollar
+  deriving (Eq,Show,Ord)
 
 -- | Type of @LaTeX@ blocks.
 data LaTeX =
@@ -30,7 +45,8 @@ data LaTeX =
                                 -- Second, its arguments.
                                 -- Third, its content.
  | TeXMath LaTeX -- ^ Mathematical expressions.
- | TeXNewLine Bool -- ^ Newline character.
+ | TeXMathX MathType LaTeX -- ^ Mathematical expressions (experimental).
+ | TeXLineBreak (Maybe Measure) Bool -- ^ Line break command.
  | TeXOp String LaTeX LaTeX -- ^ Operators.
  | TeXBraces LaTeX -- ^ A expression between braces.
  | TeXComment Text -- ^ Comments.

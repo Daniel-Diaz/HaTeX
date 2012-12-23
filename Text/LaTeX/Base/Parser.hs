@@ -1,105 +1,343 @@
-
--- | This is the 'LaTeX' parser module.
-module Text.LaTeX.Base.Parser
- ( parseLaTeX
- , ParseError (..)
-   ) where
-
-import Text.LaTeX.Base.Syntax
+{-# LANGUAGE CPP #-}
+-------------------------------------------------------------------------------
+-- |
+-- Module     : Text/LaTeX/Base/Parser.hs
+-- Copyright  : (c) Tobias Schoofs
+-- License    : LGPL 
+-- Stability  : experimental
+-- Portability: portable
 --
-import Text.Parsec
-import Text.Parsec.Text
---
-import Control.Applicative hiding ((<|>),many)
-import Data.Monoid
-import Data.String
-import Data.Text
+-- LaTeX Parser based on Attoparsec
+-------------------------------------------------------------------------------
+module Text.LaTeX.Base.Parser (
+                        latexParser,
+                        latexBlockParser,
+                        latexAtOnce,
+                        latexDocParser,
+                        isMainDoc
+#ifdef _TEST
+                        , specials
+#endif
+                      )
+where
 
-p_Comm :: Parser LaTeX
-p_Comm = do
-  char '\\'
-  str <- many1 alphaNum
-  args <- try   (string "{}" >> return [])
-            <|> (many1 p_Arg)
-  return $ TeXComm str args
+  import           Data.Attoparsec.Text hiding (take, takeWhile, takeTill)
+  import qualified Data.Attoparsec.Text as A   (takeWhile, takeTill)
+  import           Data.Char (isDigit)
+  import           Data.Monoid
+  import           Data.Text (Text)
+  import qualified Data.Text as T 
 
-p_CommS :: Parser LaTeX
-p_CommS = do
-  char '\\'
-  TeXCommS <$> many1 alphaNum
+  import           Control.Applicative ((<|>), (<$>))
+  import           Control.Monad (unless)
 
-p_Env :: Parser LaTeX
-p_Env = do
-  string "\\begin{"
-  str <- many1 alphaNum
-  char '}'
-  args <- many p_Arg
-  ls <- manyTill p_TeXU $ try $ string $ "\\end{" ++ str ++ "}"
-  return $ TeXEnv str args $ mconcat ls
+  import           Text.LaTeX.Base.Syntax
 
-p_Math :: Parser LaTeX
-p_Math = do
-  char '$'
-  TeXMath . mconcat <$> manyTill p_TeXU (char '$')
 
-p_NewLine :: Parser LaTeX
-p_NewLine = do
- string "\\\\"
- fmap TeXNewLine $ (char '*' >> return True) <|> return False
+  ------------------------------------------------------------------------
+  -- | Parses a Text sequence at once;
+  --   may fail or conclude.
+  ------------------------------------------------------------------------
+  latexAtOnce :: Text -> Either String LaTeX
+  latexAtOnce t | T.null t  = return TeXEmpty
+                | otherwise = 
+    case parse latexParser t of
+      Fail _ _ e     -> Left e
+      Done _ r       -> Right r
+      rx@(Partial _) -> -- Left "incomplete input"
+                        case feed rx T.empty of
+                         Fail _ _ e -> Left e
+                         Partial _  -> Left "incomplete input"
+                         Done _ r   -> Right r
 
-p_RawG :: [Char] -> Parser LaTeX
-p_RawG xs = TeXRaw . fromString <$> manyTill anyChar (lookAhead $ (oneOf xs >> return mempty) <|> p_TeXURaw)
+  ------------------------------------------------------------------------
+  -- | The incremental LaTeX Parser
+  ------------------------------------------------------------------------
+  latexParser :: Parser LaTeX
+  latexParser = blocks 
 
-p_Raw :: Parser LaTeX
-p_Raw = p_RawG []
+  ------------------------------------------------------------------------
+  -- | Incremental Parser for single blocks of LaTeX
+  ------------------------------------------------------------------------
+  latexBlockParser :: Parser LaTeX
+  latexBlockParser = block
 
-p_RawNC :: Parser LaTeX
-p_RawNC = p_RawG ","
+  ------------------------------------------------------------------------
+  -- | Incremental Parser that terminates after the /document/ envionment
+  ------------------------------------------------------------------------
+  latexDocParser :: Parser LaTeX
+  latexDocParser = blockTillDoc
 
-p_TeXU :: Parser LaTeX
-p_TeXU = choice $ try <$> [p_NewLine , p_Math , p_Env , p_Comm , p_CommS , p_Raw]
+  ------------------------------------------------------------------------
+  -- Blocks
+  ------------------------------------------------------------------------
+  blocks :: Parser LaTeX
+  blocks = mconcat <$> block `manyTill` endOfInput 
 
-p_TeXURaw :: Parser LaTeX
-p_TeXURaw = choice $ try <$> [p_NewLine , p_Math , p_Env , p_Comm , p_CommS]
+  blockTillDoc :: Parser LaTeX
+  blockTillDoc  = do
+    b <- block
+    if isMainDoc b then return  b
+                   else mappend b <$> blockTillDoc
 
-p_TeX :: Parser LaTeX
-p_TeX = mconcat <$> many p_TeXU
+  isMainDoc :: LaTeX -> Bool
+  isMainDoc b = case b of
+                  TeXEnv "document" _ _ -> True
+                  _                     -> False
 
-p_TeXUNC :: Parser LaTeX
-p_TeXUNC = choice $ try <$> [p_NewLine , p_Math , p_Env , p_Comm , p_CommS , p_RawNC]
+  ------------------------------------------------------------------------
+  -- Block
+  -- Note: text stops on ']';
+  --       if the other parser fail on the rest
+  --          text2 handles it, starting with ']' 
+  ------------------------------------------------------------------------
+  block :: Parser LaTeX
+  block = choice [text, dolMath, comment, environment, command, text2]
+    
+  ------------------------------------------------------------------------
+  -- Text
+  ------------------------------------------------------------------------
+  text :: Parser LaTeX
+  text = do
+    mbC <- peekChar
+    case mbC of
+      Nothing -> return TeXEmpty
+      Just c | c `elem` "$%\\{]}" -> fail "not text"
+             | otherwise          -> TeXRaw <$> A.takeTill (`elem` "$%\\{]}")
 
-p_TeXNC :: Parser LaTeX
-p_TeXNC = mconcat <$> many p_TeXUNC
+  ------------------------------------------------------------------------
+  -- Text without stopping on ']'
+  ------------------------------------------------------------------------
+  text2 :: Parser LaTeX
+  text2 = do
+    _ <- char ']'
+    t <- try (text <|> return (TeXRaw T.empty))
+    return $ TeXRaw endlessSq <> t
 
-p_SimpleArg :: (Char,Char) -> (LaTeX -> TeXArg) -> Parser TeXArg
-p_SimpleArg (c1,c2) f = do
-  char c1
-  fmap (f . mconcat) $ manyTill (p_TeXURaw <|> p_RawG [c2]) $ char c2
+  ------------------------------------------------------------------------
+  -- Environment
+  ------------------------------------------------------------------------
+  environment :: Parser LaTeX
+  environment = choice [anonym, env]
 
-p_MultiArg :: (Char,Char) -> ([LaTeX] -> TeXArg) -> Parser TeXArg
-p_MultiArg (c1,c2) f = do
-  char c1
-  fmap f $ sepBy1 (mconcat <$> manyTill p_TeXUNC (char c2)) $ char ','
+  anonym :: Parser LaTeX
+  anonym = char oBr >> 
+      TeXBraces . mconcat <$> block `manyTill` char eBr
 
-p_Opt :: Parser TeXArg
-p_Opt = p_SimpleArg ('[',']') OptArg
+  env :: Parser LaTeX
+  env = do
+    n  <- envName begin
+    if n `elem` [mathEnv, displayEnv, eqEnv]
+      then mathEnvironment n
+      else do
+        as <- cmdArgs
+        b  <- envBody n 
+        return $ TeXEnv (T.unpack n) as b
 
-p_MOpt :: Parser TeXArg
-p_MOpt = p_MultiArg ('[',']') MOptArg
+  envName :: Text -> Parser Text
+  envName k = do
+    _ <- string k
+    _ <- char oBr
+    n <- A.takeTill (== eBr)
+    _ <- char eBr
+    return n
 
-p_Fix :: Parser TeXArg
-p_Fix = p_SimpleArg ('{','}') FixArg
+  envBody :: Text -> Parser LaTeX
+  envBody n = mconcat <$> block `manyTill` endenv
+    where endenv = try $ string (end `T.snoc` oBr <> n 
+                                     `T.snoc` eBr)
 
-p_Sym :: Parser TeXArg
-p_Sym = p_SimpleArg ('<','>') SymArg
+  ------------------------------------------------------------------------
+  -- Command
+  ------------------------------------------------------------------------
+  command :: Parser LaTeX
+  command = do
+    _    <- char bsl
+    mbX  <- peekChar
+    case mbX of
+      Nothing -> return TeXEmpty
+      Just x  -> if isSpecial x
+                   then special
+                   else do
+                     c  <- A.takeTill endCmd
+                     as <- cmdArgs
+                     if null as
+                        then return $ TeXCommS (T.unpack c)
+                        else return $ TeXComm  (T.unpack c) as
 
-p_MSym :: Parser TeXArg
-p_MSym = p_MultiArg ('<','>') MSymArg
+  ------------------------------------------------------------------------
+  -- Command Arguments
+  ------------------------------------------------------------------------
+  cmdArgs :: Parser [TeXArg]
+  cmdArgs = try (whitespace >> string emptyArg >> return [FixArg TeXEmpty])
+              <|> many1 cmdArg 
+              <|> return []
 
-p_Arg :: Parser TeXArg
-p_Arg = choice $ try <$> [ p_MOpt , p_MSym , p_Opt , p_Fix , p_Sym ]
+  cmdArg :: Parser TeXArg
+  cmdArg = do
+    whitespace
+    c <- char '[' <|> char '{'
+    let e = case c of
+              '[' -> endlessSq
+              '{' -> endlessBr
+              _   -> error "this cannot happen!"
+    b <- mconcat <$> block `manyTill` string e
+    case c of  
+      '[' -> return $ OptArg b
+      '{' -> return $ FixArg b
+      _   -> error "this cannot happen!"
 
--- | Parse a LaTeX expression written in 'Text', to a 'LaTeX' AST.
---   It returns a 'ParseError' in case of parsing error.
-parseLaTeX :: Text -> Either ParseError LaTeX
-parseLaTeX = parse (p_TeX >>= \l -> eof >> return l) "LaTeX input"
+  whitespace :: Parser ()
+  whitespace = try (do _ <- char ' '
+                       whitespace)
+                   <|> return ()
+
+  ------------------------------------------------------------------------
+  -- Special commands (consisting of one char)
+  ------------------------------------------------------------------------
+  special :: Parser LaTeX
+  special = do
+    x <- anyChar
+    case x of
+      '('  -> math Parentheses endPa
+      '['  -> math Square      endSq
+      '{'  -> lbrace
+      '}'  -> rbrace
+      '|'  -> vert
+      '\\' -> lbreak
+      _    -> commS [x]
+
+  ------------------------------------------------------------------------
+  -- line break
+  ------------------------------------------------------------------------
+  lbreak :: Parser LaTeX
+  lbreak = do
+    y <- try (char oSq <|> char str <|> return ' ')  
+    case y of
+      '[' -> linebreak False
+      '*' -> do z <- try (char oSq <|> return ' ')
+                case z of
+                 '[' -> linebreak True
+                 _   -> return (TeXLineBreak Nothing True)
+      _   -> return (TeXLineBreak Nothing False)
+
+-- The line break parser must to be fixed accordingly with the new definition using the Measure type.
+  linebreak :: Bool -> Parser LaTeX
+  linebreak t = do
+    n <- T.unpack <$> A.takeWhile isNumerical
+    u <- T.unpack <$> A.takeTill (== eSq)
+    _ <- char eSq
+    if null n then  fail $ "NaN in linebreak: " ++ n
+      else if null u then fail "No unit in linebreak"
+           else -- TODO: We need to fix this!
+                -- Old definition: return $ TeXLineBreak (Just $ read n) u t
+                return $ TeXLineBreak Nothing t
+
+  ------------------------------------------------------------------------
+  -- right or left brace or vertical
+  ------------------------------------------------------------------------
+  rbrace, lbrace,vert :: Parser LaTeX
+  lbrace = brace "{"
+  rbrace = brace "}"
+  vert   = brace "|"
+
+  brace :: String -> Parser LaTeX
+  brace = return . TeXCommS
+
+  commS :: String -> Parser LaTeX
+  commS = return . TeXCommS
+
+  ------------------------------------------------------------------------
+  -- Math
+  ------------------------------------------------------------------------
+  dolMath :: Parser LaTeX
+  dolMath = do
+    _ <- char dol 
+    b <- mconcat <$> block `manyTill` char dol
+    return $ TeXMathX Dollar b -- []
+
+  math :: MathType -> Text -> Parser LaTeX
+  math t eMath = do
+     b <- mconcat <$> block `manyTill` try (string eMath)
+     return $ TeXMathX t b -- []
+
+  mathEnvironment :: Text -> Parser LaTeX
+  mathEnvironment e = 
+    let eMath = end `T.snoc` '{' <> e `T.snoc` '}'
+        mType = name2MathType e
+     in do b <- mconcat <$> block `manyTill` try (string eMath)
+           return $ TeXMathX mType b -- []
+
+  ------------------------------------------------------------------------
+  -- Comment 
+  ------------------------------------------------------------------------
+  comment :: Parser LaTeX
+  comment = do
+    _  <- char per
+    c  <- A.takeTill (== '\n')
+    e  <- atEnd
+    unless e (char '\n' >>= \_ -> return ())
+    return $ TeXComment c
+
+  ------------------------------------------------------------------------
+  -- Helpers
+  ------------------------------------------------------------------------
+  isSpecial :: Char -> Bool
+  isSpecial = (`elem` specials) -- [bsl, oSq, oPa, oBr, eBr]
+
+  isNumerical :: Char -> Bool -- sloppy!
+  isNumerical c = isDigit c || (c == '.') || (c == '-')
+
+  name2MathType :: Text -> MathType
+  name2MathType n = 
+    case T.unpack n of
+      "math"        -> MathEnv
+      "displaymath" -> DispEnv
+      "equation"    -> EqEnv
+      "\\("         -> Parentheses
+      "\\["         -> Square
+      _             -> Dollar
+
+  begin, end :: Text
+  begin     = T.pack "\\begin"
+  end       = T.pack "\\end"
+
+  mathEnv, displayEnv, eqEnv :: Text
+  mathEnv    = T.pack "math"
+  displayEnv = T.pack "displaymath"
+  eqEnv      = T.pack "equation"
+
+  endCmd :: Char -> Bool
+  endCmd = flip elem symbols
+
+  nul, eol, spc :: Char
+  nul  = '\0'
+  eol  = '\n' 
+  spc  = ' '
+
+  oBr, eBr, oSq, eSq, oPa, ePa, bsl, dol, per, str :: Char
+  oBr  = '{'
+  eBr  = '}'
+  oSq  = '['
+  eSq  = ']'
+  oPa  = '('
+  ePa  = ')'
+  bsl  = '\\'
+  dol  = '$'
+  per  = '%'
+  str  = '*'
+
+  endPa, endSq, endlessBr, endlessSq :: Text
+  endPa     = T.pack "\\)"
+  endSq     = T.pack "\\]"
+  endlessBr = T.pack "}"
+  endlessSq = T.pack "]"
+
+  emptyArg :: Text
+  emptyArg = T.pack "{}"
+
+  symbols :: String
+  symbols = [nul, eol, spc, oBr, eBr, eSq, oSq, oPa, ePa, bsl, dol, per]
+
+  specials :: String
+  specials = "'(),.-\"!^$&#{}%~|/:;=[]\\` "
