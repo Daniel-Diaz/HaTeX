@@ -93,7 +93,8 @@ instance Render LaTeX where
   <> "\\end{"
   <> fromString name
   <> "}"
- render (TeXMath l) = "$" <> render l <> "$"
+ render (TeXMath InlineTeXMath l) = "$" <> render l <> "$"
+ render (TeXMath DisplayTeXMath l) = "\\[" <> render l <> "\\]\n"
  render (TeXNewLine b) = " \\\\" <> ( if b then "*" else mempty ) <> " "
  render (TeXOp sym l1 l2) = render l1 <> fromString sym <> render l2
  render (TeXBraces l) = "{" <> render l <> "}"

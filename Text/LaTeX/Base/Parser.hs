@@ -38,9 +38,13 @@ p_Env = do
   return $ TeXEnv str args $ mconcat ls
 
 p_Math :: Parser LaTeX
-p_Math = do
-  char '$'
-  TeXMath . mconcat <$> manyTill p_TeXU (char '$')
+p_Math = choice $ try <$> [p_inline, p_display]
+ where p_inline = do
+         char '$'
+         TeXMath InlineTeXMath . mconcat <$> p_TeXU `manyTill` char '$'
+       p_display = do
+         string "\\["
+         TeXMath DisplayTeXMath . mconcat <$> p_TeXU `manyTill` string "\\]"
 
 p_NewLine :: Parser LaTeX
 p_NewLine = do

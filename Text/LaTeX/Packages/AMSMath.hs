@@ -68,7 +68,12 @@ amsmath = "amsmath"
 
 -- | Inline mathematical expressions.
 math :: LaTeXC l => l -> l
-math = liftL TeXMath
+math = liftL $ TeXMath InlineTeXMath
+
+-- | Displayed mathematical expressions, i.e. in a seperate line / block.
+mathDisplay :: LaTeXC l => l -> l
+mathDisplay = liftL $ TeXMath DisplayTeXMath
+
 
 -------------------------------------
 ------- Symbols and utilities -------

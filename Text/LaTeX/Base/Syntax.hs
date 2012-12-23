@@ -8,6 +8,7 @@ module Text.LaTeX.Base.Syntax
  ( -- * @LaTeX@ datatype
    LaTeX (..)
  , TeXArg (..)
+ , TeXMathKind(..)
  , (<>)
    -- * Escaping reserved characters
  , protectString
@@ -29,7 +30,7 @@ data LaTeX =
                                 -- First argument is the name of the environment.
                                 -- Second, its arguments.
                                 -- Third, its content.
- | TeXMath LaTeX -- ^ Mathematical expressions.
+ | TeXMath TeXMathKind LaTeX -- ^ Mathematical expressions.
  | TeXNewLine Bool -- ^ Newline character.
  | TeXOp String LaTeX LaTeX -- ^ Operators.
  | TeXBraces LaTeX -- ^ A expression between braces.
@@ -90,3 +91,11 @@ protectChar '~'  = "\\~{}"
 protectChar '\\' = "\\textbackslash{}"
 protectChar '_'  = "\\_{}"
 protectChar x = [x]
+
+
+
+-- | The various ways to present maths in LaTeX. (There are actually many more than these,
+-- but they use the generic @\begin{ε}...\end{ε}@ syntax covered by 'TeXEnv'.)
+data TeXMathKind = InlineTeXMath           -- ^ A simple inline math expression, in LaTeX surrounded by @$@s.
+                 | DisplayTeXMath          -- ^ The standard displayed (i.e., in a seperate line) environment, @\[ ... \]@.
+                 deriving (Eq,Show)
