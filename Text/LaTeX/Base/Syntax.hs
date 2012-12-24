@@ -8,11 +8,16 @@ module Text.LaTeX.Base.Syntax
  ( -- * @LaTeX@ datatype
    LaTeX (..)
  , TeXArg (..)
- , TeXMathKind(..)
  , (<>)
    -- * Escaping reserved characters
  , protectString
  , protectText
+   -- * Math-specific data
+ , TeXMathKind(..)
+ , TeXBracketKind(..)
+ , showTeXBrackets
+ , TeXBracketSize(..)
+ , teXBracketBigness
    ) where
 
 import Data.Text (Text,concatMap)
@@ -33,7 +38,12 @@ data LaTeX =
  | TeXMath TeXMathKind LaTeX -- ^ Mathematical expressions.
  | TeXNewLine Bool -- ^ Newline character.
  | TeXOp String LaTeX LaTeX -- ^ Operators.
- | TeXBraces LaTeX -- ^ A expression between braces.
+ | TeXBraces LaTeX -- ^ An expression between braces.
+ | TeXMathBrackets TeXBracketKind (Maybe TeXBracketSize) LaTeX
+                -- ^ A math expression surrounded by
+                -- parens, square- angle- etc. brackets, or just virtual delimiters,
+                -- in general suitably sized to fit the expression's rendered height;
+                -- if no size is specified this will be automatically done by LaTeX.
  | TeXComment Text -- ^ Comments.
  | TeXSeq LaTeX LaTeX -- ^ Sequencing of 'LaTeX' expressions.
                       -- Use '<>' preferably.
@@ -99,3 +109,37 @@ protectChar x = [x]
 data TeXMathKind = InlineTeXMath           -- ^ A simple inline math expression, in LaTeX surrounded by @$@s.
                  | DisplayTeXMath          -- ^ The standard displayed (i.e., in a seperate line) environment, @\[ ... \]@.
                  deriving (Eq,Show)
+
+
+-- | In LaTeX math, many different delimiters can be used to surround subexpressions
+-- with proper height-scaling. 'TeXBracketKind' has the most important ones as constructors,
+-- the remaining ones can be expressed by e.g. @'TeXMathOtherBrackets' "\\lceil" "\\rceil"@.
+data TeXBracketKind = TeXMathParens
+                    | TeXMathSquareBrackets
+                    | TeXMathBraces
+                    | TeXMathAngleBrackets
+                    | TeXMathOtherBrackets LaTeX LaTeX
+                    deriving (Eq,Show)
+
+showTeXBrackets :: TeXBracketKind -> (LaTeX,LaTeX)
+showTeXBrackets TeXMathParens = ("(",")")
+showTeXBrackets TeXMathSquareBrackets = ("[","]")
+showTeXBrackets TeXMathBraces = ("{","}")
+showTeXBrackets TeXMathAngleBrackets = (TeXCommS"langle",TeXCommS"rangle")
+showTeXBrackets (TeXMathOtherBrackets l r) = (l,r)
+
+
+-- | Each possible bracket type comes in various automatic or manually defined sizes.
+data TeXBracketSize = TeXBracket_defSize     -- ^ No scaling, just use the normal e.g. paren character.
+                    | TeXBracket_bigSize     -- ^ Barely larger than defSize.
+                    | TeXBracket_BigSize     -- ^ Between big and bigg.
+                    | TeXBracket_biggSize    -- ^ Between Big and Bigg.
+                    | TeXBracket_BiggSize    -- ^ Largest fixed size available by standard.
+                    deriving (Eq,Ord,Enum,Show)
+                    
+teXBracketBigness :: TeXBracketSize -> Text
+teXBracketBigness TeXBracket_defSize = undefined
+teXBracketBigness TeXBracket_bigSize = "big"
+teXBracketBigness TeXBracket_BigSize = "Big"
+teXBracketBigness TeXBracket_biggSize = "bigg"
+teXBracketBigness TeXBracket_BiggSize = "Bigg"

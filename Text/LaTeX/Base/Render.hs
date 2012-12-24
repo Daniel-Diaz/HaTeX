@@ -98,6 +98,14 @@ instance Render LaTeX where
  render (TeXNewLine b) = " \\\\" <> ( if b then "*" else mempty ) <> " "
  render (TeXOp sym l1 l2) = render l1 <> fromString sym <> render l2
  render (TeXBraces l) = "{" <> render l <> "}"
+ render (TeXMathBrackets kind scale l) = lmodif<>b1 <> l' <> rmodif<>b2
+  where (lmodif,rmodif) = case scale of
+                           Nothing -> ("\\left","\\right")
+                           Just TeXBracket_defSize -> ("","")
+                           Just size -> let bign = teXBracketBigness size
+                                        in ("\\"<>bign<>"l", "\\"<>bign<>"r")
+        [b1,b2,l'] = map render [e1,e2,l]
+         where (e1,e2) = showTeXBrackets kind
  render (TeXComment c) =
   let xs = Data.Text.lines c
   in  (" " <>) $ Data.Text.unlines $ fmap ("% " <>) xs
