@@ -40,5 +40,6 @@ theBody = do
  " library. "
  -- 'textbf' turns characters to bold font (as you already may know).
  textbf "Enjoy!"
+ " "
  -- This is how we nest commands.
  textbf (large "Yoohoo!")
