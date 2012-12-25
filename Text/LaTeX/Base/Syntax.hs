@@ -22,11 +22,11 @@ import Data.String
 
 data Measure =
    Pt Int   -- ^ A point is 1/72.27 inch, that means about 0.0138 inch or 0.3515 mm.
- | Mm Float -- ^ Millimeter.
- | Cm Float -- ^ Centimeter.
- | In Float -- ^ Inch.
- | Ex Float -- ^ The height of an \"x\" in the current font.
- | Em Float -- ^ The width of an \"M\" in the current font.
+ | Mm Double -- ^ Millimeter.
+ | Cm Double -- ^ Centimeter.
+ | In Double -- ^ Inch.
+ | Ex Double -- ^ The height of an \"x\" in the current font.
+ | Em Double -- ^ The width of an \"M\" in the current font.
  | CustomMeasure LaTeX -- ^ You can introduce a 'LaTeX' expression as a measure.
    deriving (Eq, Show)
 

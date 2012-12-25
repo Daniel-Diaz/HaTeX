@@ -229,10 +229,10 @@ where
                    return $ TeXLineBreak (Just m) (t || s == str)
 
   measure :: Parser Measure
-  measure = try  (double2Float  <$> double >>= unit)
+  measure = try  (double >>= unit)
               <|> CustomMeasure <$> block
 
-  unit :: Float -> Parser Measure
+  unit :: Double -> Parser Measure
   unit f = do
     u1 <- anyChar
     u2 <- anyChar
