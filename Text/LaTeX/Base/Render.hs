@@ -105,7 +105,7 @@ instance Render LaTeX where
   <> fromString name
   <> "}"
  render (TeXMath l) = "$" <> render l <> "$"
- render (TeXLineBreak m b) = " \\\\" <> maybe mempty (\x -> "[" <> render x <> "]") m <> ( if b then "*" else mempty ) <> " "
+ render (TeXLineBreak m b) = "\\\\" <> maybe mempty (\x -> "[" <> render x <> "]") m <> ( if b then "*" else mempty )
  render (TeXOp sym l1 l2) = render l1 <> fromString sym <> render l2
  render (TeXBraces l) = "{" <> render l <> "}"
  render (TeXComment c) =

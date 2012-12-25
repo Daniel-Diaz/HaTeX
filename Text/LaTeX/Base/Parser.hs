@@ -21,9 +21,9 @@ module Text.LaTeX.Base.Parser (
                       )
 where
 
-  import           Data.Attoparsec.Text hiding (take, takeWhile, takeTill)
-  import qualified Data.Attoparsec.Text as A   (takeWhile, takeTill)
-  import           Data.Char (isDigit)
+  import           Data.Attoparsec.Text hiding (take, takeTill)
+  import qualified Data.Attoparsec.Text as A   (takeTill)
+  import           Data.Char (toLower)
   import           Data.Monoid
   import           Data.Text (Text)
   import qualified Data.Text as T 
@@ -33,6 +33,7 @@ where
 
   import           Text.LaTeX.Base.Syntax
 
+  import           GHC.Float (double2Float)
 
   ------------------------------------------------------------------------
   -- | Parses a Text sequence at once;
@@ -221,17 +222,28 @@ where
                  _   -> return (TeXLineBreak Nothing True)
       _   -> return (TeXLineBreak Nothing False)
 
--- The line break parser must to be fixed accordingly with the new definition using the Measure type.
   linebreak :: Bool -> Parser LaTeX
-  linebreak t = do
-    n <- T.unpack <$> A.takeWhile isNumerical
-    u <- T.unpack <$> A.takeTill (== eSq)
-    _ <- char eSq
-    if null n then  fail $ "NaN in linebreak: " ++ n
-      else if null u then fail "No unit in linebreak"
-           else -- TODO: We need to fix this!
-                -- Old definition: return $ TeXLineBreak (Just $ read n) u t
-                return $ TeXLineBreak Nothing t
+  linebreak t = do m <- measure
+                   _ <- char eSq
+                   s <- try (char str <|> return ' ')
+                   return $ TeXLineBreak (Just m) (t || s == str)
+
+  measure :: Parser Measure
+  measure = try  (double2Float  <$> double >>= unit)
+              <|> CustomMeasure <$> block
+
+  unit :: Float -> Parser Measure
+  unit f = do
+    u1 <- anyChar
+    u2 <- anyChar
+    case map toLower [u1, u2] of
+      "pt" -> return $ Pt (truncate f)
+      "mm" -> return $ Mm f
+      "cm" -> return $ Cm f
+      "in" -> return $ In f
+      "ex" -> return $ Ex f
+      "em" -> return $ Em f
+      _    -> fail "NaN"
 
   ------------------------------------------------------------------------
   -- right or left brace or vertical
@@ -284,9 +296,6 @@ where
   ------------------------------------------------------------------------
   isSpecial :: Char -> Bool
   isSpecial = (`elem` specials) -- [bsl, oSq, oPa, oBr, eBr]
-
-  isNumerical :: Char -> Bool -- sloppy!
-  isNumerical c = isDigit c || (c == '.') || (c == '-')
 
   name2MathType :: Text -> MathType
   name2MathType n = 
