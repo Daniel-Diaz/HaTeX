@@ -6,6 +6,10 @@ module Text.LaTeX.Packages.AMSMath
    -- * AMSMath functions
  , math, mathDisplay
    -- * Symbols and utilities
+   -- ** Automatically-sized brackets / delimiters
+ , autoParens
+ , autoSquareBrackets, autoBraces, autoAngleBrackets
+ , autoBrackets
    -- ** Superscript and subscript
  , (^:) , (!:)
    -- ** Function symbols
@@ -77,6 +81,32 @@ mathDisplay = liftL $ TeXMathX Square    -- \[ ... \]
 
 -------------------------------------
 ------- Symbols and utilities -------
+
+-- | Surround a LaTeX math expression by parentheses whose height
+-- automatically matches the expression's.
+autoParens :: LaTeXC l => l -> l
+autoParens x = comm0 "left(" <> x <> comm0 "right)"
+
+-- | Like 'autoParens', but with square brackets.
+autoSquareBrackets :: LaTeXC l => l -> l
+autoSquareBrackets x = comm0 "left[" <> x <> comm0 "right]"
+
+-- | Like 'autoParens', but with curly brackets.
+autoBraces :: LaTeXC l => l -> l
+autoBraces x = comm0 "left"<>"{" <> x <> comm0 "right"<>"}"
+
+-- | Like 'autoParens', but with angle brackets.
+autoAngleBrackets :: LaTeXC l => l -> l
+autoAngleBrackets x = comm0 "left"<>comm0"langle" <> x <> comm0 "right"<>comm0"rangle"
+
+-- | Use custom LaTeX expressions as auto-scaled delimiters to surround math.
+-- Suitable delimiters include @|...|@ (absolute value), @\|...\|@ (norm),
+-- @\lfloor...\rfloor@ (round-off Gauss brackets @⌊x⌋@) etc..
+autoBrackets :: LaTeXC l => LaTeX -> LaTeX -> l -> l
+autoBrackets lBrack rBrack x
+  = comm0 "left"<>braces(fromLaTeX lBrack) <> x <> comm0 "right"<>braces(fromLaTeX rBrack)
+
+
 
 -- | Superscript.
 (^:) :: LaTeXC l => l -> l -> l

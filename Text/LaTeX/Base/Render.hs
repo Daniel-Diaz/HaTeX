@@ -129,32 +129,7 @@ instance Render LaTeX where
   render (TeXSeq l1 l2) = render l1 <> render l2
   render TeXEmpty = mempty
 
-instance Render LaTeX where
- render (TeXRaw t) = t
- render (TeXComm name []) = "\\" <> fromString name <> "{}"
- render (TeXComm name args) =
-     "\\"
-  <> fromString name
-  <> renderAppend args
- render (TeXCommS name) = "\\" <> fromString name
- render (TeXEnv name args c) =
-     "\\begin{"
-  <> fromString name
-  <> "}"
-  <> renderAppend args
-  <> render c
-  <> "\\end{"
-  <> fromString name
-  <> "}"
- render (TeXMath l) = "$" <> render l <> "$"
- render (TeXLineBreak m b) = "\\\\" <> maybe mempty (\x -> "[" <> render x <> "]") m <> ( if b then "*" else mempty )
- render (TeXOp sym l1 l2) = render l1 <> fromString sym <> render l2
- render (TeXBraces l) = "{" <> render l <> "}"
- render (TeXComment c) =
-  let xs = Data.Text.lines c
-  in  (" " <>) $ Data.Text.unlines $ fmap ("% " <>) xs
- render (TeXSeq l1 l2) = render l1 <> render l2
- render TeXEmpty = mempty
+
 
 instance Render TeXArg where
  render (OptArg l) = "[" <> render l <> "]"
