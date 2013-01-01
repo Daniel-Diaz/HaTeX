@@ -4,7 +4,7 @@ module Text.LaTeX.Packages.AMSMath
  ( -- * AMSMath package
    amsmath
    -- * AMSMath functions
- , math
+ , math, mathDisplay
    -- * Symbols and utilities
    -- ** Superscript and subscript
  , (^:) , (!:)
@@ -69,6 +69,11 @@ amsmath = "amsmath"
 -- | Inline mathematical expressions.
 math :: LaTeXC l => l -> l
 math = liftL TeXMath
+
+-- | Displayed mathematical expressions, i.e. in a seperate line / block.
+mathDisplay :: LaTeXC l => l -> l
+mathDisplay = liftL $ TeXMathX Square    -- \[ ... \]
+
 
 -------------------------------------
 ------- Symbols and utilities -------
