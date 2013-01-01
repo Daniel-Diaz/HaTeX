@@ -18,6 +18,9 @@ module Text.LaTeX.Packages.AMSMath
  , tsin , arcsin
  , tcos , arccos
  , ttan , arctan
+ , cot , arccot
+ , tsinh , tcosh , ttanh , coth
+ , sec , csc
  , texp
  , tlog , ln
    -- ** Operator symbols
@@ -141,6 +144,38 @@ ttan = comm0 "tan"
 -- | Arctangent function symbol.
 arctan :: LaTeXC l => l
 arctan = comm0 "arctan"
+
+-- | Cotangent function symbol.
+cot :: LaTeXC l => l
+cot = comm0 "cot"
+
+-- | Arccotangent function symbol.
+arccot :: LaTeXC l => l
+arccot = comm0 "arccot"
+
+-- | Hyperbolic sine function symbol.
+tsinh :: LaTeXC l => l
+tsinh = comm0 "sinh"
+
+-- | Hyperbolic cosine function symbol.
+tcosh :: LaTeXC l => l
+tcosh = comm0 "cosh"
+
+-- | Hyperbolic tangent function symbol.
+ttanh :: LaTeXC l => l
+ttanh = comm0 "tanh"
+
+-- | Hyperbolic cotangent function symbol.
+coth :: LaTeXC l => l
+coth = comm0 "coth"
+
+-- | Secant function symbol.
+sec :: LaTeXC l => l
+sec = comm0 "sec"
+
+-- | Cosecant function symbol.
+csc :: LaTeXC l => l
+csc = comm0 "csc"
 
 -- | Exponential function symbol.
 texp :: LaTeXC l => l
