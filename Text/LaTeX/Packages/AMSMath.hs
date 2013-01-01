@@ -24,10 +24,26 @@ module Text.LaTeX.Packages.AMSMath
  , texp
  , tlog , ln
    -- ** Operator symbols
+ , pm , mp
+ , cdot , times , div_
+ , (*:) , star
+ , circ , bullet
+ 
  , (=:) , (/=:)
  , (>:) , (>=:)
  , (<:) , (<=:)
+ , propto
+ 
  , in_ , ni , notin
+ , subset , supset
+ , cap , cup
+ , setminus
+ 
+ , vee , wedge
+ 
+ , oplus , ominus , otimes
+ , oslash , odot
+ 
    -- ** Greek alphabet
    -- | Functions of greek alphabet symbols.
    --
@@ -49,8 +65,8 @@ module Text.LaTeX.Packages.AMSMath
  , phiu     , chi        , psi
  , psiu     , omega      , omegau
    -- ** Other symbols
- , to
- , forall
+ , to , mapsto
+ , forall , exists
  , dagger, ddagger
    -- * Fonts
  , mathbf
@@ -199,6 +215,46 @@ notop op =
  \l1 l2 ->
    (l1 <> commS "not") `op` l2
 
+
+-- | Plus-or-minus operator.
+pm :: LaTeXC l => l -> l -> l
+pm  = between $ comm0 "pm"
+
+-- | Minus-or-plus operator.
+mp :: LaTeXC l => l -> l -> l
+mp  = between $ comm0 "mp"
+
+-- | Centered-dot operator.
+cdot :: LaTeXC l => l -> l -> l
+cdot  = between $ comm0 "cdot"
+
+-- | \"x-cross\" multiplication operator.
+times :: LaTeXC l => l -> l -> l
+times = between $ comm0 "times"
+
+-- | Division operator.
+div_ :: LaTeXC l => l -> l -> l
+div_  = between $ comm0 "div"
+
+-- | Asterisk operator.
+(*:) :: LaTeXC l => l -> l -> l
+(*:) = between $ comm0 "ast"
+
+-- | Star operator.
+star :: LaTeXC l => l -> l -> l
+star  = between $ comm0 "star"
+
+-- | Circle operator.
+circ :: LaTeXC l => l -> l -> l
+circ  = between $ comm0 "circ"
+
+-- | Bullet operator.
+bullet :: LaTeXC l => l -> l -> l
+bullet  = between $ comm0 "bullet"
+
+
+
+
 infixr 4 =: , /=:
 
 -- | Equal.
@@ -229,14 +285,76 @@ infixr 4 =: , /=:
 (<=:) :: LaTeXC l => l -> l -> l
 (<=:) = between $ comm0 "leq"
 
+-- | Proportional-to.
+propto :: LaTeXC l => l -> l -> l
+propto  = between $ comm0 "propto"
+
+
+
+-- | Element-of.
 in_ :: LaTeXC l => l -> l -> l
 in_ = between $ comm0 "in"
 
+-- | Mirrored element-of.
 ni :: LaTeXC l => l -> l -> l
 ni  = between $ comm0 "ni"
 
+-- | Not element of.
 notin :: LaTeXC l => l -> l -> l
 notin = between $ comm0 "notin"
+
+-- | Subset-of.
+subset :: LaTeXC l => l -> l -> l
+subset  = between $ comm0 "subset"
+
+-- | Superset-of.
+supset :: LaTeXC l => l -> l -> l
+supset  = between $ comm0 "supset"
+
+-- | Set intersection.
+cap :: LaTeXC l => l -> l -> l
+cap  = between $ comm0 "cap"
+
+-- | Set union.
+cup :: LaTeXC l => l -> l -> l
+cup  = between $ comm0 "cup"
+
+-- | Set minus.
+setminus :: LaTeXC l => l -> l -> l
+setminus  = between $ comm0 "setminus"
+
+
+-- | Angle pointing downwards.
+vee :: LaTeXC l => l -> l -> l
+vee  = between $ comm0 "vee"
+
+-- | Angle pointing upwards.
+wedge :: LaTeXC l => l -> l -> l
+wedge  = between $ comm0 "wedge"
+
+
+-- | Circled plus operator.
+oplus :: LaTeXC l => l -> l -> l
+oplus  = between $ comm0 "oplus"
+
+-- | Circled minus operator.
+ominus :: LaTeXC l => l -> l -> l
+ominus  = between $ comm0 "ominus"
+
+-- | Circled multiplication cross.
+otimes :: LaTeXC l => l -> l -> l
+otimes  = between $ comm0 "otimes"
+
+-- | Circled slash.
+oslash :: LaTeXC l => l -> l -> l
+oslash  = between $ comm0 "oslash"
+
+-- | Circled dot operator.
+odot :: LaTeXC l => l -> l -> l
+odot  = between $ comm0 "odot"
+
+
+
 
 ---- Greek alphabet
 
@@ -363,9 +481,17 @@ omegau = comm0 "Omega"
 to :: LaTeXC l => l
 to = comm0 "to"
 
+-- | A right-arrow for function definitions.
+mapsto :: LaTeXC l => l
+mapsto = comm0 "mapsto"
+
 -- | /For all/ symbol.
 forall :: LaTeXC l => l
 forall = comm0 "forall"
+
+-- | /Exists/ symbol.
+exists :: LaTeXC l => l
+exists = comm0 "exists"
 
 -- | Dagger symbol.
 dagger :: LaTeXC l => l
