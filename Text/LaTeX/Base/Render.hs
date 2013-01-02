@@ -107,14 +107,10 @@ instance Render LaTeX where
    <> "\\end{"
    <> fromString name
    <> "}"
-  
-  render (TeXMath l) = "$" <> render l <> "$"
-  render (TeXMathX Dollar l) = render $ TeXMath l
-  render (TeXMathX Square l) = "\\[" <> render l <> "\\]\n"
-  render (TeXMathX Parentheses l) = "\\(" <> render l <> "\\)\n"
-  render (TeXMathX MathEnv l) = render $ TeXEnv "math" [] l
-  render (TeXMathX DispEnv l) = render $ TeXEnv "displaymath" [] l
-  render (TeXMathX EqEnv l) = render $ TeXEnv "equation" [] l
+
+  render (TeXMath Dollar l) = "$" <> render l <> "$"
+  render (TeXMath Square l) = "\\[" <> render l <> "\\]\n"
+  render (TeXMath Parentheses l) = "\\(" <> render l <> "\\)\n"
 
   render (TeXLineBreak m b) = "\\\\" <> maybe mempty (\x -> "[" <> render x <> "]") m <> ( if b then "*" else mempty )
 

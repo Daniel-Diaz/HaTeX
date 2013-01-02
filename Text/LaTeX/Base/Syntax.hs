@@ -30,7 +30,7 @@ data Measure =
  | CustomMeasure LaTeX -- ^ You can introduce a 'LaTeX' expression as a measure.
    deriving (Eq, Show)
 
-data MathType = MathEnv | DispEnv | EqEnv | Parentheses | Square | Dollar
+data MathType = Parentheses | Square | Dollar
   deriving (Eq,Show,Ord)
 
 -- | Type of @LaTeX@ blocks.
@@ -44,8 +44,7 @@ data LaTeX =
                                 -- First argument is the name of the environment.
                                 -- Second, its arguments.
                                 -- Third, its content.
- | TeXMath LaTeX -- ^ Mathematical expressions.
- | TeXMathX MathType LaTeX -- ^ Mathematical expressions (experimental).
+ | TeXMath MathType LaTeX -- ^ Mathematical expressions.
  | TeXLineBreak (Maybe Measure) Bool -- ^ Line break command.
  | TeXOp String LaTeX LaTeX -- ^ Operators.
  | TeXBraces LaTeX -- ^ A expression between braces.

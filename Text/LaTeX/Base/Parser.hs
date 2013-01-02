@@ -266,19 +266,19 @@ where
   dolMath = do
     _ <- char dol 
     b <- mconcat <$> block `manyTill` char dol
-    return $ TeXMathX Dollar b -- []
+    return $ TeXMath Dollar b -- []
 
   math :: MathType -> Text -> Parser LaTeX
   math t eMath = do
      b <- mconcat <$> block `manyTill` try (string eMath)
-     return $ TeXMathX t b -- []
+     return $ TeXMath t b -- []
 
   mathEnvironment :: Text -> Parser LaTeX
   mathEnvironment e = 
     let eMath = end `T.snoc` '{' <> e `T.snoc` '}'
         mType = name2MathType e
      in do b <- mconcat <$> block `manyTill` try (string eMath)
-           return $ TeXMathX mType b -- []
+           return $ TeXMath mType b -- []
 
   ------------------------------------------------------------------------
   -- Comment 
@@ -300,9 +300,6 @@ where
   name2MathType :: Text -> MathType
   name2MathType n = 
     case T.unpack n of
-      "math"        -> MathEnv
-      "displaymath" -> DispEnv
-      "equation"    -> EqEnv
       "\\("         -> Parentheses
       "\\["         -> Square
       _             -> Dollar

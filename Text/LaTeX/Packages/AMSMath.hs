@@ -103,11 +103,11 @@ amsmath = "amsmath"
 
 -- | Inline mathematical expressions.
 math :: LaTeXC l => l -> l
-math = liftL TeXMath
+math = liftL $ TeXMath Dollar
 
 -- | Displayed mathematical expressions, i.e. in a seperate line / block.
 mathDisplay :: LaTeXC l => l -> l
-mathDisplay = liftL $ TeXMathX Square    -- \[ ... \]
+mathDisplay = liftL $ TeXMath Square    -- \[ ... \]
 
 
 -------------------------------------
