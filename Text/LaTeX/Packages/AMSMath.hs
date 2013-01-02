@@ -133,9 +133,9 @@ autoAngleBrackets x = comm0 "left"<>langle <> x <> comm0 "right"<>rangle
 -- | Use custom LaTeX expressions as auto-scaled delimiters to surround math.
 -- Suitable delimiters include |...| (absolute value), ‖...‖ (norm,
 -- 'dblPipe'), ⌊...⌋ (round-off Gauss brackets, 'lfloor' / 'rfloor') etc..
-autoBrackets :: LaTeXC l => LaTeX -> LaTeX -> l -> l
+autoBrackets :: LaTeXC l => l -> l -> l -> l
 autoBrackets lBrack rBrack x
-  = comm0 "left"<>braces(fromLaTeX lBrack) <> x <> comm0 "right"<>braces(fromLaTeX rBrack)
+  = comm0 "left" <> braces lBrack <> x <> comm0 "right" <> braces rBrack
 
 
 -- | Left angle bracket, 〈.
