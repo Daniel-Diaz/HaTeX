@@ -150,8 +150,7 @@ module Text.LaTeX.Base.Commands
  , huge
  , huge2
    -- ** Environments
- , equation
- , equation_
+   -- | Math environments, such as @equation@, defined in "Text.LaTeX.Packages.AMSMath".
  , enumerate
  , itemize
  , item
@@ -311,12 +310,6 @@ appendix = comm0 "appendix"
 item :: LaTeXC l => Maybe l -> l
 item Nothing    = commS "item "
 item (Just opt) = liftL (\opt -> TeXComm "item" [OptArg opt]) opt
-
-equation :: LaTeXC l => l -> l
-equation = liftL $ TeXEnv "equation" []
-
-equation_ :: LaTeXC l => l -> l
-equation_ = liftL $ TeXEnv "equation*" []
 
 enumerate :: LaTeXC l => l -> l
 enumerate = liftL $ TeXEnv "enumerate" []

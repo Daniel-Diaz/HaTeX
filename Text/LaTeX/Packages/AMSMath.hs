@@ -3,8 +3,12 @@
 module Text.LaTeX.Packages.AMSMath
  ( -- * AMSMath package
    amsmath
-   -- * AMSMath functions
+   -- * Math Environments
  , math, mathDisplay
+ , equation , equation_
+ , align , align_
+   -- ** Referencing
+ , eqref , nonumber
    -- * Symbols and utilities
    -- | The unicode approximations do, of course, not reliably represent how
    --   LaTeX renders these symbols.
@@ -90,9 +94,12 @@ module Text.LaTeX.Packages.AMSMath
    ) where
 
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Render(render)
 import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Commands (raw,between)
+import Text.LaTeX.Base.Commands (raw,between,label,lnbk,(&))
 import Text.LaTeX.Base.Types
+
+import Data.List
 
 -- | AMSMath package.
 -- Example:
@@ -109,6 +116,32 @@ math = liftL $ TeXMath Dollar
 mathDisplay :: LaTeXC l => l -> l
 mathDisplay = liftL $ TeXMath Square    -- \[ ... \]
 
+
+-- | A reference to a numbered equation. Use with a 'label' defined in the
+-- scope of the equation refered to.
+eqref :: LaTeXC l => l -> l
+eqref = liftL $ \l -> TeXComm "eqref" [FixArg . TeXRaw $ render l]
+
+-- | Prevent an equation from being numbered, where the environment would by default do that.
+nonumber :: LaTeXC l => l
+nonumber = comm0 "nonumber"
+
+-- | A numbered mathematical equation (or otherwise math expression).
+equation :: LaTeXC l => l -> l
+equation = liftL $ TeXEnv "equation" []
+
+-- | The unnumbered variant of 'equation'.
+equation_ :: LaTeXC l => l -> l
+equation_ = liftL $ TeXEnv "equation*" []
+
+-- | An array of aligned equations. Use '&' to specify the points that should
+-- horizontally match. Each equation is numbered, unless prevented by 'nonumber'.
+align :: LaTeXC l => [l] -> l
+align = liftL(TeXEnv "align" []) . mconcat . intersperse lnbk 
+
+-- | The unnumbered variant of 'align'.
+align_ :: LaTeXC l => [l] -> l
+align_ = liftL(TeXEnv "align*" []) . mconcat . intersperse lnbk 
 
 -------------------------------------
 ------- Symbols and utilities -------
