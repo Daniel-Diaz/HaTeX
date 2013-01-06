@@ -51,7 +51,6 @@ module Text.LaTeX.Packages.AMSMath
  , setminus
    -- *** Misc operators
  , vee , wedge
- 
  , oplus , ominus , otimes
  , oslash , odot
  
@@ -133,10 +132,9 @@ autoAngleBrackets x = comm0 "left"<>langle <> x <> comm0 "right"<>rangle
 -- | Use custom LaTeX expressions as auto-scaled delimiters to surround math.
 -- Suitable delimiters include |...| (absolute value), ‖...‖ (norm,
 -- 'dblPipe'), ⌊...⌋ (round-off Gauss brackets, 'lfloor' / 'rfloor') etc..
-autoBrackets :: LaTeXC l => l -> l -> l -> l
+autoBrackets :: LaTeXC l => LaTeX -> LaTeX -> l -> l
 autoBrackets lBrack rBrack x
-  = comm0 "left" <> braces lBrack <> x <> comm0 "right" <> braces rBrack
-
+  = comm0 "left" <> braces (fromLaTeX lBrack) <> x <> comm0 "right" <> braces (fromLaTeX rBrack)
 
 -- | Left angle bracket, 〈.
 langle :: LaTeXC l => l

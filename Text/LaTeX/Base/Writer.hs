@@ -19,7 +19,7 @@
 --
 -- Since 'LaTeXT' is a monad transformer, you can do also:
 --
--- > anotherExample :: Monad m => LaTeXT m ()
+-- > anotherExample :: LaTeXT IO ()
 -- > anotherExample = lift (readFile "foo") >>= verbatim . fromString
 --
 -- This way, it is easy (without carrying arguments) to include IO outputs
@@ -86,6 +86,7 @@ instance Monad m => Monad (LaTeXT m) where
   (a,_) <- c
   let LaTeXT c' = f a
   c'
+ fail = throwError
 
 instance MonadIO m => MonadIO (LaTeXT m) where
  liftIO = lift . liftIO
@@ -134,7 +135,7 @@ liftFun f (LaTeXT c) = LaTeXT $ do
  (p,l) <- lift $ runWriterT c
  tell $ f l
  return p
- 
+
 
 -- | Lift an operator over 'LaTeX' values to an operator
 --   acting over the state of two 'LaTeXT' computations.
@@ -176,5 +177,5 @@ instance Monad m => IsString (LaTeXT m a) where
 
 -- | 'mappend' @=@ '>>'.
 instance Monad m => Monoid (LaTeXT m a) where
- mempty = return undefined
+ mempty = throwError "LaTeXT: mempty!"
  mappend = (>>)

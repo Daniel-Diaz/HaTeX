@@ -33,8 +33,6 @@ where
 
   import           Text.LaTeX.Base.Syntax
 
-  import           GHC.Float (double2Float)
-
   ------------------------------------------------------------------------
   -- | Parses a Text sequence at once;
   --   may fail or conclude.
@@ -128,12 +126,9 @@ where
   env :: Parser LaTeX
   env = do
     n  <- envName begin
-    if n `elem` [mathEnv, displayEnv, eqEnv]
-      then mathEnvironment n
-      else do
-        as <- cmdArgs
-        b  <- envBody n 
-        return $ TeXEnv (T.unpack n) as b
+    as <- cmdArgs
+    b  <- envBody n 
+    return $ TeXEnv (T.unpack n) as b
 
   envName :: Text -> Parser Text
   envName k = do
@@ -273,13 +268,6 @@ where
      b <- mconcat <$> block `manyTill` try (string eMath)
      return $ TeXMath t b -- []
 
-  mathEnvironment :: Text -> Parser LaTeX
-  mathEnvironment e = 
-    let eMath = end `T.snoc` '{' <> e `T.snoc` '}'
-        mType = name2MathType e
-     in do b <- mconcat <$> block `manyTill` try (string eMath)
-           return $ TeXMath mType b -- []
-
   ------------------------------------------------------------------------
   -- Comment 
   ------------------------------------------------------------------------
@@ -297,21 +285,9 @@ where
   isSpecial :: Char -> Bool
   isSpecial = (`elem` specials) -- [bsl, oSq, oPa, oBr, eBr]
 
-  name2MathType :: Text -> MathType
-  name2MathType n = 
-    case T.unpack n of
-      "\\("         -> Parentheses
-      "\\["         -> Square
-      _             -> Dollar
-
   begin, end :: Text
   begin     = T.pack "\\begin"
   end       = T.pack "\\end"
-
-  mathEnv, displayEnv, eqEnv :: Text
-  mathEnv    = T.pack "math"
-  displayEnv = T.pack "displaymath"
-  eqEnv      = T.pack "equation"
 
   endCmd :: Char -> Bool
   endCmd = flip elem symbols

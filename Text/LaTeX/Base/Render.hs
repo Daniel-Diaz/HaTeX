@@ -109,8 +109,8 @@ instance Render LaTeX where
    <> "}"
 
   render (TeXMath Dollar l) = "$" <> render l <> "$"
-  render (TeXMath Square l) = "\\[" <> render l <> "\\]\n"
-  render (TeXMath Parentheses l) = "\\(" <> render l <> "\\)\n"
+  render (TeXMath Square l) = "\\[" <> render l <> "\\]"
+  render (TeXMath Parentheses l) = "\\(" <> render l <> "\\)"
 
   render (TeXLineBreak m b) = "\\\\" <> maybe mempty (\x -> "[" <> render x <> "]") m <> ( if b then "*" else mempty )
 
@@ -120,7 +120,8 @@ instance Render LaTeX where
 
   render (TeXComment c) =
    let xs = Data.Text.lines c
-   in  (" " <>) $ Data.Text.unlines $ fmap ("% " <>) xs
+   in if null xs then "%\n"
+                 else Data.Text.unlines $ fmap ("%" <>) xs
 
   render (TeXSeq l1 l2) = render l1 <> render l2
   render TeXEmpty = mempty
