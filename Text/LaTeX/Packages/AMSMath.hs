@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | \AMSMath\ support. Also numeric instances ('Num', 'Fractional' and 'Floating') for 'LaTeX' and 'LaTeXT'.
 module Text.LaTeX.Packages.AMSMath
  ( -- * AMSMath package
    amsmath
@@ -31,10 +32,12 @@ module Text.LaTeX.Packages.AMSMath
  , sec , csc
  , texp
  , tlog , ln
+ , tsqrt
    -- ** Operator symbols
    -- *** Arithmetic
  , pm , mp
  , cdot , times , div_
+ , frac
  , (*:) , star
  , circ , bullet
    -- *** Comparison
@@ -88,10 +91,9 @@ module Text.LaTeX.Packages.AMSMath
  , mathit
    ) where
 
+import Text.LaTeX.Base
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Commands (raw,between)
-import Text.LaTeX.Base.Types
 
 -- | AMSMath package.
 -- Example:
@@ -106,8 +108,98 @@ math = liftL $ TeXMath Dollar
 
 -- | Displayed mathematical expressions, i.e. in a seperate line / block.
 mathDisplay :: LaTeXC l => l -> l
-mathDisplay = liftL $ TeXMath Square    -- \[ ... \]
+mathDisplay = liftL $ TeXMath Square
 
+-------------------------------------------------------
+-- Numeric instances for LaTeX and LaTeXT --
+-------------------------------------------------------
+
+----------- LaTeX instances
+
+-- | Careful! Method 'signum' is undefined. Don't use it!
+instance Num LaTeX where
+ (+) = TeXOp "+"
+ (-) = TeXOp "-"
+ (*) = (<>)
+ negate = (TeXEmpty -)
+ fromInteger = rendertex
+ abs = autoBrackets "|" "|"
+ -- Non-defined methods
+ signum _ = error "Cannot use \"signum\" Num method with a LaTeX value."
+
+-- | Division uses the LaTeX 'frac' command.
+instance Fractional LaTeX where
+ (/) = frac
+ fromRational = rendertex . (fromRational :: Rational -> Double)
+
+-- | Undefined methods: 'asinh', 'atanh' and 'acosh'.
+instance Floating LaTeX where
+ pi = pi_
+ exp = (texp <>)
+ sqrt = tsqrt Nothing
+ log = (tlog <>)
+ (**) = (^:)
+ logBase b x = (tlog !: b) <> x
+ sin = (tsin <>)
+ tan = (ttan <>)
+ cos = (tcos <>)
+ asin = (arcsin <>)
+ atan = (arctan <>)
+ acos = (arccos <>)
+ sinh = (tsinh <>)
+ tanh = (ttanh <>)
+ cosh = (tcosh <>)
+ -- Non-defined methods
+ asinh = error "Function 'asinh' is not defined in AMSMath!"
+ atanh = error "Function 'atabh' is not defined in AMSMath!"
+ acosh = error "Function 'acosh' is not defined in AMSMath!"
+
+----------- LaTeXT instances
+
+-- | Warning: this instance only exists for the 'Num' instance.
+instance Monad m => Eq (LaTeXT m a) where
+ _ == _ = error "Cannot use \"(==)\" Eq method with a LaTeXT value."
+
+-- | Warning: this instance only exists for the 'Num' instance.
+instance Monad m => Show (LaTeXT m a) where
+ show _ = error "Cannot use \"show\" Show method with a LaTeXT value."
+
+-- | Careful! Method 'signum' is undefined. Don't use it!
+instance Monad m => Num (LaTeXT m a) where
+ (+) = liftOp (+)
+ (-) = liftOp (-)
+ (*) = (>>)
+ negate = liftFun negate
+ fromInteger = fromLaTeX . fromInteger
+ abs = liftFun abs
+ -- Non-defined methods
+ signum _ = error "Cannot use \"signum\" Num method with a LaTeXT value."
+
+-- | Division uses the LaTeX 'frac' command.
+instance Monad m => Fractional (LaTeXT m a) where
+ (/) = liftOp (/)
+ fromRational = fromLaTeX . fromRational
+
+instance Monad m => Floating (LaTeXT m a) where
+ pi = pi_
+ exp = liftFun exp
+ sqrt = liftFun sqrt
+ log = liftFun log
+ (**) = liftOp (**)
+ logBase = liftOp logBase
+ sin = liftFun sin
+ tan = liftFun tan
+ cos = liftFun cos
+ asin = liftFun asin
+ atan = liftFun atan
+ acos = liftFun acos
+ sinh = liftFun sinh
+ tanh = liftFun tanh
+ cosh = liftFun cosh
+ -- Non-defined methods
+ asinh = error "Function 'asinh' is not defined in AMSMath!"
+ atanh = error "Function 'atabh' is not defined in AMSMath!"
+ acosh = error "Function 'acosh' is not defined in AMSMath!"
 
 -------------------------------------
 ------- Symbols and utilities -------
@@ -163,9 +255,6 @@ rceil = comm0 "rceil"
 -- | Double vertical line, used as delimiter for norms (‖ ... ‖).
 dblPipe :: LaTeXC l => l
 dblPipe = comm0 "|"
-
-
-
 
 -- | Superscript.
 (^:) :: LaTeXC l => l -> l -> l
@@ -245,6 +334,12 @@ tlog = comm0 "log"
 ln :: LaTeXC l => l
 ln = comm0 "ln"
 
+-- | Root notation. Use @tsqrt (Just n) x@ for the @n@th root of @x@.
+--   When 'Nothing' is supplied, the function will output a square root.
+tsqrt :: LaTeXC l => Maybe l -> l -> l
+tsqrt Nothing  = liftL $ \x -> TeXComm "sqrt" [FixArg x]
+tsqrt (Just n) = liftL2 (\n x -> TeXComm "sqrt" [OptArg n, FixArg x]) $ n
+
 ---- Operator symbols
 
 -- | Negative form of an operator.
@@ -276,6 +371,10 @@ times = between $ comm0 "times"
 div_ :: LaTeXC l => l -> l -> l
 div_  = between $ comm0 "div"
 
+-- | Fraction operator.
+frac :: LaTeXC l => l -> l -> l
+frac = liftL2 $ \p q -> TeXComm "frac" [FixArg p, FixArg q]
+
 infixl 7 *:
 
 -- | Asterisk operator (*).
@@ -295,9 +394,6 @@ circ  = between $ comm0 "circ"
 -- | Bullet operator (∙).
 bullet :: LaTeXC l => l -> l -> l
 bullet  = between $ comm0 "bullet"
-
-
-
 
 infixr 4 =: , /=:
 
