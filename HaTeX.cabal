@@ -68,6 +68,5 @@ Library
         Text.LaTeX.Packages.Trees
           Text.LaTeX.Packages.Trees.Qtree
   Other-modules: Paths_HaTeX
-  Extensions: GeneralizedNewtypeDeriving
-            , OverloadedStrings
+  Extensions: OverloadedStrings
             , CPP

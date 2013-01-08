@@ -52,6 +52,8 @@ import Data.Monoid
 
 -- Num and Fractional instances for LaTeX and LaTeXT
 
+----------- LaTeX instances
+
 -- | Careful! Method 'signum' is undefined. Don't use it!
 instance Num LaTeX where
  (+) = TeXOp "+"
@@ -66,13 +68,15 @@ instance Num LaTeX where
 -- | Division uses the LaTeX @frac@ command.
 instance Fractional LaTeX where
  p / q = TeXComm "frac" [FixArg p, FixArg q]
- fromRational = rendertex . (fromRational :: Rational -> Float)
+ fromRational = rendertex . (fromRational :: Rational -> Double)
 
--- | Warning: this instance only exist for the 'Num' instance.
+----------- LaTeXT instances
+
+-- | Warning: this instance only exists for the 'Num' instance.
 instance Monad m => Eq (LaTeXT m a) where
  _ == _ = error "Cannot use \"(==)\" Eq method with a LaTeXT value."
 
--- | Warning: this instance only exist for the 'Num' instance.
+-- | Warning: this instance only exists for the 'Num' instance.
 instance Monad m => Show (LaTeXT m a) where
  show _ = error "Cannot use \"show\" Show method with a LaTeXT value."
 

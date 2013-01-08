@@ -1,6 +1,4 @@
 
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-
 -- | The writer monad applied to 'LaTeX' values. Useful to compose 'LaTeX' values
 --   using the @do@ notation:
 --
