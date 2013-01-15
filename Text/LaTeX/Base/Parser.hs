@@ -290,7 +290,10 @@ where
   end       = T.pack "\\end"
 
   endCmd :: Char -> Bool
-  endCmd = flip elem symbols
+  endCmd c = notLowercaseAlph && notUppercaseAlph
+   where c' = fromEnum c
+         notLowercaseAlph = c' < fromEnum 'a' || c' > fromEnum 'z'
+         notUppercaseAlph = c' < fromEnum 'A' || c' > fromEnum 'Z'
 
   nul, eol, spc :: Char
   nul  = '\0'
