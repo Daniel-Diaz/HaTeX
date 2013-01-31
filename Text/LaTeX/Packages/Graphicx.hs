@@ -60,11 +60,11 @@ data IGOption =
 instance Render IGOption where
  render (IGWidth m) = "width=" <> render m
  render (IGHeight m) = "height=" <> render m
- render (KeepAspectRatio b) = "keepaspectratio=" <> (fromString $ fmap toLower $ show b)
+ render (KeepAspectRatio b) = "keepaspectratio=" <> fromString (fmap toLower $ show b)
  render (IGScale r) = "scale=" <> render r
  render (IGAngle a) = "angle=" <> render a
  render (IGTrim l b r t) = "trim=" <> renderChars ' ' [l,b,r,t]
- render (IGClip b) = "clip=" <> (fromString $ fmap toLower $ show b)
+ render (IGClip b) = "clip=" <> fromString (fmap toLower $ show b)
  render (IGPage p) = "page=" <> render p
 
 -- | Include an image in the document.

@@ -91,7 +91,6 @@ module Text.LaTeX.Base.Commands
  -- *** HaTeX specific
  , hatex
  , hatex3
- , hatex_meta
  , version
  , hatex_version
  -- ** Document layout
@@ -843,10 +842,6 @@ hatex = mbox $ "H"
 -- | Print the HaTeX 3 logo.
 hatex3 :: LaTeXC l => l
 hatex3 = hatex <> emph (textbf "3")
-
--- | Print the HaTeX-meta logo.
-hatex_meta :: LaTeXC l => l
-hatex_meta = hatex <> emph (textsc "-meta")
 
 -- | Print the HaTeX logo, beside the complete version number.
 hatex_version :: LaTeXC l => l

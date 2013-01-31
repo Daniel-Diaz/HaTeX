@@ -339,14 +339,14 @@ ln = comm0 "ln"
 --   When 'Nothing' is supplied, the function will output a square root.
 tsqrt :: LaTeXC l => Maybe l -> l -> l
 tsqrt Nothing  = liftL $ \x -> TeXComm "sqrt" [FixArg x]
-tsqrt (Just n) = liftL2 (\n x -> TeXComm "sqrt" [OptArg n, FixArg x]) $ n
+tsqrt (Just n) = liftL2 (\n x -> TeXComm "sqrt" [OptArg n, FixArg x]) n
 
 ---- Operator symbols
 
 -- | Negative form of an operator.
 notop :: LaTeXC l =>
          (l -> l -> l)
-      -> (l -> l -> l)
+      ->  l -> l -> l
 notop op =
  \l1 l2 ->
    (l1 <> commS "not") `op` l2

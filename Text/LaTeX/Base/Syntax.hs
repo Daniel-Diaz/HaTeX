@@ -20,8 +20,15 @@ import Data.Text (Text,concatMap)
 import Data.Monoid
 import Data.String
 
+-- | Measure units defined in LaTeX. Use 'CustomMeasure' to use commands like 'textwidth'.
+--   For instance:
+--
+-- > rule Nothing (CustomMeasure linewidth) (Pt 2)
+--
+-- This will create a black box (see 'rule') as wide as the text and two points tall.
+--
 data Measure =
-   Pt Int   -- ^ A point is 1/72.27 inch, that means about 0.0138 inch or 0.3515 mm.
+   Pt Int    -- ^ A point is 1/72.27 inch, that means about 0.0138 inch or 0.3515 mm.
  | Mm Double -- ^ Millimeter.
  | Cm Double -- ^ Centimeter.
  | In Double -- ^ Inch.
@@ -30,6 +37,7 @@ data Measure =
  | CustomMeasure LaTeX -- ^ You can introduce a 'LaTeX' expression as a measure.
    deriving (Eq, Show)
 
+-- | Different types of syntax for mathematical expressions.
 data MathType = Parentheses | Square | Dollar
   deriving (Eq,Show,Ord)
 
