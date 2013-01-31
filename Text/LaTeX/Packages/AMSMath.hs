@@ -180,6 +180,7 @@ instance Monad m => Fractional (LaTeXT m a) where
  (/) = liftOp (/)
  fromRational = fromLaTeX . fromRational
 
+-- | Undefined methods: 'asinh', 'atanh' and 'acosh'.
 instance Monad m => Floating (LaTeXT m a) where
  pi = pi_
  exp = liftFun exp
