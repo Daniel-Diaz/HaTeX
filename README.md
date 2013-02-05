@@ -2,8 +2,8 @@
 
 `HaTeX` is the LaTeX syntax implementation done in Haskell.
 
-Check a list of examples of usage in the [examples](https://github.com/Daniel-Diaz/HaTeX/tree/master/Examples) directory.
-A good starting point may be [simple.hs](https://github.com/Daniel-Diaz/HaTeX/blob/master/Examples/simple.hs).
+Check a list of examples of usage in the [examples](Examples/) directory.
+A good starting point may be [simple.hs](Examples/simple.hs).
 
 ## TODO list
 
