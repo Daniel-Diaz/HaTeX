@@ -37,6 +37,12 @@ import qualified Data.ByteString as B
 --
 -- Consider also to use 'rendertex' to get 'Render'able values
 -- into 'LaTeX' blocks.
+--
+-- If you want to make a type instance of 'Render' and you already
+-- have a 'Show' instance, you can use the default instance.
+--
+-- > render = fromString . show
+--
 class Show a => Render a where
  render :: a -> Text
  --
