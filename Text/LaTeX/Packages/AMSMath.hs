@@ -89,11 +89,15 @@ module Text.LaTeX.Packages.AMSMath
  , mathsf
  , mathtt
  , mathit
+   -- * Matrices
+ , pmatrix
    ) where
 
 import Text.LaTeX.Base
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
+-- Matrices
+import Data.Matrix
 
 -- | AMSMath package.
 -- Example:
@@ -709,7 +713,7 @@ mathbf = liftL $ \l -> TeXComm "mathbf" [FixArg l]
 
 -- | Roman, i.e. not-italic math.
 mathrm :: LaTeXC l => l -> l
-mathrm =liftL $ \l -> TeXComm "mathrm" [FixArg l]
+mathrm = liftL $ \l -> TeXComm "mathrm" [FixArg l]
 
 -- | Calligraphic math symbols.
 mathcal :: LaTeXC l => l -> l
@@ -727,3 +731,18 @@ mathtt = liftL $ \l -> TeXComm "mathtt" [FixArg l]
 --   intended for multi-character symbols rather than juxtaposition of single-character symbols.
 mathit :: LaTeXC l => l -> l
 mathit = liftL $ \l -> TeXComm "mathit" [FixArg l]
+
+-------------------------------------
+------------- Matrices --------------
+
+matrix2tex :: Render a => Matrix a -> LaTeX
+matrix2tex m = mconcat
+ [ foldr1 (&) [ rendertex $ m ! (i,j)
+     | j <- [1 .. ncols m]
+     ] <> lnbk
+     | i <- [1 .. nrows m]
+   ]
+
+pmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+pmatrix Nothing  = fromLaTeX . TeXEnv "pmatrix"  []                     . matrix2tex
+pmatrix (Just p) = fromLaTeX . TeXEnv "pmatrix*" [OptArg $ rendertex p] . matrix2tex

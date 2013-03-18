@@ -7,7 +7,7 @@ module Text.LaTeX.Base.Types (
  , PackageName
  , Label
  , createLabel , labelName
- , Pos (..)
+ , Pos (..) , HPos (..)
  , TableSpec (..)
  , Measure (..)
  ) where
@@ -42,6 +42,13 @@ instance Render Pos where
  render Bottom = "b"
  render Center = "c"
  render Top    = "t"
+
+data HPos = HLeft | HCenter | HRight deriving Show
+
+instance Render HPos where
+ render HLeft   = "l"
+ render HCenter = "c"
+ render HRight  = "r"
 
 data TableSpec =
    LeftColumn         -- ^ Left-justified column.

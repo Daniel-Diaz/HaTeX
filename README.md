@@ -8,10 +8,11 @@ A good starting point may be [simple.hs](Examples/simple.hs).
 ## TODO list
 
 * Add more examples.
-* More testing on the parser. Parsing of comments.
+* More testing on the parser.
 * Add more documentation.
-* A more complete `AMSMath` module.
+* A more complete `AMSMath` module. Split environment equations.
 * Implement more packages (fontenc, geometry, babel, array, ...).
+* BibTeX support.
 
 ## Installation notes
 

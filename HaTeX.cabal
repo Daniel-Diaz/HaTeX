@@ -7,7 +7,7 @@ License: BSD3
 License-file: license
 Maintainer: Daniel Díaz (dhelta `dot` diaz `at` gmail `dot` com)
 Stability: Experimental
-Bug-reports: dhelta `dot` diaz `at` gmail `dot` com
+Bug-reports: https://github.com/Daniel-Diaz/HaTeX/issues
 Synopsis: The Haskell LaTeX library.
 Description: The LaTeX project site states: \"LaTeX is a high-quality typesetting system\". This library provides
              a bridge between that system and Haskell (i.e. it is a LaTeX DSL).
@@ -21,7 +21,6 @@ Description: The LaTeX project site states: \"LaTeX is a high-quality typesettin
              It would be good to get you started. Download the HaTeX User's Guide from
              <https://github.com/downloads/Daniel-Diaz/HaTeX-Guide/HaTeX-Guide.pdf>.
 Cabal-version: >= 1.6
-Tested-with: GHC == 7.0.3 , GHC == 7.4.1
 Extra-source-files:
   ReleaseNotes
   README.md
@@ -42,6 +41,7 @@ Library
                , transformers >= 0.2.2 && < 0.4
                , text
                , attoparsec
+               , matrix
   Exposed-modules:
     Text.LaTeX
       -- Base (Core of the library)
