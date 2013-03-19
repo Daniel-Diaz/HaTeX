@@ -18,8 +18,8 @@ Description: The LaTeX project site states: \"LaTeX is a high-quality typesettin
              to pretty-printing values, ...
              .
              See the @examples@ directory in the source distribution to look some simple examples.
-             It would be good to get you started. Download the HaTeX User's Guide from
-             <https://github.com/downloads/Daniel-Diaz/HaTeX-Guide/HaTeX-Guide.pdf>.
+             It would be good to get you started. HaTeX User's Guide is available at
+             <https://github.com/Daniel-Diaz/HaTeX-Guide>.
 Cabal-version: >= 1.6
 Extra-source-files:
   ReleaseNotes
