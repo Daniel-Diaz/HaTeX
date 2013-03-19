@@ -90,7 +90,9 @@ module Text.LaTeX.Packages.AMSMath
  , mathtt
  , mathit
    -- * Matrices
- , pmatrix
+ , pmatrix  , bmatrix
+ , b2matrix , vmatrix
+ , v2matrix
    ) where
 
 import Text.LaTeX.Base
@@ -743,6 +745,47 @@ matrix2tex m = mconcat
      | i <- [1 .. nrows m]
    ]
 
+-- | LaTeX rendering of a matrix using @pmatrix@.Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > ( M )
+--
 pmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 pmatrix Nothing  = fromLaTeX . TeXEnv "pmatrix"  []                     . matrix2tex
 pmatrix (Just p) = fromLaTeX . TeXEnv "pmatrix*" [OptArg $ rendertex p] . matrix2tex
+
+-- | LaTeX rendering of a matrix using @bmatrix@. Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > [ M ]
+--
+bmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+bmatrix Nothing  = fromLaTeX . TeXEnv "bmatrix"  []                     . matrix2tex
+bmatrix (Just p) = fromLaTeX . TeXEnv "bmatrix*" [OptArg $ rendertex p] . matrix2tex
+
+-- | LaTeX rendering of a matrix using @Bmatrix@. Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > { M }
+--
+b2matrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+b2matrix Nothing  = fromLaTeX . TeXEnv "Bmatrix"  []                     . matrix2tex
+b2matrix (Just p) = fromLaTeX . TeXEnv "Bmatrix*" [OptArg $ rendertex p] . matrix2tex
+
+-- | LaTeX rendering of a matrix using @vmatrix@. Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > | M |
+--
+vmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+vmatrix Nothing  = fromLaTeX . TeXEnv "vmatrix"  []                     . matrix2tex
+vmatrix (Just p) = fromLaTeX . TeXEnv "vmatrix*" [OptArg $ rendertex p] . matrix2tex
+
+-- | LaTeX rendering of a matrix using @Vmatrix@. Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > || M ||
+--
+v2matrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+v2matrix Nothing  = fromLaTeX . TeXEnv "Vmatrix"  []                     . matrix2tex
+v2matrix (Just p) = fromLaTeX . TeXEnv "Vmatrix*" [OptArg $ rendertex p] . matrix2tex

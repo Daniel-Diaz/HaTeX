@@ -15,6 +15,7 @@ matrices = do
 thePreamble :: Monad m => LaTeXT_ m
 thePreamble = do
  documentclass [] article
+ -- You need to import 'amsmath' to use 'pmatrix'.
  usepackage [] amsmath
 
 theBody :: Monad m => LaTeXT_ m
