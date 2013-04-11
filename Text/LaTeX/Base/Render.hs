@@ -34,10 +34,23 @@ import qualified Data.ByteString as B
 -- You mainly will use this to obtain the 'Text' output
 -- of a 'LaTeX' value. If you are going to write the result
 -- in a file, consider to use 'renderFile'.
+--
+-- Consider also to use 'rendertex' to get 'Render'able values
+-- into 'LaTeX' blocks.
+--
+-- If you want to make a type instance of 'Render' and you already
+-- have a 'Show' instance, you can use the default instance.
+--
+-- > render = fromString . show
+--
 class Show a => Render a where
  render :: a -> Text
  --
  render = fromString . show
+
+-- | This instance escapes LaTeX reserved characters.
+instance Render Text where
+ render = protectText
 
 -- | Render every element of a list and append results.
 renderAppend :: Render a => [a] -> Text

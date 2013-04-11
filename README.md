@@ -2,16 +2,17 @@
 
 `HaTeX` is the LaTeX syntax implementation done in Haskell.
 
-Check a list of examples of usage in the [examples](https://github.com/Daniel-Diaz/HaTeX/tree/master/Examples) directory.
-A good starting point may be [simple.hs](https://github.com/Daniel-Diaz/HaTeX/blob/master/Examples/simple.hs).
+Check a list of examples of usage in the [examples](Examples/) directory.
+A good starting point may be [simple.hs](Examples/simple.hs).
 
 ## TODO list
 
 * Add more examples.
-* More testing on the parser. Parsing of comments.
+* More testing on the parser.
 * Add more documentation.
-* A more complete `AMSMath` module.
+* A more complete `AMSMath` module. Split environment equations.
 * Implement more packages (fontenc, geometry, babel, array, ...).
+* BibTeX support.
 
 ## Installation notes
 

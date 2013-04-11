@@ -67,19 +67,23 @@ import Control.Monad (liftM)
 newtype LaTeXT m a =
   LaTeXT { unwrapLaTeXT :: WriterT LaTeX m (a,Maybe String) }
 
-instance Functor m => Functor (LaTeXT m) where
+instance Functor f => Functor (LaTeXT f) where
  fmap f (LaTeXT c) = LaTeXT $ fmap (first f) c
-
-type LaTeXT_ m = LaTeXT m ()
 
 pairNoth :: a -> (a,Maybe b)
 pairNoth x = (x,Nothing)
+
+instance Applicative f => Applicative (LaTeXT f) where
+ pure = LaTeXT . pure . pairNoth
+ (LaTeXT f) <*> (LaTeXT x) = LaTeXT $ fmap (first . fst) f <*> x
+
+type LaTeXT_ m = LaTeXT m ()
 
 instance MonadTrans LaTeXT where
  lift = LaTeXT . liftM pairNoth . lift
 
 instance Monad m => Monad (LaTeXT m) where
- return = lift . return
+ return = LaTeXT . return . pairNoth
  (LaTeXT c) >>= f = LaTeXT $ do 
   (a,_) <- c
   let LaTeXT c' = f a

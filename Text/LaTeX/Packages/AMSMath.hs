@@ -93,6 +93,10 @@ module Text.LaTeX.Packages.AMSMath
  , mathsf
  , mathtt
  , mathit
+   -- * Matrices
+ , pmatrix  , bmatrix
+ , b2matrix , vmatrix
+ , v2matrix
    ) where
 
 import Text.LaTeX.Base
@@ -103,6 +107,9 @@ import Text.LaTeX.Base.Commands (raw,between,label,lnbk,(&))
 import Text.LaTeX.Base.Types
 
 import Data.List
+
+-- Matrices
+import Data.Matrix
 
 -- | AMSMath package.
 -- Example:
@@ -189,6 +196,7 @@ instance Monad m => Fractional (LaTeXT m a) where
  (/) = liftOp (/)
  fromRational = fromLaTeX . fromRational
 
+-- | Undefined methods: 'asinh', 'atanh' and 'acosh'.
 instance Monad m => Floating (LaTeXT m a) where
  pi = pi_
  exp = liftFun exp
@@ -373,14 +381,14 @@ ln = comm0 "ln"
 --   When 'Nothing' is supplied, the function will output a square root.
 tsqrt :: LaTeXC l => Maybe l -> l -> l
 tsqrt Nothing  = liftL $ \x -> TeXComm "sqrt" [FixArg x]
-tsqrt (Just n) = liftL2 (\n x -> TeXComm "sqrt" [OptArg n, FixArg x]) $ n
+tsqrt (Just n) = liftL2 (\n x -> TeXComm "sqrt" [OptArg n, FixArg x]) n
 
 ---- Operator symbols
 
 -- | Negative form of an operator.
 notop :: LaTeXC l =>
          (l -> l -> l)
-      -> (l -> l -> l)
+      ->  l -> l -> l
 notop op =
  \l1 l2 ->
    (l1 <> commS "not") `op` l2
@@ -402,7 +410,7 @@ cdot  = between $ comm0 "cdot"
 times :: LaTeXC l => l -> l -> l
 times = between $ comm0 "times"
 
--- | Division operator (.
+-- | Division operator.
 div_ :: LaTeXC l => l -> l -> l
 div_  = between $ comm0 "div"
 
@@ -743,7 +751,7 @@ mathbf = liftL $ \l -> TeXComm "mathbf" [FixArg l]
 
 -- | Roman, i.e. not-italic math.
 mathrm :: LaTeXC l => l -> l
-mathrm =liftL $ \l -> TeXComm "mathrm" [FixArg l]
+mathrm = liftL $ \l -> TeXComm "mathrm" [FixArg l]
 
 -- | Calligraphic math symbols.
 mathcal :: LaTeXC l => l -> l
@@ -761,3 +769,59 @@ mathtt = liftL $ \l -> TeXComm "mathtt" [FixArg l]
 --   intended for multi-character symbols rather than juxtaposition of single-character symbols.
 mathit :: LaTeXC l => l -> l
 mathit = liftL $ \l -> TeXComm "mathit" [FixArg l]
+
+-------------------------------------
+------------- Matrices --------------
+
+matrix2tex :: Render a => Matrix a -> LaTeX
+matrix2tex m = mconcat
+ [ foldr1 (&) [ rendertex $ m ! (i,j)
+     | j <- [1 .. ncols m]
+     ] <> lnbk
+     | i <- [1 .. nrows m]
+   ]
+
+-- | LaTeX rendering of a matrix using @pmatrix@.Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > ( M )
+--
+pmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+pmatrix Nothing  = fromLaTeX . TeXEnv "pmatrix"  []                     . matrix2tex
+pmatrix (Just p) = fromLaTeX . TeXEnv "pmatrix*" [OptArg $ rendertex p] . matrix2tex
+
+-- | LaTeX rendering of a matrix using @bmatrix@. Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > [ M ]
+--
+bmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+bmatrix Nothing  = fromLaTeX . TeXEnv "bmatrix"  []                     . matrix2tex
+bmatrix (Just p) = fromLaTeX . TeXEnv "bmatrix*" [OptArg $ rendertex p] . matrix2tex
+
+-- | LaTeX rendering of a matrix using @Bmatrix@. Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > { M }
+--
+b2matrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+b2matrix Nothing  = fromLaTeX . TeXEnv "Bmatrix"  []                     . matrix2tex
+b2matrix (Just p) = fromLaTeX . TeXEnv "Bmatrix*" [OptArg $ rendertex p] . matrix2tex
+
+-- | LaTeX rendering of a matrix using @vmatrix@. Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > | M |
+--
+vmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+vmatrix Nothing  = fromLaTeX . TeXEnv "vmatrix"  []                     . matrix2tex
+vmatrix (Just p) = fromLaTeX . TeXEnv "vmatrix*" [OptArg $ rendertex p] . matrix2tex
+
+-- | LaTeX rendering of a matrix using @Vmatrix@. Optional argument sets the alignment
+--   of the cells. Default (providing 'Nothing') is centered.
+--
+-- > || M ||
+--
+v2matrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+v2matrix Nothing  = fromLaTeX . TeXEnv "Vmatrix"  []                     . matrix2tex
+v2matrix (Just p) = fromLaTeX . TeXEnv "Vmatrix*" [OptArg $ rendertex p] . matrix2tex

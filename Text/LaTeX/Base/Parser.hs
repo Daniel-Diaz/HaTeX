@@ -80,6 +80,7 @@ where
     if isMainDoc b then return  b
                    else mappend b <$> blockTillDoc
 
+  -- | Test if a 'LaTeX' block is a @document@ environment.
   isMainDoc :: LaTeX -> Bool
   isMainDoc b = case b of
                   TeXEnv "document" _ _ -> True

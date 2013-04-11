@@ -7,7 +7,7 @@ module Text.LaTeX.Base.Types (
  , PackageName
  , Label
  , createLabel , labelName
- , Pos (..)
+ , Pos (..) , HPos (..)
  , TableSpec (..)
  , Measure (..)
  ) where
@@ -23,9 +23,11 @@ type PackageName = String
 
 newtype Label = Label String deriving (Eq, Show)
 
+-- | Create a label from its name.
 createLabel :: String -> Label
 createLabel = Label
 
+-- | Get the name of a label.
 labelName :: Label -> String
 labelName (Label str) = str
 
@@ -35,13 +37,21 @@ instance Render Label where
 instance IsString Label where
  fromString = createLabel
 
--- | A vertical position.
+-- | Vertical position.
 data Pos = Bottom | Center | Top deriving Show
 
 instance Render Pos where
  render Bottom = "b"
  render Center = "c"
  render Top    = "t"
+
+-- | Horizontal position.
+data HPos = HLeft | HCenter | HRight deriving Show
+
+instance Render HPos where
+ render HLeft   = "l"
+ render HCenter = "c"
+ render HRight  = "r"
 
 data TableSpec =
    LeftColumn         -- ^ Left-justified column.
