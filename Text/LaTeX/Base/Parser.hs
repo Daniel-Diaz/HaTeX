@@ -113,7 +113,7 @@ where
   text2 = do
     _ <- char ']'
     t <- try (text <|> return (TeXRaw T.empty))
-    return $ TeXRaw endlessSq <> t
+    return $ TeXRaw (T.pack "]") <> t
 
   ------------------------------------------------------------------------
   -- Environment
