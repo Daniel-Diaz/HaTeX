@@ -250,26 +250,26 @@ align_ = liftL(TeXEnv "align*" []) . mconcat . intersperse lnbk
 -- | Surround a LaTeX math expression by parentheses whose height
 -- automatically matches the expression's. Translates to @\\left(...\\right)@.
 autoParens :: LaTeXC l => l -> l
-autoParens x = comm0 "left(" <> x <> comm0 "right)"
+autoParens x = commS "left(" <> x <> commS "right)"
 
 -- | Like 'autoParens', but with square brackets. Equivalent to @'autoBrackets'\"[\"\"]\"@.
 autoSquareBrackets :: LaTeXC l => l -> l
-autoSquareBrackets x = comm0 "left[" <> x <> comm0 "right]"
+autoSquareBrackets x = commS "left[" <> x <> commS "right]"
 
 -- | Like 'autoParens', but with curly brackets.
 autoBraces :: LaTeXC l => l -> l
-autoBraces x = comm0 "left"<>"{" <> x <> comm0 "right"<>"}"
+autoBraces x = commS "left"<>"{" <> x <> commS "right"<>"}"
 
 -- | Like 'autoParens', but with angle brackets 〈 ... 〉. Equivalent to @'autoBrackets' 'langle' 'rangle'@.
 autoAngleBrackets :: LaTeXC l => l -> l
-autoAngleBrackets x = comm0 "left"<>langle <> x <> comm0 "right"<>rangle
+autoAngleBrackets x = commS "left"<>langle <> x <> commS "right"<>rangle
 
 -- | Use custom LaTeX expressions as auto-scaled delimiters to surround math.
 -- Suitable delimiters include |...| (absolute value), ‖...‖ (norm,
 -- 'dblPipe'), ⌊...⌋ (round-off Gauss brackets, 'lfloor' / 'rfloor') etc..
 autoBrackets :: LaTeXC l => LaTeX -> LaTeX -> l -> l
 autoBrackets lBrack rBrack x
-  = comm0 "left" <> braces (fromLaTeX lBrack) <> x <> comm0 "right" <> braces (fromLaTeX rBrack)
+  = commS "left" <> braces (fromLaTeX lBrack) <> x <> commS "right" <> braces (fromLaTeX rBrack)
 
 -- | Left angle bracket, 〈.
 langle :: LaTeXC l => l
