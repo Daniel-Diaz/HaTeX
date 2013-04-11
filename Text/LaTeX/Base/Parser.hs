@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE OverloadedStrings #-}
 -------------------------------------------------------------------------------
 -- |
 -- Module     : Text/LaTeX/Base/Parser.hs
@@ -112,7 +113,7 @@ where
   text2 = do
     _ <- char ']'
     t <- try (text <|> return (TeXRaw T.empty))
-    return $ TeXRaw endlessSq <> t
+    return $ TeXRaw (T.pack "]") <> t
 
   ------------------------------------------------------------------------
   -- Environment
@@ -121,12 +122,12 @@ where
   environment = choice [anonym, env]
 
   anonym :: Parser LaTeX
-  anonym = char oBr >> 
-      TeXBraces . mconcat <$> block `manyTill` char eBr
+  anonym = char '{' >> 
+      TeXBraces . mconcat <$> block `manyTill` char '}'
 
   env :: Parser LaTeX
   env = do
-    n  <- envName begin
+    n  <- envName "\\begin"
     as <- cmdArgs
     b  <- envBody n 
     return $ TeXEnv (T.unpack n) as b
@@ -134,22 +135,21 @@ where
   envName :: Text -> Parser Text
   envName k = do
     _ <- string k
-    _ <- char oBr
-    n <- A.takeTill (== eBr)
-    _ <- char eBr
+    _ <- char '{'
+    n <- A.takeTill (== '}')
+    _ <- char '}'
     return n
 
   envBody :: Text -> Parser LaTeX
   envBody n = mconcat <$> block `manyTill` endenv
-    where endenv = try $ string (end `T.snoc` oBr <> n 
-                                     `T.snoc` eBr)
+    where endenv = try $ string ("\\end{" <> n <> "}")
 
   ------------------------------------------------------------------------
   -- Command
   ------------------------------------------------------------------------
   command :: Parser LaTeX
   command = do
-    _    <- char bsl
+    _    <- char '\\'
     mbX  <- peekChar
     case mbX of
       Nothing -> return TeXEmpty
@@ -166,7 +166,7 @@ where
   -- Command Arguments
   ------------------------------------------------------------------------
   cmdArgs :: Parser [TeXArg]
-  cmdArgs = try (whitespace >> string emptyArg >> return [FixArg TeXEmpty])
+  cmdArgs = try (whitespace >> string "{}" >> return [FixArg TeXEmpty])
               <|> many1 cmdArg 
               <|> return []
 
@@ -175,8 +175,8 @@ where
     whitespace
     c <- char '[' <|> char '{'
     let e = case c of
-              '[' -> endlessSq
-              '{' -> endlessBr
+              '[' -> "]"
+              '{' -> "}"
               _   -> error "this cannot happen!"
     b <- mconcat <$> block `manyTill` string e
     case c of  
@@ -196,8 +196,8 @@ where
   special = do
     x <- anyChar
     case x of
-      '('  -> math Parentheses endPa
-      '['  -> math Square      endSq
+      '('  -> math Parentheses "\\)"
+      '['  -> math Square      "\\]"
       '{'  -> lbrace
       '}'  -> rbrace
       '|'  -> vert
@@ -209,10 +209,10 @@ where
   ------------------------------------------------------------------------
   lbreak :: Parser LaTeX
   lbreak = do
-    y <- try (char oSq <|> char str <|> return ' ')  
+    y <- try (char '[' <|> char '*' <|> return ' ')  
     case y of
       '[' -> linebreak False
-      '*' -> do z <- try (char oSq <|> return ' ')
+      '*' -> do z <- try (char '[' <|> return ' ')
                 case z of
                  '[' -> linebreak True
                  _   -> return (TeXLineBreak Nothing True)
@@ -220,9 +220,9 @@ where
 
   linebreak :: Bool -> Parser LaTeX
   linebreak t = do m <- measure
-                   _ <- char eSq
-                   s <- try (char str <|> return ' ')
-                   return $ TeXLineBreak (Just m) (t || s == str)
+                   _ <- char ']'
+                   s <- try (char '*' <|> return ' ')
+                   return $ TeXLineBreak (Just m) (t || s == '*')
 
   measure :: Parser Measure
   measure = try  (double >>= unit)
@@ -260,8 +260,8 @@ where
   ------------------------------------------------------------------------
   dolMath :: Parser LaTeX
   dolMath = do
-    _ <- char dol 
-    b <- mconcat <$> block `manyTill` char dol
+    _ <- char '$' 
+    b <- mconcat <$> block `manyTill` char '$'
     return $ TeXMath Dollar b -- []
 
   math :: MathType -> Text -> Parser LaTeX
@@ -274,7 +274,7 @@ where
   ------------------------------------------------------------------------
   comment :: Parser LaTeX
   comment = do
-    _  <- char per
+    _  <- char '%'
     c  <- A.takeTill (== '\n')
     e  <- atEnd
     unless e (char '\n' >>= \_ -> return ())
@@ -284,43 +284,14 @@ where
   -- Helpers
   ------------------------------------------------------------------------
   isSpecial :: Char -> Bool
-  isSpecial = (`elem` specials) -- [bsl, oSq, oPa, oBr, eBr]
-
-  begin, end :: Text
-  begin     = T.pack "\\begin"
-  end       = T.pack "\\end"
+  isSpecial = (`elem` specials) -- ['\\', '[', '(', '{', '}']
 
   endCmd :: Char -> Bool
-  endCmd = flip elem symbols
+  endCmd c = notLowercaseAlph && notUppercaseAlph
+   where c' = fromEnum c
+         notLowercaseAlph = c' < fromEnum 'a' || c' > fromEnum 'z'
+         notUppercaseAlph = c' < fromEnum 'A' || c' > fromEnum 'Z'
 
-  nul, eol, spc :: Char
-  nul  = '\0'
-  eol  = '\n' 
-  spc  = ' '
-
-  oBr, eBr, oSq, eSq, oPa, ePa, bsl, dol, per, str :: Char
-  oBr  = '{'
-  eBr  = '}'
-  oSq  = '['
-  eSq  = ']'
-  oPa  = '('
-  ePa  = ')'
-  bsl  = '\\'
-  dol  = '$'
-  per  = '%'
-  str  = '*'
-
-  endPa, endSq, endlessBr, endlessSq :: Text
-  endPa     = T.pack "\\)"
-  endSq     = T.pack "\\]"
-  endlessBr = T.pack "}"
-  endlessSq = T.pack "]"
-
-  emptyArg :: Text
-  emptyArg = T.pack "{}"
-
-  symbols :: String
-  symbols = [nul, eol, spc, oBr, eBr, eSq, oSq, oPa, ePa, bsl, dol, per]
 
   specials :: String
   specials = "'(),.-\"!^$&#{}%~|/:;=[]\\` "
