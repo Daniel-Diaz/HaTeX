@@ -4,8 +4,12 @@
 module Text.LaTeX.Packages.AMSMath
  ( -- * AMSMath package
    amsmath
-   -- * AMSMath functions
+   -- * Math Environments
  , math, mathDisplay
+ , equation , equation_
+ , align , align_
+   -- ** Referencing
+ , eqref , nonumber
    -- * Symbols and utilities
    -- | The unicode approximations do, of course, not reliably represent how
    --   LaTeX renders these symbols.
@@ -97,7 +101,13 @@ module Text.LaTeX.Packages.AMSMath
 
 import Text.LaTeX.Base
 import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Render(render)
 import Text.LaTeX.Base.Class
+import Text.LaTeX.Base.Commands (raw,between,label,lnbk,(&))
+import Text.LaTeX.Base.Types
+
+import Data.List
+
 -- Matrices
 import Data.Matrix
 
@@ -208,32 +218,58 @@ instance Monad m => Floating (LaTeXT m a) where
  atanh = error "Function 'atabh' is not defined in AMSMath!"
  acosh = error "Function 'acosh' is not defined in AMSMath!"
 
+-- | A reference to a numbered equation. Use with a 'label' defined in the
+-- scope of the equation refered to.
+eqref :: LaTeXC l => l -> l
+eqref = liftL $ \l -> TeXComm "eqref" [FixArg . TeXRaw $ render l]
+
+-- | Prevent an equation from being numbered, where the environment would by default do that.
+nonumber :: LaTeXC l => l
+nonumber = comm0 "nonumber"
+
+-- | A numbered mathematical equation (or otherwise math expression).
+equation :: LaTeXC l => l -> l
+equation = liftL $ TeXEnv "equation" []
+
+-- | The unnumbered variant of 'equation'.
+equation_ :: LaTeXC l => l -> l
+equation_ = liftL $ TeXEnv "equation*" []
+
+-- | An array of aligned equations. Use '&' to specify the points that should
+-- horizontally match. Each equation is numbered, unless prevented by 'nonumber'.
+align :: LaTeXC l => [l] -> l
+align = liftL(TeXEnv "align" []) . mconcat . intersperse lnbk 
+
+-- | The unnumbered variant of 'align'.
+align_ :: LaTeXC l => [l] -> l
+align_ = liftL(TeXEnv "align*" []) . mconcat . intersperse lnbk 
+
 -------------------------------------
 ------- Symbols and utilities -------
 
 -- | Surround a LaTeX math expression by parentheses whose height
 -- automatically matches the expression's. Translates to @\\left(...\\right)@.
 autoParens :: LaTeXC l => l -> l
-autoParens x = comm0 "left(" <> x <> comm0 "right)"
+autoParens x = commS "left(" <> x <> commS "right)"
 
 -- | Like 'autoParens', but with square brackets. Equivalent to @'autoBrackets'\"[\"\"]\"@.
 autoSquareBrackets :: LaTeXC l => l -> l
-autoSquareBrackets x = comm0 "left[" <> x <> comm0 "right]"
+autoSquareBrackets x = commS "left[" <> x <> commS "right]"
 
 -- | Like 'autoParens', but with curly brackets.
 autoBraces :: LaTeXC l => l -> l
-autoBraces x = comm0 "left"<>"{" <> x <> comm0 "right"<>"}"
+autoBraces x = commS "left"<>"{" <> x <> commS "right"<>"}"
 
 -- | Like 'autoParens', but with angle brackets 〈 ... 〉. Equivalent to @'autoBrackets' 'langle' 'rangle'@.
 autoAngleBrackets :: LaTeXC l => l -> l
-autoAngleBrackets x = comm0 "left"<>langle <> x <> comm0 "right"<>rangle
+autoAngleBrackets x = commS "left"<>langle <> x <> commS "right"<>rangle
 
 -- | Use custom LaTeX expressions as auto-scaled delimiters to surround math.
 -- Suitable delimiters include |...| (absolute value), ‖...‖ (norm,
 -- 'dblPipe'), ⌊...⌋ (round-off Gauss brackets, 'lfloor' / 'rfloor') etc..
 autoBrackets :: LaTeXC l => LaTeX -> LaTeX -> l -> l
 autoBrackets lBrack rBrack x
-  = comm0 "left" <> braces (fromLaTeX lBrack) <> x <> comm0 "right" <> braces (fromLaTeX rBrack)
+  = commS "left" <> braces (fromLaTeX lBrack) <> x <> commS "right" <> braces (fromLaTeX rBrack)
 
 -- | Left angle bracket, 〈.
 langle :: LaTeXC l => l
@@ -374,7 +410,7 @@ cdot  = between $ comm0 "cdot"
 times :: LaTeXC l => l -> l -> l
 times = between $ comm0 "times"
 
--- | Division operator (.
+-- | Division operator.
 div_ :: LaTeXC l => l -> l -> l
 div_  = between $ comm0 "div"
 
