@@ -127,7 +127,8 @@ where
 
   env :: Parser LaTeX
   env = do
-    n  <- envName "\\begin"
+    _  <- char '\\'
+    n  <- envName "begin"
     as <- cmdArgs
     b  <- envBody n 
     return $ TeXEnv (T.unpack n) as b
@@ -137,7 +138,7 @@ where
     _ <- string k
     _ <- char '{'
     n <- A.takeTill (== '}')
-    _ <- char '}'
+    _ <- char '}' -- Is not this brace already taken by the takeTill?
     return n
 
   envBody :: Text -> Parser LaTeX
