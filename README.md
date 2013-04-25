@@ -8,20 +8,26 @@ Run the script using the ``main`` function.
 
 ## Installation notes
 
-* To install `HaTeX`, use [cabal-install](http://hackage.haskell.org/package/cabal-install).
+To install `HaTeX`, use [cabal-install](http://hackage.haskell.org/package/cabal-install).
 
     $ cabal install HaTeX
 
 ## HaTeX User's Guide
 
-* The HaTeX User's Guide lives [here](https://github.com/Daniel-Diaz/HaTeX-Guide)... and is also done in Haskell!
+The HaTeX User's Guide lives [here](https://github.com/Daniel-Diaz/HaTeX-Guide)... and is also done in Haskell!
+
+## Contributing
+
+To contribute to HaTeX, please, visit our code repository in GitHub:
+
+https://github.com/Daniel-Diaz/HaTeX
 
 ## TODO list
 
 * Add more examples.
 * More testing on the parser.
 * Add more documentation.
-* A more complete `AMSMath` module. Split environment equations.
+* A more complete `AMSMath` module.
 * Implement more packages (fontenc, geometry, babel, array, ...).
 * BibTeX support.
 
