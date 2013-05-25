@@ -774,6 +774,14 @@ tabular (Just p) ts = liftL $ TeXEnv "tabular" [ OptArg $ TeXRaw $ render p , Fi
 hline :: LaTeXC l => l
 hline = commS "hline "
 
+-- | Cell taking multiple columns.
+multicolumn :: LaTeXC l => Int -> [TableSpec] -> l -> l
+multicolumn n c = liftL $ \l -> TeXComm "multicolumn"
+  [ FixArg $ rendertex n
+  , FixArg . TeXRaw $ renderAppend c
+  , FixArg l
+  ]
+
 -- | @cline i j@ writes a partial horizontal line beginning in column @i@ and ending in column @j@.
 cline :: LaTeXC l => Int -> Int -> l
 cline i j = fromLaTeX $ TeXComm "cline" [ FixArg $ TeXRaw $ render i <> "-" <> render j ]
