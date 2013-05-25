@@ -49,8 +49,8 @@ Library
       Text.LaTeX.Base
         Text.LaTeX.Base.Class
         Text.LaTeX.Base.Commands
-        Text.LaTeX.Base.Render
         Text.LaTeX.Base.Parser
+        Text.LaTeX.Base.Render
         Text.LaTeX.Base.Syntax
         Text.LaTeX.Base.Types
         Text.LaTeX.Base.Writer
@@ -60,10 +60,10 @@ Library
         Text.LaTeX.Packages.AMSMath
         Text.LaTeX.Packages.AMSThm
         Text.LaTeX.Packages.Beamer
-        Text.LaTeX.Packages.Hyperref
-        Text.LaTeX.Packages.Inputenc
         Text.LaTeX.Packages.Color
         Text.LaTeX.Packages.Graphicx
+        Text.LaTeX.Packages.Hyperref
+        Text.LaTeX.Packages.Inputenc
         -- Trees
         Text.LaTeX.Packages.Trees
           Text.LaTeX.Packages.Trees.Qtree
