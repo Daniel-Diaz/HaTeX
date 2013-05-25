@@ -56,7 +56,6 @@ Library
         Text.LaTeX.Base.Writer
         Text.LaTeX.Base.Warnings
       -- Packages
-      Text.LaTeX.Packages
         Text.LaTeX.Packages.AMSFonts
         Text.LaTeX.Packages.AMSMath
         Text.LaTeX.Packages.AMSThm
