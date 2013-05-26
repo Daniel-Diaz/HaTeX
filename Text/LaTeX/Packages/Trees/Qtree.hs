@@ -40,6 +40,10 @@ tree_ f (Node mx ts) =
 tree :: LaTeXC l => (a -> l) -> Tree a -> l
 tree f t = commS "Tree" <> " " <> tree_ f t
 
+-- | Instance defined in "Text.LaTeX.Packages.Trees.Qtree".
+instance Texy a => Texy (Tree a) where
+ texy = tree texy
+
 -- | This function works as 'tree', but use 'render' as rendering function.
 rendertree :: (Render a, LaTeXC l) => Tree a -> l
 rendertree = tree (raw . protectText . render)

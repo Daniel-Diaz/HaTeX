@@ -106,9 +106,9 @@ import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Commands (raw,between,label,lnbk,(&))
 import Text.LaTeX.Base.Types
 
+-- External imports
 import Data.List
-
--- Matrices
+import Data.Ratio
 import Data.Matrix
 
 -- | AMSMath package.
@@ -773,55 +773,78 @@ mathit = liftL $ \l -> TeXComm "mathit" [FixArg l]
 -------------------------------------
 ------------- Matrices --------------
 
-matrix2tex :: Render a => Matrix a -> LaTeX
+matrix2tex :: (Texy a, LaTeXC l) => Matrix a -> l
 matrix2tex m = mconcat
- [ foldr1 (&) [ rendertex $ m ! (i,j)
+ [ foldr1 (&) [ texy $ m ! (i,j)
      | j <- [1 .. ncols m]
      ] <> lnbk
      | i <- [1 .. nrows m]
    ]
 
--- | LaTeX rendering of a matrix using @pmatrix@.Optional argument sets the alignment
---   of the cells. Default (providing 'Nothing') is centered.
+toMatrix :: (Texy a, LaTeXC l) => String -> Maybe HPos -> Matrix a -> l
+toMatrix str Nothing  = liftL (TeXEnv str []) . matrix2tex
+toMatrix str (Just p) = liftL (TeXEnv (str ++ "*") [OptArg $ rendertex p]) . matrix2tex
+
+-- | LaTeX rendering of a matrix using @pmatrix@ and a custom function to render cells.
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   is centered.
 --
 -- > ( M )
 --
-pmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
-pmatrix Nothing  = fromLaTeX . TeXEnv "pmatrix"  []                     . matrix2tex
-pmatrix (Just p) = fromLaTeX . TeXEnv "pmatrix*" [OptArg $ rendertex p] . matrix2tex
+pmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+pmatrix = toMatrix "pmatrix"
 
--- | LaTeX rendering of a matrix using @bmatrix@. Optional argument sets the alignment
---   of the cells. Default (providing 'Nothing') is centered.
+-- | LaTeX rendering of a matrix using @bmatrix@ and a custom function to render cells.
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   is centered.
 --
 -- > [ M ]
 --
-bmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
-bmatrix Nothing  = fromLaTeX . TeXEnv "bmatrix"  []                     . matrix2tex
-bmatrix (Just p) = fromLaTeX . TeXEnv "bmatrix*" [OptArg $ rendertex p] . matrix2tex
+bmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+bmatrix = toMatrix "bmatrix"
 
--- | LaTeX rendering of a matrix using @Bmatrix@. Optional argument sets the alignment
---   of the cells. Default (providing 'Nothing') is centered.
+-- | LaTeX rendering of a matrix using @Bmatrix@ and a custom function to render cells.
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   is centered.
 --
 -- > { M }
 --
-b2matrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
-b2matrix Nothing  = fromLaTeX . TeXEnv "Bmatrix"  []                     . matrix2tex
-b2matrix (Just p) = fromLaTeX . TeXEnv "Bmatrix*" [OptArg $ rendertex p] . matrix2tex
+b2matrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+b2matrix = toMatrix "Bmatrix"
 
--- | LaTeX rendering of a matrix using @vmatrix@. Optional argument sets the alignment
---   of the cells. Default (providing 'Nothing') is centered.
+-- | LaTeX rendering of a matrix using @vmatrix@ and a custom function to render cells.
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   is centered.
 --
 -- > | M |
 --
-vmatrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
-vmatrix Nothing  = fromLaTeX . TeXEnv "vmatrix"  []                     . matrix2tex
-vmatrix (Just p) = fromLaTeX . TeXEnv "vmatrix*" [OptArg $ rendertex p] . matrix2tex
+vmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+vmatrix = toMatrix "vmatrix"
 
--- | LaTeX rendering of a matrix using @Vmatrix@. Optional argument sets the alignment
---   of the cells. Default (providing 'Nothing') is centered.
+-- | LaTeX rendering of a matrix using @Vmatrix@ and a custom function to render cells.
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   is centered.
 --
 -- > || M ||
 --
-v2matrix :: (Render a, LaTeXC l) => Maybe HPos -> Matrix a -> l
-v2matrix Nothing  = fromLaTeX . TeXEnv "Vmatrix"  []                     . matrix2tex
-v2matrix (Just p) = fromLaTeX . TeXEnv "Vmatrix*" [OptArg $ rendertex p] . matrix2tex
+v2matrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
+v2matrix = toMatrix "Vmatrix"
+
+-------------------------------------
+---------- Texy instances -----------
+
+-- | Instance defined in "Text.LaTeX.Packages.AMSMath".
+instance (Integral a, Texy a) => Texy (Ratio a) where
+ texy x = frac (texy $ numerator x) (texy $ denominator x)
+
+-- | Instance defined in "Text.LaTeX.Packages.AMSMath".
+instance (Texy a, Texy b) => Texy (a,b) where
+ texy (x,y) = autoParens $ texy x <> "," <> texy y
+ 
+-- | Instance defined in "Text.LaTeX.Packages.AMSMath".
+instance (Texy a, Texy b, Texy c) => Texy (a,b,c) where
+ texy (x,y,z) = autoParens $ texy x <> "," <> texy y <> "," <> texy z
+
+-- | Instance defined in "Text.LaTeX.Packages.AMSMath".
+instance Texy a => Texy (Matrix a) where
+ texy = pmatrix Nothing

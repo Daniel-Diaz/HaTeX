@@ -13,6 +13,6 @@ example = do
 exampleBody :: Monad m => LaTeXT_ m
 exampleBody = do
  "This is a basic example for testing the "
- "comments functionality in HaTeX." % "A short comment here."
- "Multi-line comments are separated by lines." % "First line.\nSecond line."
+ "comments functionality in HaTeX." %: "A short comment here."
+ "Multi-line comments are separated by lines." %: "First line.\nSecond line."
  "After a comment, the following code will start in a new line of the output."

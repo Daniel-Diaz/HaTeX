@@ -52,6 +52,7 @@ Library
         Text.LaTeX.Base.Parser
         Text.LaTeX.Base.Render
         Text.LaTeX.Base.Syntax
+        Text.LaTeX.Base.Texy
         Text.LaTeX.Base.Types
         Text.LaTeX.Base.Writer
         Text.LaTeX.Base.Warnings

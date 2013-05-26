@@ -18,6 +18,10 @@ to work with HaTeX. Those things are:
   and environments.
 
 * The "Text.LaTeX.Base.Writer" module, to work with the monad interface of the library.
+
+* The "Text.LaTeX.Base.Texy" module, which exports the 'Texy' class. Useful to pretty-print
+  values in LaTeX form.
+
 -}
 module Text.LaTeX.Base
  ( -- * @LaTeX@ datatype
@@ -29,6 +33,7 @@ module Text.LaTeX.Base
  , module Text.LaTeX.Base.Types
  , module Text.LaTeX.Base.Commands
  , module Text.LaTeX.Base.Writer
+ , module Text.LaTeX.Base.Texy
    -- * External re-exports
    --
    -- | Since the 'Monoid' instance is the only way to append 'LaTeX'
@@ -45,5 +50,6 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands
 import Text.LaTeX.Base.Writer
+import Text.LaTeX.Base.Texy
 -- External modules
 import Data.Monoid

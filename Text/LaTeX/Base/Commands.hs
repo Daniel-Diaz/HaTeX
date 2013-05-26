@@ -3,7 +3,7 @@
 -- | LaTeX standard commands and environments.
 module Text.LaTeX.Base.Commands
  ( -- * Basic functions
-   raw , between , comment , (%)
+   raw , between , comment , (%:)
    -- * Preamble commands
  , title
  , author
@@ -225,13 +225,13 @@ comment = fromLaTeX . TeXComment
 -- | This operator appends a comment after a expression.
 --   For example:
 --
--- > textbf "I'm just an example." % "Insert a few words here."
+-- > textbf "I'm just an example." %: "Insert a few words here."
 --
 -- Since you are writing in Haskell, you may not need to output comments
 -- as you can add them in the Haskell source. I added this feature
 -- for completeness.
-(%) :: LaTeXC l => l -> Text -> l
-(%) l = (l <>) . comment
+(%:) :: LaTeXC l => l -> Text -> l
+(%:) l = (l <>) . comment
 
 -- | Generate the title. It normally contains the 'title' name
 -- of your document, the 'author'(s) and 'date'.
