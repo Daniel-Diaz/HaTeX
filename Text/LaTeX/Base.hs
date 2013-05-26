@@ -39,11 +39,11 @@ module Text.LaTeX.Base
 #endif
    ) where
 
-import Text.LaTeX.Base.Syntax (LaTeX (..), TeXArg (..),(<>),protectString,protectText)
-import Text.LaTeX.Base.Class
+-- Internal modules
+import Text.LaTeX.Base.Syntax (LaTeX,(<>),protectString,protectText)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands
 import Text.LaTeX.Base.Writer
---
+-- External modules
 import Data.Monoid
