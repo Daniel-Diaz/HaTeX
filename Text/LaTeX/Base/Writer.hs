@@ -68,6 +68,7 @@ import Text.LaTeX.Base.Warnings (Warning,checkAll,check)
 --
 import Control.Monad (liftM)
 
+-- | 'WriterT' monad transformer applied to 'LaTeX' values.
 newtype LaTeXT m a =
   LaTeXT { unwrapLaTeXT :: WriterT LaTeX m (a,Maybe String) }
 
@@ -81,6 +82,7 @@ instance Applicative f => Applicative (LaTeXT f) where
  pure = LaTeXT . pure . pairNoth
  (LaTeXT f) <*> (LaTeXT x) = LaTeXT $ fmap (first . fst) f <*> x
 
+-- | Type synonym for empty 'LaTeXT' computations.
 type LaTeXT_ m = LaTeXT m ()
 
 instance MonadTrans LaTeXT where
@@ -100,6 +102,9 @@ instance MonadIO m => MonadIO (LaTeXT m) where
 instance Monad m => LaTeXC (LaTeXT m a) where
  liftListL f xs = mapM extractLaTeX_ xs >>= merror "liftListL" . textell . f
 
+-- | Running a 'LaTeXT' computation returns the final 'LaTeX' value
+--   and either a 'String' if the computation didn't contain any value
+--   or the value itself otherwise.
 runLaTeXT :: Monad m => LaTeXT m a -> m (Either String a,LaTeX)
 runLaTeXT (LaTeXT c) = runWriterT c >>= (
   \((a,m),l) -> case m of
@@ -109,6 +114,16 @@ runLaTeXT (LaTeXT c) = runWriterT c >>= (
 
 -- | This is the usual way to run the 'LaTeXT' monad
 --   and obtain a 'LaTeX' value.
+--
+-- > execLaTeXT = liftM snd . runLaTeXT
+--
+-- If @anExample@ is defined as above (at the top of this module
+-- documentation), use the following to get the LaTeX value
+-- generated out.
+--
+-- > myLaTeX :: Monad m => m LaTeX
+-- > myLaTeX = execLaTeXT anExample
+--
 execLaTeXT :: Monad m => LaTeXT m a -> m LaTeX
 execLaTeXT = liftM snd . runLaTeXT
 
@@ -124,6 +139,15 @@ extractLaTeX (LaTeXT c) = LaTeXT $ do
  ((a,m),l) <- lift $ runWriterT c
  return ((a,l),m)
 
+-- | Executes a 'LaTeXT' computation, embedding it again in
+--   the 'LaTeXT' monad.
+--
+-- > extractLaTeX_ = liftM snd . extractLaTeX
+--
+-- This function was heavily used in the past by HaTeX-meta
+-- to generate those @.Monad@ modules. The current purpose
+-- is to implement the 'LaTeXC' instance of 'LaTeXT', which
+-- is closely related.
 extractLaTeX_ :: Monad m => LaTeXT m a -> LaTeXT m LaTeX
 extractLaTeX_ = liftM snd . extractLaTeX
 
@@ -165,6 +189,7 @@ rendertexM = textell . rendertex
 
 -- Error throwing
 
+-- | The 'fail' method of the 'LaTeXT' monad.
 throwError :: Monad m => String -> LaTeXT m a
 throwError = LaTeXT . return . (error &&& Just)
 
