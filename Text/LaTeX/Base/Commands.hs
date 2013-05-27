@@ -119,7 +119,7 @@ module Text.LaTeX.Base.Commands
  , textwidth
  , linewidth
    -- ** Formatting text
- , verbatim
+ , verbatim , verb
    -- *** Fonts
    --
    -- Different font styles.
@@ -196,14 +196,15 @@ module Text.LaTeX.Base.Commands
    ) where
 
 import Data.String
-import Data.Maybe (catMaybes)
+import Data.Maybe (isNothing, catMaybes)
 import Data.Text (toLower)
+import qualified Data.Text as T
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Data.Version
-import Data.List (intercalate)
+import Data.List (find, intercalate)
 --
 import Paths_HaTeX
 
@@ -677,8 +678,38 @@ textwidth = comm0 "textwidth"
 linewidth :: LaTeXC l => l
 linewidth = comm0 "linewidth"
 
-verbatim :: LaTeXC l => l -> l
-verbatim = liftL $ TeXEnv "verbatim" []
+-- | The point of 'verbatim' is to include text that will
+-- /not/ be parsed as LaTeX in any way at all, but should simply
+-- appear as given in the document, in a separate display
+-- in typewriter font.
+verbatim :: LaTeXC l => Text -> l
+verbatim = liftL (TeXEnv "verbatim" []) . raw
+
+-- | Include text, as given and in typewriter, but in-line.
+-- Note that, for LaTeX-specific technical reasons, verbatim
+-- text can generally only be used \"at the top level\", not
+-- in e.g. section titles or other command-arguments.
+
+-- Unlike 'verbatim', which LaTeX implements as an ordinary environment,
+-- its command 'verb' uses a syntax trick to avoid braking its parsing
+-- when the literal text contains a closing brace: rather than using braces
+-- at all, the first character after @\\verb@ will be the right delimiter as well.
+-- Translating this method to HaTeX wouldn't really make sense since Haskell
+-- has string literals with their own escaping possibilities; instead, we make
+-- it secure by automatically choosing a delimiter that does not turn up 
+-- in the given string.
+verb :: LaTeXC l => Text -> l
+verb vbStr = case find (isNothing . (`T.find`vbStr) . (==))
+                  $ "`'\"|=-~$#+/!^_;:,." ++ ['0'..'9'] ++ ['A'..'B'] ++ ['a'..'b']
+              of Just delim -> let d = T.singleton delim
+                               in raw $ T.concat [ "\\verb", d, vbStr, d ]
+                 Nothing    -> let (lpart, rpart)
+                                     = T.splitAt (T.length vbStr `quot` 2) vbStr
+                               in verb lpart <> verb rpart
+             -- If all suitable delimiter characters are already used in the verbatim
+             -- string (which really should never happen as this is intended for **short**
+             -- in-line displays!) then split the verbatim string in two sections; at
+             -- some point they will necessarily lack some of the characters.
 
 underline :: LaTeXC l => l -> l
 underline = liftL $ \l -> TeXComm "underline" [FixArg l]
