@@ -18,7 +18,7 @@
 -- Since 'LaTeXT' is a monad transformer, you can do also:
 --
 -- > anotherExample :: LaTeXT IO ()
--- > anotherExample = lift (readFile "foo") >>= verbatim . fromString
+-- > anotherExample = lift (readFileTex "foo") >>= verbatim
 --
 --
 -- This way, it is easy (without carrying arguments) to include IO outputs
