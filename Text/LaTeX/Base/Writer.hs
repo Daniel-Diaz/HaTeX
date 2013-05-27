@@ -30,7 +30,7 @@
 -- Of course, you can always use the simpler interface provided by the plain 'LaTeX' type.
 --
 -- Another thing you should know about the LaTeX Writer Monad. Don't try to get values
--- from empty 
+-- from computations with no results (like @raw "foo"@).
 module Text.LaTeX.Base.Writer
  ( -- * @LaTeXT@ writer
    LaTeXT
