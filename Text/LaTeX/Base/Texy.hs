@@ -12,6 +12,7 @@ import Text.LaTeX.Base.Commands
 --
 import Numeric
 import Data.Fixed
+import Data.List (intersperse)
 
 -- | Class of types that can be pretty-printed as 'LaTeX' values.
 class Texy t where
@@ -38,7 +39,7 @@ instance Texy Double where
  texy x = fromString $ showFFloat Nothing x ""
 
 instance Texy Char where
- texy c = fromString ['\'' , c , '\'']
+ texy c = fromString ['`' , c , '`']
 
 instance HasResolution a => Texy (Fixed a) where
  texy = fromString . show

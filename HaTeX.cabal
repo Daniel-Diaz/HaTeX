@@ -31,6 +31,7 @@ Extra-source-files:
   Examples/tree.hs
   Examples/beamer.hs
   Examples/matrices.hs
+  Examples/texy.hs
 
 Source-repository head
   type: git
