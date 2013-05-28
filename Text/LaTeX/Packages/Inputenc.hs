@@ -2,8 +2,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | This package is of vital importance if you use non-ASCII characters in your document.
---   For example, if my name is /Ángela/, the /Á/ character will not appear correctly in the
---   output. To solve this problem, use:
+--   For example, if the name of the author is /Ángela/, the /Á/ character will not appear correctly in the
+--   output when I call 'maketitle'. To solve this problem, use:
 --
 -- > usepackage [utf8] inputenc
 --
