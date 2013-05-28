@@ -42,3 +42,6 @@ instance Texy Char where
 
 instance HasResolution a => Texy (Fixed a) where
  texy = fromString . show
+
+instance Texy Bool where
+ texy = fromString . show
