@@ -846,5 +846,13 @@ instance (Texy a, Texy b, Texy c) => Texy (a,b,c) where
  texy (x,y,z) = autoParens $ texy x <> "," <> texy y <> "," <> texy z
 
 -- | Instance defined in "Text.LaTeX.Packages.AMSMath".
+instance (Texy a, Texy b, Texy c, Texy d) => Texy (a,b,c,d) where
+ texy (a,b,c,d) = autoParens $ texy a <> "," <> texy b <> "," <> texy c <> "," <> texy d
+
+-- | Instance defined in "Text.LaTeX.Packages.AMSMath".
 instance Texy a => Texy (Matrix a) where
  texy = pmatrix Nothing
+
+-- | Instance defined in "Text.LaTeX.Packages.AMSMath".
+instance Texy a => Texy [a] where
+ texy = autoSquareBrackets . mconcat .  intersperse "," .  fmap texy
