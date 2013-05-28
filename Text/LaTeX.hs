@@ -7,6 +7,9 @@
 --   module and, then, only the packages you need (instead
 --   of all of them), this module has been upgraded supporting
 --   it.
+--
+--   For this reason, the module @Text.LaTeX.Packages@ no longer
+--   exists.
 module Text.LaTeX
  ( -- * Base module
    module Text.LaTeX.Base
