@@ -10,7 +10,7 @@ using 'fromString' everywhere.
 
 {-# LANGUAGE OverloadedStrings #-}
 
-import Text.LaTeX.Base
+import Text.LaTeX
 
 -- By executing 'execLaTeXT' you run the 'LaTeXT' monad and make a 'LaTeX' value as output.
 -- With 'renderFile' you render it to 'Text' and write it in a file.

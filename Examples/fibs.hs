@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Text.LaTeX.Base
+import Text.LaTeX
 
 main :: IO ()
 main = execLaTeXT example >>= renderFile "Fibs.tex"
