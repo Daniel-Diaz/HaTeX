@@ -21,6 +21,7 @@ type ClassName = String
 -- | Package names are represented by a 'String'.
 type PackageName = String
 
+-- | Type of labels.
 newtype Label = Label String deriving (Eq, Show)
 
 -- | Create a label from its name.
@@ -53,6 +54,7 @@ instance Render HPos where
  render HCenter = "c"
  render HRight  = "r"
 
+-- | Type of table specifications.
 data TableSpec =
    LeftColumn         -- ^ Left-justified column.
  | CenterColumn       -- ^ Centered column.

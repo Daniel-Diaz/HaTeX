@@ -139,8 +139,6 @@ instance Render LaTeX where
   render (TeXSeq l1 l2) = render l1 <> render l2
   render TeXEmpty = mempty
 
-
-
 instance Render TeXArg where
  render (OptArg l) = "[" <> render l <> "]"
  render (FixArg l) = "{" <> render l <> "}"

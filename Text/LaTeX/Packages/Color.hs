@@ -1,6 +1,10 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | Make your documents colorful using this module.
+--
+--   Different functionalities are provided, like changing the color of
+--   the text and the paper, or creating colorful boxes.
 module Text.LaTeX.Packages.Color
  ( -- * Color package
    pcolor
@@ -49,14 +53,14 @@ nodvipsnames = "nodvipsnames"
 usenames :: LaTeXC l => l
 usenames = "usenames"
 
---
-
+-- | Color specification.
 data ColSpec =
    DefColor Color
  | ModColor ColorModel
  | DvipsColor ColorName
    deriving Show
 
+-- | Basic colors.
 data Color =
    Red
  | Green
@@ -68,6 +72,7 @@ data Color =
  | White
    deriving Show
 
+-- | Specify your own color using one of the different color models.
 data ColorModel =
    RGB Float Float Float
  | RGB255 Int Int Int
@@ -76,6 +81,7 @@ data ColorModel =
  | CMYK Float Float Float Float
    deriving Show
 
+-- | Other predefined colors.
 data ColorName =
    Apricot       | Aquamarine  | Bittersweet
  | BlueGreen     | BlueViolet  | BrickRed

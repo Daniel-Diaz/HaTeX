@@ -75,6 +75,7 @@ newtype LaTeXT m a =
 instance Functor f => Functor (LaTeXT f) where
  fmap f (LaTeXT c) = LaTeXT $ fmap (first f) c
 
+-- | Pair a value with 'Nothing'.
 pairNoth :: a -> (a,Maybe b)
 pairNoth x = (x,Nothing)
 

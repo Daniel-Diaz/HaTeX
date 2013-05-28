@@ -1,6 +1,13 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | This package is of vital importance if you use non-ASCII characters in your document.
+--   For example, if my name is /Ángela/, the /Á/ character will not appear correctly in the
+--   output. To solve this problem, use:
+--
+-- > usepackage [utf8] inputenc
+--
+--   And make sure that your Haskell source is encoded in UTF-8.
 module Text.LaTeX.Packages.Inputenc
  ( -- * Inputenc package
    inputenc

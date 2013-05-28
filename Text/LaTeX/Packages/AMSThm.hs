@@ -38,6 +38,7 @@ amsthm = "amsthm"
 newtheorem :: LaTeXC l => String -> l -> l
 newtheorem str = liftL $ \l -> TeXComm "newtheorem" [ FixArg $ fromString str , FixArg l ]
 
+-- | Use a environment created by 'newtheorem'.
 theorem :: LaTeXC l => String -> l -> l
 theorem str = liftL $ TeXEnv str []
 
@@ -51,6 +52,7 @@ proof (Just n) = liftL2 (\n -> TeXEnv "proof" [ OptArg n ]) n
 qedhere :: LaTeXC l => l
 qedhere = comm0 "qedhere"
 
+-- | Different styles for 'theorem's.
 data TheoremStyle =
    Plain
  | Definition
