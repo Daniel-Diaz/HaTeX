@@ -187,6 +187,7 @@ module Text.LaTeX.Base.Commands
  , (&)
  , hline
  , cline
+ , multicolumn
    -- ** Others
  , footnote
  , protect
