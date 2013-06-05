@@ -61,6 +61,7 @@ Library
         Text.LaTeX.Packages.AMSFonts
         Text.LaTeX.Packages.AMSMath
         Text.LaTeX.Packages.AMSThm
+        Text.LaTeX.Packages.Babel
         Text.LaTeX.Packages.Beamer
         Text.LaTeX.Packages.Color
         Text.LaTeX.Packages.Graphicx
