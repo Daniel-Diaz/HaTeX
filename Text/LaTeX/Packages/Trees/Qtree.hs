@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | Tree interface using the @qtree@ package.
---   An example is of usage is provided in the /examples/ directory of
+--   An example of usage is provided in the /examples/ directory of
 --   the source distribution.
 module Text.LaTeX.Packages.Trees.Qtree (
     -- * Tree re-export
