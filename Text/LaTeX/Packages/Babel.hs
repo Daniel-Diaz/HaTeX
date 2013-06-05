@@ -43,11 +43,25 @@ babel = "babel"
 
 -- | Languages.
 data Language =
-   English
- | Spanish
- | French
- | Russian
- | German
+   Bulgarian  -- ^ Bulgarian.
+ | Brazilian  -- ^ Brazilian Portuguese.
+ | Canadien   -- ^ Canadian French.
+ | Czech      -- ^ Czech.
+ | Dutch      -- ^ Dutch.
+ | English    -- ^ English.
+ | Finnish    -- ^ Finnish.
+ | Francais   -- ^ Parisian French.
+ | French     -- ^ French.
+ | FrenchB    -- ^ French.
+ | German     -- ^ Old German.
+ | NGerman    -- ^ New German.
+ | Icelandic  -- ^ Icelandic.
+ | Italian    -- ^ Italian.
+ | Magyar     -- ^ Hungarian.
+ | Portuguese -- ^ Portuguese.
+ | Russian    -- ^ Russian.
+ | Spanish    -- ^ Spanish.
+ | Ukranian   -- ^ Ukranian.
    deriving Show
 
 instance Render Language where
