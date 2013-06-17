@@ -752,35 +752,44 @@ textsc = liftL $ \l -> TeXComm "textsc" [FixArg l]
 textnormal :: LaTeXC l => l -> l
 textnormal = liftL $ \l -> TeXComm "textnormal" [FixArg l]
 
+--------------------
+-- Standard sizes --
+--------------------
+
+sizecomm :: LaTeXC l => String -> l -> l
+sizecomm str = liftL $ \l -> TeXBraces $ comm0 str <> l
+
 tiny :: LaTeXC l => l -> l
-tiny = liftL $ \l -> TeXComm "tiny" [FixArg l]
+tiny = sizecomm "tiny"
 
 scriptsize :: LaTeXC l => l -> l
-scriptsize = liftL $ \l -> TeXComm "scriptsize" [FixArg l]		
+scriptsize = sizecomm "scriptsize"
 
 footnotesize :: LaTeXC l => l -> l
-footnotesize = liftL $ \l -> TeXComm "footnotesize" [FixArg l]
+footnotesize = sizecomm "footnotesize"
 
 small :: LaTeXC l => l -> l
-small = liftL $ \l -> TeXComm "small" [FixArg l]
+small = sizecomm "small"
 
 normalsize :: LaTeXC l => l -> l
-normalsize = liftL $ \l -> TeXComm "normalsize" [FixArg l]
+normalsize = sizecomm "normalsize"
 
 large :: LaTeXC l => l -> l
-large = liftL $ \l -> TeXComm "large" [FixArg l]
+large = sizecomm "large"
 
 large2 :: LaTeXC l => l -> l
-large2 = liftL $ \l -> TeXComm "Large" [FixArg l]
+large2 = sizecomm "Large"
 
 large3 :: LaTeXC l => l -> l
-large3 = liftL $ \l -> TeXComm "LARGE" [FixArg l]
+large3 = sizecomm "LARGE"
 
 huge :: LaTeXC l => l -> l
-huge = liftL $ \l -> TeXComm "huge" [FixArg l]
+huge = sizecomm "huge"
 
 huge2 :: LaTeXC l => l -> l
-huge2 = liftL $ \l -> TeXComm "Huge" [FixArg l]
+huge2 = sizecomm "Huge"
+
+--------------------
 
 smallskip :: LaTeXC l => l
 smallskip = comm0 "smallskip"
