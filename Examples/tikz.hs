@@ -23,11 +23,14 @@ thePreamble = do
 
 theBody :: LaTeXT IO ()
 theBody = do
+ maketitle
  "Below a picture generated using the TikZ DSL of "
  hatex
  "."
  center $ tikzpicture $ draw $
-      vertex (pointAtXY 0 0)
-  ->- vertex (pointAtXY 1 0)
-  ->- vertex (pointAtXY 0 1)
-  ->- tcycle
+  Cycle $ Vertex (pointAtXY 0 0) ->- pointAtXY 1 0 ->- pointAtXY 0 1
+ "And some pictures more."
+ center $ tikzpicture $
+      draw  (Rectangle (Vertex $ pointAtXY 0   0  ) (pointAtXY 1 1))
+  ->> fill  (Circle    (Vertex $ pointAtXY 1.5 0.5)  0.5)
+  ->> shade (Ellipse   (Vertex $ pointAtXY 3   0.5 ) 1 0.5)

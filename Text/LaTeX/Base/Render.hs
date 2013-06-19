@@ -153,3 +153,6 @@ instance Render Int where
 instance Render Integer where
 instance Render Float where
 instance Render Double where
+
+instance Render a => Render [a] where
+ render xs = "[" <> renderCommas xs <> "]"

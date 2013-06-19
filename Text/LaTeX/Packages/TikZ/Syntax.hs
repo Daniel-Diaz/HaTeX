@@ -7,10 +7,12 @@ module Text.LaTeX.Packages.TikZ.Syntax (
   , pointAt , pointAtXY , pointAtXYZ
   , relPoint , relPoint_
     -- * Paths
-  , TPath
-  , vertex
+    -- ** Types
+  , TPath (..)
+  , GridOption (..)
+  , Step (..)
+    -- ** Functions
   , (->-)
-  , tcycle
     -- * Parameters
   , Parameter (..)
     -- * TikZ
@@ -20,8 +22,8 @@ module Text.LaTeX.Packages.TikZ.Syntax (
   , ActionType (..)
   , (->>)
     -- * Sugar
-  , draw , fill , clip
-  , filldraw
+  , draw , fill , clip , shade
+  , filldraw , shadedraw
   ) where
  
 import Text.LaTeX.Base.Types
@@ -74,30 +76,44 @@ relPoint_ p = RelPoint_ p
 -- | Type for TikZ paths.
 data TPath = 
     Vertex TPoint
-  | Cycle
-  | Line TPath TPath
-  | Rectangle
-  | Circle
-  | Ellipse
-  | Grid
+  | Cycle TPath
+  | Line TPath TPoint
+  | Rectangle TPath TPoint
+  | Circle TPath Double
+  | Ellipse TPath Double Double
+  | Grid TPath [GridOption] TPoint
     deriving Show
+
+data GridOption =
+   GridStep Step
+   deriving Show
+
+data Step =
+   DimStep Measure
+ | XYStep Double
+ | PointStep TPoint
+   deriving Show
 
 instance Render TPath where
  render (Vertex p) = render p
+ render (Cycle p) = render p <> " -- cycle"
  render (Line p1 p2) = render p1 <> " -- " <> render p2
- render Cycle = "cycle"
- render Rectangle = "rectangle"
- render Circle = "circle"
- render Ellipse = "ellipse"
- render Grid = "grid"
+ render (Rectangle p1 p2) = render p1 <> " rectangle " <> render p2
+ render (Circle p r) = render p <> " circle (" <> render r <> ")"
+ render (Ellipse p r1 r2) = render p <> " ellipse (" <> render r1 <> " and " <> render r2 <> ")"
+ render (Grid p1 xs p2) = render p1 <> " grid " <> render xs <> " " <> render p2
 
-vertex :: TPoint -> TPath
-vertex = Vertex
+instance Render GridOption where
+ render (GridStep s) = "step=" <> render s
 
-tcycle :: TPath
-tcycle = Cycle
+instance Render Step where
+ render (DimStep m) = render m
+ render (XYStep q) = render q
+ render (PointStep p) = render p
 
-(->-) :: TPath -> TPath -> TPath
+-- Path builders
+
+(->-) :: TPath -> TPoint -> TPath
 (->-) = Line
 
 -- Parameters
@@ -122,16 +138,18 @@ data TikZ =
   | TikZSeq (S.Seq TikZ)
     deriving Show
 
-data ActionType = Draw | Fill | Clip deriving Show
+data ActionType = Draw | Fill | Clip | Shade deriving Show
 
 instance Render TikZ where
- render (PathAction ts p) = "\\path[" <> renderCommas ts <> "] " <> render p <> " ; "
- render (TikZSeq as) = foldMap render as
+ render (PathAction ts p) = "\\path" <> render ts <> " " <> render p <> " ; "
+ render (Scope ps t) = "\\begin{scope}" <> render ps <> render t <> "\\end{scope}"
+ render (TikZSeq ts) = foldMap render ts
 
 instance Render ActionType where
- render Draw = "draw"
- render Fill = "fill"
- render Clip = "clip"
+ render Draw  = "draw"
+ render Fill  = "fill"
+ render Clip  = "clip"
+ render Shade = "shade"
 
 path :: [ActionType] -> TPath -> TikZ
 path = PathAction
@@ -156,5 +174,11 @@ fill = path [Fill]
 clip :: TPath -> TikZ
 clip = path [Clip]
 
+shade :: TPath -> TikZ
+shade = path [Shade]
+
 filldraw :: TPath -> TikZ
 filldraw = path [Fill,Draw]
+
+shadedraw :: TPath -> TikZ
+shadedraw = path [Shade,Draw]
