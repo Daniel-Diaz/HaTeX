@@ -32,6 +32,7 @@ Extra-source-files:
   Examples/beamer.hs
   Examples/matrices.hs
   Examples/texy.hs
+  Examples/tikz.hs
 
 Source-repository head
   type: git
@@ -44,6 +45,7 @@ Library
                , text
                , attoparsec
                , matrix
+               , containers
   Exposed-modules:
     Text.LaTeX
       -- Base (Core of the library)
@@ -71,6 +73,9 @@ Library
         -- Trees
         Text.LaTeX.Packages.Trees
           Text.LaTeX.Packages.Trees.Qtree
+        -- TikZ
+        Text.LaTeX.Packages.TikZ
+          Text.LaTeX.Packages.TikZ.Syntax
   Other-modules: Paths_HaTeX
   Extensions: OverloadedStrings
             , CPP
