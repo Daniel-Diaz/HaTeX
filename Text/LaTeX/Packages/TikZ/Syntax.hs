@@ -74,13 +74,41 @@ relPoint_ p = RelPoint_ p
 -- PATHS
 
 -- | Type for TikZ paths.
-data TPath = 
-    Vertex TPoint
-  | Cycle TPath
-  | Line TPath TPoint
-  | Rectangle TPath TPoint
-  | Circle TPath Double
-  | Ellipse TPath Double Double
+data TPath =
+    Start TPoint -- ^ The starting point of a path.
+  | Cycle TPath  -- ^ Let @y = Cycle x@.
+                 --
+                 -- /Operation:/ Close a path with a line from the last point of @x@ to
+                 -- the starting point of @x@.
+                 --
+                 -- /Last point:/ The last point of @y@ is the starting point of @x@.
+  | Line TPath TPoint -- ^ Let @y = Line x p@.
+                      --
+                      -- /Operation:/ Extend the current path from the last point of @x@
+                      -- in a straight line to @p@.
+                      --
+                      -- /Last point:/ The last point of @y@ is @p@.
+  | Rectangle TPath TPoint -- ^ Let @y = Rectangle x p@.
+                           --
+                           -- /Operation:/ Define a rectangle using the last point of
+                           -- @x@ as one corner and @p@ as the another corner.
+                           --
+                           -- /Last point:/ The last point of @y@ is @p@.
+  | Circle TPath Double -- ^ Let @y = Circle x r@.
+                        --
+                        -- /Operation:/ Define a circle with center at the last point
+                        -- of x and radius @r@.
+                        --
+                        -- /Last point:/ The last point of @y@ is the same as the last
+                        -- point of @x@.
+  | Ellipse TPath Double Double -- ^ Let @y = Ellipse x r1 r2@.
+                                --
+                                -- /Operation:/ Define a ellipse with center at the last
+                                -- point of @x@, width the double of @r1@ and height
+                                -- the double of @r2@.
+                                --
+                                -- /Last point:/ The last point of @y@ is the same as the
+                                -- last point of @x@.
   | Grid TPath [GridOption] TPoint
     deriving Show
 
@@ -95,7 +123,7 @@ data Step =
    deriving Show
 
 instance Render TPath where
- render (Vertex p) = render p
+ render (Start p) = render p
  render (Cycle p) = render p <> " -- cycle"
  render (Line p1 p2) = render p1 <> " -- " <> render p2
  render (Rectangle p1 p2) = render p1 <> " rectangle " <> render p2

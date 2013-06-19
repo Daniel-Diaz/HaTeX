@@ -28,9 +28,11 @@ theBody = do
  hatex
  "."
  center $ tikzpicture $ draw $
-  Cycle $ Vertex (pointAtXY 0 0) ->- pointAtXY 1 0 ->- pointAtXY 0 1
+  Cycle $ Start (pointAtXY 0 0) ->- pointAtXY 1 0 ->- pointAtXY 0 1
  "And some pictures more."
  center $ tikzpicture $
-      draw  (Rectangle (Vertex $ pointAtXY 0   0  ) (pointAtXY 1 1))
-  ->> fill  (Circle    (Vertex $ pointAtXY 1.5 0.5)  0.5)
-  ->> shade (Ellipse   (Vertex $ pointAtXY 3   0.5 ) 1 0.5)
+      draw  (Rectangle (Start $ pointAtXY 0   0  ) (pointAtXY 1 1))
+  ->> fill  (Circle    (Start $ pointAtXY 1.5 0.5)  0.5)
+  ->> shade (Ellipse   (Start $ pointAtXY 3   0.5 ) 1 0.5)
+ center $ tikzpicture $ draw $
+  (Cycle $ Start (pointAtXY 0 0) ->- pointAtXY 1 0 ->- pointAtXY 0 1) ->- pointAtXY 1 1
