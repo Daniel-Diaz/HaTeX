@@ -11,6 +11,9 @@ module Text.LaTeX.Packages.TikZ.Syntax (
   , TPath (..)
   , GridOption (..)
   , Step (..)
+    -- ** Critical points
+  , startingPoint
+  , lastPoint
     -- ** Functions
   , (->-)
     -- * Parameters
@@ -73,9 +76,20 @@ relPoint_ p = RelPoint_ p
 
 -- PATHS
 
--- | Type for TikZ paths.
+-- | Type for TikZ paths. Every 'TPath' has two fundamental points: the /starting point/
+--   and the /last point/.
+--   The starting point is set using the 'Start' constructor.
+--   The last point then is modified by the other constructors.
+--   Below a explanation of each one of them.
+--   Note that both starting point and last point may coincide.
+--   You can use the functions 'startingPoint' and 'lastPoint' to calculate them.
+--   After creating a 'TPath', use 'path' to do something useful with it.
 data TPath =
-    Start TPoint -- ^ The starting point of a path.
+    Start TPoint -- ^ Let @y = Start p@.
+                 --
+                 -- /Operation:/ Set the starting point of a path.
+                 --
+                 -- /Last point:/ The last point of @y@ is @p@.
   | Cycle TPath  -- ^ Let @y = Cycle x@.
                  --
                  -- /Operation:/ Close a path with a line from the last point of @x@ to
@@ -129,6 +143,7 @@ instance Render TPath where
  render (Rectangle p1 p2) = render p1 <> " rectangle " <> render p2
  render (Circle p r) = render p <> " circle (" <> render r <> ")"
  render (Ellipse p r1 r2) = render p <> " ellipse (" <> render r1 <> " and " <> render r2 <> ")"
+ render (Grid p1 [] p2) = render p1 <> " grid " <> render p2
  render (Grid p1 xs p2) = render p1 <> " grid " <> render xs <> " " <> render p2
 
 instance Render GridOption where
@@ -138,6 +153,28 @@ instance Render Step where
  render (DimStep m) = render m
  render (XYStep q) = render q
  render (PointStep p) = render p
+
+-- Starting and Last points
+
+-- | Calculate the starting point of a 'TPath'.
+startingPoint :: TPath -> TPoint
+startingPoint (Start p) = p
+startingPoint (Cycle x) = startingPoint x
+startingPoint (Line x _) = startingPoint x
+startingPoint (Rectangle x _) = startingPoint x
+startingPoint (Circle x _) = startingPoint x
+startingPoint (Ellipse x _ _) = startingPoint x
+startingPoint (Grid x _ _) = startingPoint x
+
+-- | Calculate the last point of a 'TPath'.
+lastPoint :: TPath -> TPoint
+lastPoint (Start p) = p
+lastPoint (Cycle x) = startingPoint x
+lastPoint (Line _ p) = p
+lastPoint (Rectangle _ p) = p
+lastPoint (Circle x _) = lastPoint x
+lastPoint (Ellipse x _ _) = lastPoint x
+lastPoint (Grid _ _ p) = p
 
 -- Path builders
 
