@@ -224,8 +224,11 @@ instance Render ActionType where
 -- | A path can be used in different ways.
 --
 -- * 'Draw': Just draw the path.
+--
 -- * 'Fill': Fill the area inside the path.
+--
 -- * 'Clip': Clean everything outside the path.
+--
 -- * 'Shade': Shade the area inside the path.
 --
 --   It is possible to stack different effects in the list.
