@@ -32,6 +32,7 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 --
 import Data.Monoid
+import Data.Text (toLower)
 
 -- | The 'pcolor' package.
 --
@@ -106,7 +107,7 @@ data ColorName =
    deriving Show
 
 instance Render Color where
- render = fromString . show
+ render = toLower . fromString . show
 
 instance Render ColorModel where
  render (RGB r g b) = mconcat [ "[rgb]{" , renderCommas [r,g,b] , "}" ]

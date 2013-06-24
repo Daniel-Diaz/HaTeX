@@ -36,3 +36,12 @@ theBody = do
   ->> shade (Ellipse   (Start $ pointAtXY 3   0.5 ) 1 0.5)
  center $ tikzpicture $ draw $
   (Cycle $ Start (pointAtXY 0 0) ->- pointAtXY 1 0 ->- pointAtXY 0 1) ->- pointAtXY 1 1
+ "We also show the graph of the "
+ emph "sine"
+ " function."
+ center $ tikzpicture $
+      draw (Start (pointAtXY   0    1) ->- pointAtXY  0     (-1))
+  ->> draw (Start (pointAtXY (-0.2) 0) ->- pointAtXY (3*pi)   0 )
+  ->> scope [TColor Blue, TWidth (Pt 1)] (draw $ bpath (pointAtXY 0 0) $
+        mapM_ line [ pointAtXY x (sin x) | x <- [0,0.05 .. 3*pi] ]
+             )

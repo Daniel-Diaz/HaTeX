@@ -18,6 +18,7 @@ module Text.LaTeX.Packages.TikZ.Syntax (
   , (->-)
     -- * Parameters
   , Parameter (..)
+  , Color (..)
     -- * TikZ
   , TikZ
   , path
