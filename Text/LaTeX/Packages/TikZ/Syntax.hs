@@ -179,11 +179,14 @@ lastPoint (Grid _ _ p) = p
 
 -- Path builders
 
+-- | Alias of 'Line'.
 (->-) :: TPath -> TPoint -> TPath
 (->-) = Line
 
 -- Parameters
 
+-- | Parameters to use in a 'scope' to change how things
+--   are rendered within that scope.
 data Parameter =
    TWidth Measure
  | TColor Color
@@ -198,6 +201,7 @@ instance Render Parameter where
 
 -- TikZ
 
+-- | A Ti/k/Z script.
 data TikZ =
     PathAction [ActionType] TPath
   | Scope [Parameter] TikZ
@@ -217,12 +221,30 @@ instance Render ActionType where
  render Clip  = "clip"
  render Shade = "shade"
 
+-- | A path can be used in different ways.
+--
+-- * 'Draw': Just draw the path.
+-- * 'Fill': Fill the area inside the path.
+-- * 'Clip': Clean everything outside the path.
+-- * 'Shade': Shade the area inside the path.
+--
+--   It is possible to stack different effects in the list.
+--
+--   Example of usage:
+--
+-- > path [Draw] $ Start (pointAtXY 0 0) ->- pointAtXY 1 1
+--
+--   Most common usages are exported as functions. See
+--   'draw', 'fill', 'clip', 'shade', 'filldraw' and
+--   'shadedraw'.
 path :: [ActionType] -> TPath -> TikZ
 path = PathAction
 
+-- | Applies a scope to a TikZ script.
 scope :: [Parameter] -> TikZ -> TikZ
 scope = Scope
 
+-- | Sequence two TikZ scripts.
 (->>) :: TikZ -> TikZ -> TikZ
 (TikZSeq s1) ->> (TikZSeq s2) = TikZSeq (s1 <> s2)
 (TikZSeq s) ->> a = TikZSeq $ s S.|> a
@@ -231,20 +253,26 @@ a ->> b = TikZSeq $ a S.<| S.singleton b
 
 -- SUGAR
 
+-- | Equivalent to @path [Draw]@.
 draw :: TPath -> TikZ
 draw = path [Draw]
 
+-- | Equivalent to @path [Fill]@.
 fill :: TPath -> TikZ
 fill = path [Fill]
 
+-- | Equivalent to @path [Clip]@.
 clip :: TPath -> TikZ
 clip = path [Clip]
 
+-- | Equivalent to @path [Shade]@.
 shade :: TPath -> TikZ
 shade = path [Shade]
 
+-- | Equivalent to @path [Fill,Draw]@.
 filldraw :: TPath -> TikZ
 filldraw = path [Fill,Draw]
 
+-- | Equivalent to @path [Shade,Draw]@.
 shadedraw :: TPath -> TikZ
 shadedraw = path [Shade,Draw]
