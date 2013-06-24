@@ -75,6 +75,7 @@ Library
           Text.LaTeX.Packages.Trees.Qtree
         -- TikZ
         Text.LaTeX.Packages.TikZ
+          Text.LaTeX.Packages.TikZ.PathBuilder
           Text.LaTeX.Packages.TikZ.Syntax
   Other-modules: Paths_HaTeX
   Extensions: OverloadedStrings
