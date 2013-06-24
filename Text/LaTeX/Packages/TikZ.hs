@@ -17,8 +17,15 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Packages.TikZ.Syntax
 import Text.LaTeX.Packages.TikZ.PathBuilder
 
+-- | Import the 'tikz' package to use the functions exported
+--   by this module. For example, adding this line to your
+--   document preamble:
+--
+-- > usepackage [] tikz
+--
 tikz :: PackageName
 tikz = "tikz"
 
+-- | Transform a Ti/k/Z script to a 'LaTeX' block.
 tikzpicture :: LaTeXC l => TikZ -> l
 tikzpicture = fromLaTeX . TeXEnv "tikzpicture" [] . rendertex 
