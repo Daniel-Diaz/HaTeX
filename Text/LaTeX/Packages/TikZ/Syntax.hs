@@ -21,6 +21,7 @@ module Text.LaTeX.Packages.TikZ.Syntax (
   , Color (..)
     -- * TikZ
   , TikZ
+  , emptytikz
   , path
   , scope
   , ActionType (..)
@@ -209,6 +210,9 @@ data TikZ =
     deriving Show
 
 data ActionType = Draw | Fill | Clip | Shade deriving Show
+
+emptytikz :: TikZ
+emptytikz = TikZSeq mempty
 
 instance Render TikZ where
  render (PathAction ts p) = "\\path" <> render ts <> " " <> render p <> " ; "
