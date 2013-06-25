@@ -690,7 +690,7 @@ verbatim = liftL (TeXEnv "verbatim" []) . raw
 -- Note that, for LaTeX-specific technical reasons, verbatim
 -- text can generally only be used \"at the top level\", not
 -- in e.g. section titles or other command-arguments.
-
+--
 -- Unlike 'verbatim', which LaTeX implements as an ordinary environment,
 -- its command 'verb' uses a syntax trick to avoid braking its parsing
 -- when the literal text contains a closing brace: rather than using braces

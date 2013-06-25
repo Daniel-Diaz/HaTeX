@@ -28,7 +28,7 @@ https://github.com/Daniel-Diaz/HaTeX
 * More testing on the parser.
 * Add more documentation.
 * A more complete `AMSMath` module.
-* Implement more packages (fontenc, geometry, babel, array, ...).
+* Implement more packages (geometry, array, ...).
 * BibTeX support.
 
 ## Related projects
