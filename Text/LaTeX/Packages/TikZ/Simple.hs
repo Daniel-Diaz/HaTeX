@@ -3,6 +3,11 @@
 --   the 'Figure' data constructors, and get the Ti/k/Z script using the function
 --   'figuretikz'. Use the function 'tikzpicture' to insert the Ti/k/Z script in
 --   the LaTeX document.
+--
+--   Please, note that this module is not intended to be imported in the same module
+--   than Text.LaTeX.Packages.TikZ. This module is itself a self-contained /alternative/
+--   of that module. If still want to use both modules, please, use qualified imports
+--   to avoid name clashes.
 module Text.LaTeX.Packages.TikZ.Simple (
    -- * Figures
    Figure (..)
@@ -15,8 +20,10 @@ import Text.LaTeX.Base.Types (Measure)
 import Text.LaTeX.Packages.TikZ (TikZ,Color,tikzpicture,emptytikz)
 import qualified Text.LaTeX.Packages.TikZ as T
 
+-- | A point in the plane.
 type Point = (Double,Double)
 
+-- | A figure in the plane.
 data Figure =
    Line [Point]
  | Polygon [Point]
@@ -32,6 +39,7 @@ data Figure =
 castpoint :: Point -> T.TPoint
 castpoint (x,y) = T.pointAtXY x y
 
+-- | Translate a 'Figure' to a 'TikZ' script.
 figuretikz :: Figure -> TikZ
 figuretikz (Line []) = emptytikz
 figuretikz (Line (p:ps)) = T.draw $ foldl (\y x -> y T.->- castpoint x) (T.Start $ castpoint p) ps
