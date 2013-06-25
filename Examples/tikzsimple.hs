@@ -17,7 +17,7 @@ theBody :: LaTeXT IO ()
 theBody = center $ tikzpicture $ figuretikz myFigure
 
 myFigure :: Figure
-myFigure = Scale 4 $ Figures
+myFigure = Scale 3 $ Figures
  [ RectangleFilled ( 0,0) 1 1
  , Colored Green $ RectangleFilled (-1,1) 1 1
  , Colored Red   $ RectangleFilled ( 0,2) 1 1

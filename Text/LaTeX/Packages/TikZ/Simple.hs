@@ -8,6 +8,20 @@
 --   than Text.LaTeX.Packages.TikZ. This module is itself a self-contained /alternative/
 --   of that module. If still want to use both modules, please, use qualified imports
 --   to avoid name clashes.
+--
+--   You can find an example of usage in the /Examples/ directory of the source
+--   distribution. Below you can see a picture along with the code it came from.
+--
+--   <<http://daniel-diaz.github.com/projects/hatex/tikzsimple.png>>
+--
+-- > myFigure :: Figure
+-- > myFigure = Scale 2 $ Figures
+-- >   [ RectangleFilled (0,0) 1 1
+-- >   , Colored Green $ RectangleFilled (-1,1) 1 1
+-- >   , Colored Red   $ RectangleFilled ( 0,2) 1 1
+-- >   , Colored Blue  $ RectangleFilled ( 1,1) 1 1
+-- >     ]
+--
 module Text.LaTeX.Packages.TikZ.Simple (
    -- TikZ package
    tikz
