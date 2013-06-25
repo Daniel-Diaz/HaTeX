@@ -191,6 +191,7 @@ lastPoint (Grid _ _ p) = p
 data Parameter =
    TWidth Measure
  | TColor Color
+ | TScale Double
      deriving Show
 
 renderPair :: Render a => Text -> a -> Text
@@ -199,6 +200,7 @@ renderPair x y = x <> "=" <> render y
 instance Render Parameter where
  render (TWidth m) = renderPair "line width" m
  render (TColor c) = renderPair "color" c
+ render (TScale q) = renderPair "scale" q
 
 -- TikZ
 
