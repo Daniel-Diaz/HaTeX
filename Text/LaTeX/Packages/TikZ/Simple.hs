@@ -2,15 +2,17 @@
 -- | A simple interface to create Ti/k/Z graphics. Just build pictures using
 --   the 'Figure' data constructors, and get the Ti/k/Z script using the function
 --   'figuretikz'. Use the function 'tikzpicture' to insert the Ti/k/Z script in
---   the LaTeX document.
+--   the LaTeX document. And do not forget to import the 'tikz' package in the
+--   preamble.
 --
 --   Please, note that this module is not intended to be imported in the same module
 --   than Text.LaTeX.Packages.TikZ. This module is itself a self-contained /alternative/
 --   of that module. If still want to use both modules, please, use qualified imports
 --   to avoid name clashes.
 --
---   You can find an example of usage in the /Examples/ directory of the source
---   distribution. Below you can see a picture along with the code it came from.
+--   In the /Examples/ directory of the source distribution, the file @tikzsimple.hs@
+--   contains a complete example of usage of this module. Below you can see a picture
+--   along with the code it came from.
 --
 --   <<http://daniel-diaz.github.com/projects/hatex/tikzsimple.png>>
 --

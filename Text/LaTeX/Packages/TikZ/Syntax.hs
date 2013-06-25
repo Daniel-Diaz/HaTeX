@@ -1,6 +1,15 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | This module defines the syntax of a Ti/k/Z script.
+--
+-- To generate a Ti/k/Z script, first create a 'TPath' using
+-- data constructors, or alternatively, use a 'PathBuilder'
+-- from the "Text.LaTeX.Packages.TikZ.PathBuilder" module.
+--
+-- Once a 'TPath' is created, use 'path' to render a picture
+-- from it. Use 'scope' to apply some parameters to your picture,
+-- such line width or color.
 module Text.LaTeX.Packages.TikZ.Syntax (
     -- * Points
     TPoint
@@ -34,7 +43,7 @@ module Text.LaTeX.Packages.TikZ.Syntax (
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Packages.Color
---
+-- TODO: Extend colors to anything accepted in TikZ.
 import Data.Monoid
 import Data.Foldable (foldMap)
 import qualified Data.Sequence as S
@@ -66,6 +75,7 @@ pointAtXY = XYPoint
 pointAtXYZ :: Double -> Double -> Double -> TPoint
 pointAtXYZ = XYZPoint
 
+-- | Makes a point relative to the previous one.
 relPoint :: TPoint -> TPoint
 relPoint (RelPoint x) = RelPoint x
 relPoint (RelPoint_ x) = RelPoint x
@@ -211,8 +221,11 @@ data TikZ =
   | TikZSeq (S.Seq TikZ)
     deriving Show
 
+-- | Different types of actions that can be performed
+--   with a 'TPath'. See 'path' for more information.
 data ActionType = Draw | Fill | Clip | Shade deriving Show
 
+-- | Just an empty script.
 emptytikz :: TikZ
 emptytikz = TikZSeq mempty
 

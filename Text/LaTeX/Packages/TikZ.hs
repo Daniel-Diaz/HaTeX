@@ -1,5 +1,22 @@
 
 -- | Ti/k/Z ist /kein/ Zeichenprogramm.
+--
+-- Ti/k/Z is a frontend for PGF (Portable Graphics Format), a package for creating graphics
+-- using scripts embedded in a LaTeX document.
+--
+-- Using this library you will be able to generate Ti/k/Z scripts using Haskell functions.
+--
+-- The interface given here is pretty close to the original Ti/k/Z interface. Another
+-- layer of abstraction is given in "Text.LaTeX.Packages.TikZ.Simple", module built
+-- from the entities exported here. Usually, one chooses one of the interfaces and
+-- work with it. However, if you want to use both of them, you will have to use
+-- qualified imports or you will get name clashes.
+--
+-- Also, the module exported here, "Text.LaTeX.Packages.TikZ.PathBuilder", provides
+-- an interface to create paths (see 'TPath') using monads.
+--
+-- Once you have generated a Ti/k/Z script, use 'tikzpicture' to include it in a LaTeX
+-- document.
 module Text.LaTeX.Packages.TikZ (
    -- * TikZ package
    tikz
