@@ -96,4 +96,6 @@ Further explanation of the library and its concepts can be found in the /HaTeX U
 {- $exm
 Some examples can be found in the source code, under the /Examples/ directory. In particular, the example
 contained in the file @simple.hs@ is intended to be read by new users of the library.
+If you have any question regarding one of the examples, there is something you want to ask about
+HaTeX, or for anything you would like to discuss, we have a mailing list at @hatex\@projects.haskell.org@.
 -}
