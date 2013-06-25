@@ -9,11 +9,13 @@
 --   of that module. If still want to use both modules, please, use qualified imports
 --   to avoid name clashes.
 module Text.LaTeX.Packages.TikZ.Simple (
+   -- TikZ package
+   tikz
    -- * Figures
-   Figure (..)
+ , Figure (..)
  , Point
  , Color (..)
- , tikz
+   -- * Figure scripting
  , figuretikz
  , tikzpicture
    ) where
