@@ -11,6 +11,7 @@
 module Text.LaTeX.Packages.TikZ.Simple (
    -- * Figures
    Figure (..)
+ , Point
  , Color (..)
  , figuretikz
  , tikzpicture
