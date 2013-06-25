@@ -33,6 +33,7 @@ Extra-source-files:
   Examples/matrices.hs
   Examples/texy.hs
   Examples/tikz.hs
+  Examples/tikzsimple.hs
 
 Source-repository head
   type: git
