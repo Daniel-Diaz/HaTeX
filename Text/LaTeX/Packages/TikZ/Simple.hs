@@ -29,20 +29,22 @@ type Point = (Double,Double)
 
 -- | A figure in the plane.
 data Figure =
-   Line [Point]
- | Polygon [Point]
- | PolygonFilled [Point]
+   Line [Point] -- ^ Line along a list of points.
+ | Polygon [Point] -- ^ Line along a list of points, but the last point will be joined
+                   --   with the first one.
+ | PolygonFilled [Point] -- ^ Same as 'Polygon', but the inner side will be filled with color.
  | Rectangle Point Double Double -- ^ Rectangle with top-right corner at the given point and
                                  --   width and height given by the other parameters.
- | RectangleFilled Point Double Double -- ^ Same as 'Rectangle', but filled.
- | Circle Point Double
- | CircleFilled Point Double
- | Ellipse Point Double Double
- | EllipseFilled Point Double Double
- | Colored Color Figure
- | LineWidth Measure Figure
- | Scale Double Figure
- | Figures [Figure]
+ | RectangleFilled Point Double Double -- ^ Same as 'Rectangle', but filled with color.
+ | Circle Point Double -- ^ Circle centered at the given point with the given radius.
+ | CircleFilled Point Double -- ^ As in 'Circle', but it will be filled with some color.
+ | Ellipse Point Double Double -- ^ Ellipse centered at the given point with width and
+                               --   height given by the other parameters.
+ | EllipseFilled Point Double Double -- ^ Same as 'Ellipse', but filled with some color.
+ | Colored Color Figure -- ^ Color for the given 'Figure'.
+ | LineWidth Measure Figure -- ^ Line width for the given 'Figure'.
+ | Scale Double Figure -- ^ Scaling of the given 'Figure' by a factor.
+ | Figures [Figure] -- ^ A figure composed by a list of figures.
 
 castpoint :: Point -> T.TPoint
 castpoint (x,y) = T.pointAtXY x y
@@ -59,7 +61,7 @@ figuretikz (Rectangle p w h) = T.draw $ T.Rectangle (T.Start $ castpoint p) $ T.
 figuretikz (RectangleFilled p w h) = T.fill $ T.Rectangle (T.Start $ castpoint p) $ T.relPoint $ castpoint (w,-h)
 figuretikz (Circle p r) = T.draw $ T.Circle (T.Start $ castpoint p) r
 figuretikz (CircleFilled p r) = T.fill $ T.Circle (T.Start $ castpoint p) r
-figuretikz (Ellipse p r1 r2) = T.draw $ T.Ellipse (T.Start $ castpoint p) r1 r2
+figuretikz (Ellipse p r1 r2) = T.draw $ T.Ellipse (T.Start $ castpoint p) (r1/2) (r2/2)
 figuretikz (EllipseFilled p r1 r2) = T.fill $ T.Ellipse (T.Start $ castpoint p) r1 r2
 figuretikz (Colored c f) = T.scope [T.TColor c] $ figuretikz f
 figuretikz (LineWidth m f) = T.scope [T.TWidth m] $ figuretikz f
