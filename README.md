@@ -42,7 +42,7 @@ https://github.com/Daniel-Diaz/HaTeX
 ## TODO list
 
 * Add more examples.
-* More testing on the parser (See #15).
+* More testing on the parser (See [#15](https://github.com/Daniel-Diaz/HaTeX/issues/15)).
 * Add more documentation.
 * BibTeX support.
 
