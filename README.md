@@ -16,7 +16,7 @@ This will install the latest official release (recommended).
 If you want to try a newer version, use _git_ to clone the code contained
 in this repository.
 
-    $ git clone https://github.com/Daniel-Diaz/HaTeX.git
+    $ git clone git@github.com:Daniel-Diaz/HaTeX.git
     $ cd HaTeX
     $ cabal install
 
