@@ -66,7 +66,7 @@ liftL3 f x y z = liftListL (\[x,y,z] -> f x y z) [x,y,z]
 comm0 :: LaTeXC l => String -> l
 comm0 str = fromLaTeX $ TeXComm str []
 
--- | Like 'comm0' but using 'commS', i.e. no \"{}\" will be inserted to protect
+-- | Like 'comm0' but using 'TeXCommS', i.e. no \"{}\" will be inserted to protect
 -- the command's end.
 --
 -- > commS = fromLaTeX . TeXCommS

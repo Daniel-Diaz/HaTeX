@@ -1,8 +1,10 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
--- | This module allows you to use the LaTeX graphicx library in order to
---   insert graphics in a document.
+-- | This module allows you to use the LaTeX /graphicx/ library in order to
+--   insert graphics in a document and perform some transformations.
+--
+--   CTAN page for graphicx: <http://ctan.org/pkg/graphicx>.
 module Text.LaTeX.Packages.Graphicx
  ( -- * Graphicx package
    graphicx
@@ -35,6 +37,7 @@ graphicx = "graphicx"
 
 -- Package options
 
+-- | Package option of the 'graphicx' package.
 dvips, dvipdfm, pdftex :: LaTeXC l => l
 dvips = "dvips"
 dvipdfm = "dvipdfm"
@@ -75,9 +78,12 @@ includegraphics :: LaTeXC l =>
 includegraphics opts fp = fromLaTeX $ TeXComm "includegraphics"
  [ MOptArg $ fmap rendertex opts , FixArg $ TeXRaw $ fromString fp ]
 
+-- | Rotate the content by the given angle in degrees.
 rotatebox :: LaTeXC l => Float -> l -> l
 rotatebox a = liftL $ \l -> TeXComm "rotatebox" [FixArg $ rendertex a , FixArg l]
 
+-- | Scale the content by the given factor. If only the horizontal scale is supplied,
+--   the vertical scaling will be the same.
 scalebox :: LaTeXC l =>
      Float       -- ^ Horizontal scale.
   -> Maybe Float -- ^ Vertical scale.
@@ -88,9 +94,11 @@ scalebox h mv = liftL $ \l ->
                      ++  maybe [] ((:[]) . OptArg . rendertex) mv
                      ++ [FixArg l]
 
+-- | Reflect horizontally the content.
 reflectbox :: LaTeXC l => l -> l
 reflectbox = liftL $ \l -> TeXComm "reflectbox" [FixArg l]
 
+-- | Resize the content to match the given dimensions.
 resizebox :: LaTeXC l =>
      Measure -- ^ Horizontal size.
   -> Measure -- ^ Vertical size.

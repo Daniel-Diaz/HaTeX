@@ -253,7 +253,8 @@ author :: LaTeXC l => l -> l
 author = liftL $ \t -> TeXComm "author" [FixArg t]
 
 -- | Set either an institute or an organization
--- for the document.
+-- for the document. It does /not/ work for
+-- a document of the 'article' class.
 institute :: LaTeXC l => Maybe l -> l -> l
 institute  Nothing = liftL $ \l -> TeXComm "institute" [FixArg l]
 institute (Just s) = liftL2 (\l1 l2 -> TeXComm "institute" [OptArg l1,FixArg l2]) s
