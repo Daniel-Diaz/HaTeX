@@ -10,6 +10,7 @@ Run the script using the ``main`` function.
 
 To install `HaTeX`, use [cabal-install](http://hackage.haskell.org/package/cabal-install).
 
+    $ cabal update
     $ cabal install HaTeX
 
 This will install the latest official release (recommended).
