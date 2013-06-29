@@ -79,7 +79,8 @@ if a particular feature is missing.
 Beyond the implementation of existing LaTeX packages,
 HaTeX also provides some useful functions to build LaTeX code blocks from Haskell values.
 The Texy class allows you to pretty-print Haskell values to LaTeX blocks. This includes numbers, matrices,
-vectors or trees. HaTeX also features some modules dedicated to the generation of TikZ scripts.
+vectors or trees. HaTeX also features some modules dedicated to the generation of TikZ scripts
+(see "Text.LaTeX.Packages.TikZ.Simple").
 Everything you need to generate LaTeX code using Haskell should be included in this library.
 If some feature is missing, the GitHub issue list is waiting for you <https://github.com/Daniel-Diaz/HaTeX/issues>.
 -}
