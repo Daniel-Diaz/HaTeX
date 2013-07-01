@@ -37,6 +37,10 @@ module Text.LaTeX.Packages.AMSMath
  , texp
  , tlog , ln
  , tsqrt
+   -- ** Sum/Integral symbols
+ , tsum , sumFromTo
+ , prod , prodFromTo
+ , integral , integralFromTo
    -- ** Operator symbols
    -- *** Arithmetic
  , pm , mp
@@ -382,6 +386,41 @@ ln = comm0 "ln"
 tsqrt :: LaTeXC l => Maybe l -> l -> l
 tsqrt Nothing  = liftL $ \x -> TeXComm "sqrt" [FixArg x]
 tsqrt (Just n) = liftL2 (\n x -> TeXComm "sqrt" [OptArg n, FixArg x]) n
+
+---- Sum/Integral symbols
+
+-- | Sigma sumation symbol.
+tsum :: LaTeXC l => l
+tsum = comm0 "sum"
+
+-- | Sigma sumation symbol with limits.
+sumFromTo :: LaTeXC l
+          => l -- ^ Expression below the sigma.
+          -> l -- ^ Expression above the sigma.
+          -> l
+sumFromTo from to = tsum !: from ^: to
+
+-- | Pi product symbol.
+prod :: LaTeXC l => l
+prod = comm0 "prod"
+
+-- | Pi product symbol with limits.
+prodFromTo :: LaTeXC l
+           => l -- ^ Expression below the pi.
+           -> l -- ^ Expression above the pi.
+           -> l
+prodFromTo from to = prod !: from ^: to
+
+-- | Integral symbol.
+integral :: LaTeXC l => l
+integral = comm0 "int"
+
+-- | Integral symbol with limits of integration.
+integralFromTo :: LaTeXC l
+               => l -- ^ Lower limit of integration.
+               -> l -- ^ Upper limit of integration.
+               -> l
+integralFromTo from to = integral !: from ^: to
 
 ---- Operator symbols
 
