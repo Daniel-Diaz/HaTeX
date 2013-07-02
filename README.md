@@ -27,7 +27,7 @@ so it is unlikely to suffer from API breakages if you follow it too when importi
 
 ## HaTeX User's Guide
 
-The HaTeX User's Guide lives [here](https://github.com/Daniel-Diaz/HaTeX-Guide)... and is also done in Haskell!
+The HaTeX User's Guide lives [here](https://github.com/Daniel-Diaz/hatex-guide)... and is also done in Haskell!
 It is free source and anybody can contribute to it. Doing so, you will help current and future users!
 
 A downloadable version (not necessarily the last version, but most likely)
