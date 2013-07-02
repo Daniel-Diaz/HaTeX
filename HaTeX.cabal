@@ -37,7 +37,7 @@ Extra-source-files:
 
 Source-repository head
   type: git
-  location: git://github.com/Daniel-Diaz/HaTeX.git
+  location: git@github.com:Daniel-Diaz/HaTeX.git
 
 Library
   Build-depends: base ==4.*
