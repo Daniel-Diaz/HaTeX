@@ -1,7 +1,7 @@
 Name: HaTeX
 Version: 3.6.1
 Author: Daniel Díaz
-Category: Text
+Category: Text, LaTeX
 Build-type: Simple
 License: BSD3
 License-file: license
