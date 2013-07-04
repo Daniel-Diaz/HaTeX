@@ -44,7 +44,7 @@ Library
                , bytestring
                , transformers >= 0.2.2 && < 0.4
                , text
-               , attoparsec
+               , attoparsec >= 0.10.2 && < 0.11
                , matrix
                , containers
   Exposed-modules:
