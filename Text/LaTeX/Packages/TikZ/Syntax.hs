@@ -42,6 +42,7 @@ module Text.LaTeX.Packages.TikZ.Syntax (
  
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Render
+import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Packages.Color
 -- TODO: Extend colors to anything accepted in TikZ.
 import Data.Monoid
@@ -136,6 +137,12 @@ data TPath =
                                 -- /Last point:/ The last point of @y@ is the same as the
                                 -- last point of @x@.
   | Grid TPath [GridOption] TPoint
+  | Node TPath LaTeX -- ^ Let @y = Node x l@.
+                     --
+                     -- /Operation:/ Set a text centered at the last point of @x@.
+                     --
+                     -- /Last point:/ The last point of @y@ is the same as the last
+                     -- point of @x@.
     deriving Show
 
 data GridOption =
@@ -157,6 +164,7 @@ instance Render TPath where
  render (Ellipse p r1 r2) = render p <> " ellipse (" <> render r1 <> " and " <> render r2 <> ")"
  render (Grid p1 [] p2) = render p1 <> " grid " <> render p2
  render (Grid p1 xs p2) = render p1 <> " grid " <> render xs <> " " <> render p2
+ render (Node p l) = render p <> " node " <> render (TeXBraces l)
 
 instance Render GridOption where
  render (GridStep s) = "step=" <> render s

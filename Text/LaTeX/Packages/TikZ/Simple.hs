@@ -36,6 +36,7 @@ module Text.LaTeX.Packages.TikZ.Simple (
  , tikzpicture
    ) where
 
+import Text.LaTeX.Base.Syntax (LaTeX)
 import Text.LaTeX.Base.Types (Measure)
 import Text.LaTeX.Packages.TikZ (TikZ,Color,tikzpicture,emptytikz,tikz)
 import qualified Text.LaTeX.Packages.TikZ as T
@@ -60,6 +61,8 @@ data Figure =
  | Colored Color Figure -- ^ Color for the given 'Figure'.
  | LineWidth Measure Figure -- ^ Line width for the given 'Figure'.
  | Scale Double Figure -- ^ Scaling of the given 'Figure' by a factor.
+ | Text Point LaTeX -- ^ Insert some 'LaTeX' code, centered at the given 'Point'.
+                    --   The text should not be very complex to fit nicely in the picture.
  | Figures [Figure] -- ^ A figure composed by a list of figures.
 
 castpoint :: Point -> T.TPoint
@@ -82,4 +85,5 @@ figuretikz (EllipseFilled p r1 r2) = T.fill $ T.Ellipse (T.Start $ castpoint p) 
 figuretikz (Colored c f) = T.scope [T.TColor c] $ figuretikz f
 figuretikz (LineWidth m f) = T.scope [T.TWidth m] $ figuretikz f
 figuretikz (Scale q f) = T.scope [T.TScale q] $ figuretikz f
+figuretikz (Text p l) = T.draw $ T.Node (T.Start $ castpoint p) l
 figuretikz (Figures fs) = foldr (\x y -> figuretikz x T.->> y) emptytikz fs
