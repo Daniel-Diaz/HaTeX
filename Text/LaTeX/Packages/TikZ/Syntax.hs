@@ -164,7 +164,7 @@ instance Render TPath where
  render (Ellipse p r1 r2) = render p <> " ellipse (" <> render r1 <> " and " <> render r2 <> ")"
  render (Grid p1 [] p2) = render p1 <> " grid " <> render p2
  render (Grid p1 xs p2) = render p1 <> " grid " <> render xs <> " " <> render p2
- render (Node p l) = render p <> " node " <> render (TeXBraces l)
+ render (Node p l) = render p <> " node[transform shape] " <> render (TeXBraces l)
 
 instance Render GridOption where
  render (GridStep s) = "step=" <> render s
@@ -210,15 +210,17 @@ data Parameter =
    TWidth Measure
  | TColor Color
  | TScale Double
+ | TRotate Double -- ^ Angle is in degrees.
      deriving Show
 
 renderPair :: Render a => Text -> a -> Text
 renderPair x y = x <> "=" <> render y
 
 instance Render Parameter where
- render (TWidth m) = renderPair "line width" m
- render (TColor c) = renderPair "color" c
- render (TScale q) = renderPair "scale" q
+ render (TWidth m)  = renderPair "line width" m
+ render (TColor c)  = renderPair "color" c
+ render (TScale q)  = renderPair "scale" q
+ render (TRotate a) = renderPair "rotate" a
 
 -- TikZ
 

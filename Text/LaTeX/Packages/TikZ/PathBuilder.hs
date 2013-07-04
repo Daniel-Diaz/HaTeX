@@ -31,9 +31,11 @@ module Text.LaTeX.Packages.TikZ.PathBuilder (
  , rectangle
  , circle
  , ellipse
+ , node
  , grid
    ) where
 
+import Text.LaTeX.Base.Syntax (LaTeX)
 import Text.LaTeX.Packages.TikZ.Syntax
 import Control.Monad.Trans.State
 import Control.Applicative
@@ -88,7 +90,10 @@ ellipse r1 r2 = applyToPath $ \x -> Ellipse x r1 r2
 grid :: [GridOption] -> TPoint -> PathBuilder ()
 grid xs p = applyToPath $ \x -> Grid x xs p
 
+-- | Text centered at the current point.
+node :: LaTeX -> PathBuilder ()
+node l = applyToPath $ \x -> Node x l
+
 -- | Build a path using a /starting point/ and a 'PathBuilder'.
 bpath :: TPoint -> PathBuilder a -> TPath
 bpath p pb = currentPath $ execState (pathBuilder pb) (PS $ Start p)
-

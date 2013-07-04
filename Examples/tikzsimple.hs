@@ -27,8 +27,8 @@ myFigure = Scale 3 $ Figures
    ]
 
 myFigure2 :: Figure
-myFigure2 = Scale 3 $ Figures
- [ Colored Blue $ PolygonFilled [(-1,0),(0,1),(1,0)]
- , Text (0,1.2) $ "Is this a " <> textit "blue" <> " triangle?"
- , Colored Yellow $ Text (0,0.2) "Yes, it is"
+myFigure2 = Scale 2 $ Figures
+ [ Colored Blue $ PolygonFilled [(-2,-1),(0,1),(2,-1)]
+ , Text (0,1.4) $ "Is this a " <> textit "blue" <> " triangle?"
+ , Rotate 20 $ Colored Yellow $ Text (-0.2,-0.2) "Yes, it is!"
    ]
