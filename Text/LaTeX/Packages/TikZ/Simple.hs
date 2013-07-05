@@ -11,8 +11,8 @@
 --   to avoid name clashes.
 --
 --   In the /Examples/ directory of the source distribution, the file @tikzsimple.hs@
---   contains a complete example of usage of this module. Below you can see a picture
---   along with the code it came from.
+--   contains a complete example of usage of this module with several pictures.
+--   Below you can see a picture along with the code it came from.
 --
 --   <<http://daniel-diaz.github.com/projects/hatex/tikzsimple.png>>
 --
