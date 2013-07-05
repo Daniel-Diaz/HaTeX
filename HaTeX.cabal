@@ -6,11 +6,12 @@ Build-type: Simple
 License: BSD3
 License-file: license
 Maintainer: Daniel Díaz (dhelta `dot` diaz `at` gmail `dot` com)
-Stability: Experimental
 Bug-reports: https://github.com/Daniel-Diaz/HaTeX/issues
 Synopsis: The Haskell LaTeX library.
 Description: The LaTeX project site states: \"LaTeX is a high-quality typesetting system\". This library provides
-             a bridge between LaTeX and Haskell (i.e. it is a LaTeX DSL).
+             a bridge between LaTeX and Haskell, implementing the LaTeX syntax in Haskell.
+             .
+             Some of the things you can do are:
              .
              Write LaTeX documents with all the advantages you already have in Haskell (recursion,
              type system, high order functions, ...), create a LaTeX backend for your own program,
