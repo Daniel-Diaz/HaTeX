@@ -94,7 +94,7 @@ figuretikz (Figures fs) = foldr (\x y -> figuretikz x T.->> y) emptytikz fs
 
 -- | The figure of a /path/. A /path/ (in this context) means a function from an interval to
 --   the plane. The image of such a function is what this function returns as a 'Figure'.
---   An addition argument is needed to set the precision of the curve.
+--   An additional argument is needed to set the precision of the curve.
 --
 --   The actual implementation builds a spline of degree one joining different points of the
 --   image. Given that the interval is /(a,b)/ and the precision argument is &#949;, the points
