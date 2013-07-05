@@ -104,8 +104,8 @@ pathImage :: Double -- ^ Precision argument, &#949;.
           -> (Double,Double) -- ^ Interval, /(a,b)/.
           -> (Double -> Point) -- ^ Path function, /f/.
           -> Figure -- ^ Output figure.
-pathImage eps (a,b) f = Line [ f x | x <- listFrom eps a b ]
+pathImage eps (a,b) f = Line [ f x | x <- listFrom a ]
   where
-   listFrom eps a b =
+   listFrom a =
      if a >= b then [b]
-               else a : listFrom eps (a+eps) b
+               else a : listFrom (a+eps)
