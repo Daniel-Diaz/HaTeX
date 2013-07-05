@@ -16,7 +16,7 @@ thePreamble = do
   usepackage [] tikz
 
 theBody :: LaTeXT IO ()
-theBody = mapM_ (center . tikzpicture . figuretikz) [myFigure,myFigure2]
+theBody = mapM_ (center . tikzpicture . figuretikz) [myFigure,myFigure2,myFigure3]
 
 myFigure :: Figure
 myFigure = Scale 3 $ Figures
@@ -32,3 +32,13 @@ myFigure2 = Scale 2 $ Figures
  , Text (0,1.4) $ "Is this a " <> textit "blue" <> " triangle?"
  , Rotate 20 $ Colored Yellow $ Text (-0.2,-0.2) "Yes, it is!"
    ]
+
+myFigure3 :: Figure
+myFigure3 = LineWidth (Pt 2) $
+   pathImage 0.01 (0,4) $
+      -- Spira mirabilis (logarithmic spiral)
+      \t -> ( a * exp t * cos (b*t)
+            , a * exp t * sin (b*t)
+              )
+  where
+    a = 0.1 ; b = 4
