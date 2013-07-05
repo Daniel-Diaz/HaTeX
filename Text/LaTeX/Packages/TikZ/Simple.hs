@@ -31,6 +31,8 @@ module Text.LaTeX.Packages.TikZ.Simple (
  , Figure (..)
  , Point
  , Color (..)
+   -- * Additional functions
+ , pathImage
    -- * Figure scripting
  , figuretikz
  , tikzpicture
@@ -89,3 +91,21 @@ figuretikz (LineWidth m f) = T.scope [T.TWidth m] $ figuretikz f
 figuretikz (Scale q f) = T.scope [T.TScale q] $ figuretikz f
 figuretikz (Rotate a f) = T.scope [T.TRotate a] $ figuretikz f
 figuretikz (Figures fs) = foldr (\x y -> figuretikz x T.->> y) emptytikz fs
+
+-- | The figure of a /path/. A /path/ (in this context) means a function from an interval to
+--   the plane. The image of such a function is what this function returns as a 'Figure'.
+--   An addition argument is needed to set the precision of the curve.
+--
+--   The actual implementation builds a spline of degree one joining different points of the
+--   image. Given that the interval is /(a,b)/ and the precision argument is &#949;, the points
+--   in the spline will be /f(a)/, /f(a+/&#949;/)/, /f(a+2/&#949;/)/, and so on, until reaching /f(b)/.
+--
+pathImage :: Double -- ^ Precision argument, &#949;.
+          -> (Double,Double) -- ^ Interval, /(a,b)/.
+          -> (Double -> Point) -- ^ Path function, /f/.
+          -> Figure -- ^ Output figure.
+pathImage eps (a,b) f = Line [ f x | x <- listFrom eps a b ]
+  where
+   listFrom eps a b =
+     if a >= b then [b]
+               else a : listFrom eps (a+eps) b

@@ -619,7 +619,7 @@ deltau = comm0 "Delta"
 epsilon :: LaTeXC l => l
 epsilon = comm0 "epsilon"
 
--- | /ε/ symbol.
+-- | / ε / symbol.
 varepsilon :: LaTeXC l => l
 varepsilon = comm0 "varepsilon"
 
