@@ -17,8 +17,8 @@ module Text.LaTeX.Packages.Beamer
  , uncover
  , only
    -- ** Themes
- , Theme (..)
  , usetheme
+ , Theme (..)
    ) where
 
 import Text.LaTeX.Base.Syntax
@@ -95,6 +95,7 @@ block = liftL2 $ \tit -> TeXEnv "block" [ FixArg tit ]
 --TODO: Add a short description of each theme.
 
 -- | A 'Theme' of a presentation. See 'usetheme'.
+--   A preview of each one is given below.
 data Theme = 
     AnnArbor -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewAnnArbor.png>>
   | Antibes -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewAntibes.png>>

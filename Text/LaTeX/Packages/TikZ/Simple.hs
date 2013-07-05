@@ -7,7 +7,7 @@
 --
 --   Please, note that this module is not intended to be imported in the same module
 --   than Text.LaTeX.Packages.TikZ. This module is itself a self-contained /alternative/
---   of that module. If still want to use both modules, please, use qualified imports
+--   of that module. If you still want to use both modules, please, use qualified imports
 --   to avoid name clashes.
 --
 --   In the /Examples/ directory of the source distribution, the file @tikzsimple.hs@
@@ -65,11 +65,14 @@ data Figure =
  | Colored Color Figure -- ^ Color for the given 'Figure'.
  | LineWidth Measure Figure -- ^ Line width for the given 'Figure'.
  | Scale Double Figure -- ^ Scaling of the given 'Figure' by a factor.
- | Rotate Double Figure -- ^ Rotate a 'Figure' by given degrees.
+ | Rotate Double Figure -- ^ Rotate a 'Figure' by a given angle (in radians).
  | Figures [Figure] -- ^ A figure composed by a list of figures.
 
 castpoint :: Point -> T.TPoint
 castpoint (x,y) = T.pointAtXY x y
+
+radiansToDegrees :: Double -> Double
+radiansToDegrees x = (180 * x) / pi
 
 -- | Translate a 'Figure' to a 'TikZ' script.
 figuretikz :: Figure -> TikZ
@@ -89,7 +92,7 @@ figuretikz (Text p l) = T.draw $ T.Node (T.Start $ castpoint p) l
 figuretikz (Colored c f) = T.scope [T.TColor c] $ figuretikz f
 figuretikz (LineWidth m f) = T.scope [T.TWidth m] $ figuretikz f
 figuretikz (Scale q f) = T.scope [T.TScale q] $ figuretikz f
-figuretikz (Rotate a f) = T.scope [T.TRotate a] $ figuretikz f
+figuretikz (Rotate a f) = T.scope [T.TRotate $ radiansToDegrees a] $ figuretikz f
 figuretikz (Figures fs) = foldr (\x y -> figuretikz x T.->> y) emptytikz fs
 
 -- | The figure of a /path/. A /path/ (in this context) means a function from an interval to
@@ -99,12 +102,26 @@ figuretikz (Figures fs) = foldr (\x y -> figuretikz x T.->> y) emptytikz fs
 --   The actual implementation builds a spline of degree one joining different points of the
 --   image. Given that the interval is /(a,b)/ and the precision argument is &#949;, the points
 --   in the spline will be /f(a)/, /f(a+/&#949;/)/, /f(a+2/&#949;/)/, and so on, until reaching /f(b)/.
+--   The smaller is &#949;, the closer is the figure to the original image.
+--
+--   Here is an example with a logarithmic spiral.
+--
+--   <<http://daniel-diaz.github.io/projects/hatex/spiral.png>>
+--
+-- > spiral :: Figure
+-- > spiral = LineWidth (Pt 2) $
+-- >     pathImage 0.01 (0,4) $
+-- >       \t -> ( a * exp t * cos (b*t)
+-- >             , a * exp t * sin (b*t)
+-- >               )
+-- >   where
+-- >     a = 0.1 ; b = 4
 --
 pathImage :: Double -- ^ Precision argument, &#949;.
           -> (Double,Double) -- ^ Interval, /(a,b)/.
           -> (Double -> Point) -- ^ Path function, /f/.
           -> Figure -- ^ Output figure.
-pathImage eps (a,b) f = Line [ f x | x <- listFrom a ]
+pathImage eps (a,b) f = Line $ fmap f $ listFrom a
   where
    listFrom a =
      if a >= b then [b]
