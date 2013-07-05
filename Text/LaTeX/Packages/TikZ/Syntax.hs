@@ -272,11 +272,11 @@ instance Render ActionType where
 path :: [ActionType] -> TPath -> TikZ
 path = PathAction
 
--- | Applies a scope to a TikZ script.
+-- | Applies a scope to a Ti/k/Z script.
 scope :: [Parameter] -> TikZ -> TikZ
 scope = Scope
 
--- | Sequence two TikZ scripts.
+-- | Sequence two Ti/k/Z scripts.
 (->>) :: TikZ -> TikZ -> TikZ
 (TikZSeq s1) ->> (TikZSeq s2) = TikZSeq (s1 <> s2)
 (TikZSeq s) ->> a = TikZSeq $ s S.|> a

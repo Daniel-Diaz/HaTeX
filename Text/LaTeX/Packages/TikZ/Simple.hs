@@ -30,11 +30,13 @@ module Text.LaTeX.Packages.TikZ.Simple (
    -- * Figures
  , Figure (..)
  , Point
+   -- | /In the future we will accept colors other than the basic ones./
  , Color (..)
    -- * Additional functions
  , pathImage
    -- * Figure scripting
  , figuretikz
+ , (T.->>)
  , tikzpicture
    ) where
 
