@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | This package is of vital importance if you use non-ASCII characters in your document.
---   For example, if you type the work /Ángela/, the /Á/ character will not appear correctly in the
+--   For example, if you type the word /Ángela/, the /Á/ character will not appear correctly in the
 --   output. To solve this problem, use:
 --
 -- > usepackage [utf8] inputenc
