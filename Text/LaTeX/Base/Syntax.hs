@@ -28,7 +28,7 @@ import Data.String
 -- This will create a black box (see 'rule') as wide as the text and two points tall.
 --
 data Measure =
-   Pt Int    -- ^ A point is 1/72.27 inch, that means about 0.0138 inch or 0.3515 mm.
+   Pt Double -- ^ A point is 1/72.27 inch, that means about 0.0138 inch or 0.3515 mm.
  | Mm Double -- ^ Millimeter.
  | Cm Double -- ^ Centimeter.
  | In Double -- ^ Inch.

@@ -19,6 +19,7 @@ module Text.LaTeX.Base.Class (
  , liftL3
    -- ** Others
  , comm0
+ , comm1
  , commS
  , braces
  ) where
@@ -65,6 +66,14 @@ liftL3 f x y z = liftListL (\[x,y,z] -> f x y z) [x,y,z]
 --
 comm0 :: LaTeXC l => String -> l
 comm0 str = fromLaTeX $ TeXComm str []
+
+-- | A one parameter command generator using the name of the command.
+--   The parameter will be rendered as a fixed argument.
+--
+-- > comm1 str = liftL $ \l -> TeXComm str [FixArg l]
+--
+comm1 :: LaTeXC l => String -> l -> l
+comm1 str = liftL $ \l -> TeXComm str [FixArg l]
 
 -- | Like 'comm0' but using 'TeXCommS', i.e. no \"{}\" will be inserted to protect
 -- the command's end.

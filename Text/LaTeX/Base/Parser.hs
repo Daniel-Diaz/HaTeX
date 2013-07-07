@@ -234,7 +234,7 @@ where
     u1 <- anyChar
     u2 <- anyChar
     case map toLower [u1, u2] of
-      "pt" -> return $ Pt (truncate f)
+      "pt" -> return $ Pt f
       "mm" -> return $ Mm f
       "cm" -> return $ Cm f
       "in" -> return $ In f
