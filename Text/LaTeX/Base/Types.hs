@@ -5,6 +5,7 @@
 module Text.LaTeX.Base.Types (
    ClassName
  , PackageName
+ , PageStyle
  , Label
  , createLabel , labelName
  , Pos (..) , HPos (..)
@@ -20,6 +21,9 @@ type ClassName = String
 
 -- | Package names are represented by a 'String'.
 type PackageName = String
+
+-- | Page styles are represented by a 'String'.
+type PageStyle = String
 
 -- | Type of labels.
 newtype Label = Label String deriving (Eq, Show)

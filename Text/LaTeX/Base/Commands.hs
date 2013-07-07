@@ -545,23 +545,25 @@ alph = fromLaTeX "alph"
 alph_ :: LaTeXC l => l
 alph_ = fromLaTeX "Alph"
 
-pagestyle :: LaTeXC l => l -> l
-pagestyle = liftL $ \l -> TeXComm "pagestyle" [FixArg l]
+-- Page styles
 
-thispagestyle :: LaTeXC l => l -> l
-thispagestyle = liftL $ \l -> TeXComm "thispagestyle" [FixArg l]
+pagestyle :: LaTeXC l => PageStyle -> l
+pagestyle ps = fromLaTeX $ TeXComm "pagestyle" [FixArg $ fromString ps]
 
-plain :: LaTeXC l => l
-plain = fromLaTeX "plain"
+thispagestyle :: LaTeXC l => PageStyle -> l
+thispagestyle ps = fromLaTeX $ TeXComm "thispagestyle" [FixArg $ fromString ps]
 
-headings :: LaTeXC l => l
-headings = fromLaTeX "headings"
+plain :: PageStyle
+plain = "plain"
 
-empty :: LaTeXC l => l
-empty = fromLaTeX "empty"
+headings :: PageStyle
+headings = "headings"
 
-myheadings :: LaTeXC l => l
-myheadings = fromLaTeX "myheadings"
+empty :: PageStyle
+empty = "empty"
+
+myheadings :: PageStyle
+myheadings = "myheadings"
 
 -- | Used in conjunction with 'myheadings' for setting both the left and the right heading.
 markboth :: LaTeXC l => l -> l -> l
