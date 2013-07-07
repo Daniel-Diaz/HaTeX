@@ -35,6 +35,7 @@ Extra-source-files:
   Examples/texy.hs
   Examples/tikz.hs
   Examples/tikzsimple.hs
+  Examples/fancyhdr.hs
 
 Source-repository head
   type: git

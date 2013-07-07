@@ -50,7 +50,6 @@ https://github.com/Daniel-Diaz/HaTeX
 
 ## Packages to be implemented
 
-* fancyhdr
 * geometry
 
 ## Related projects
