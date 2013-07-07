@@ -46,3 +46,6 @@ instance HasResolution a => Texy (Fixed a) where
 
 instance Texy Bool where
  texy = fromString . show
+
+instance Texy Measure where
+ texy = rendertex

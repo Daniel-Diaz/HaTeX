@@ -81,6 +81,7 @@ module Text.LaTeX.Base.Commands
  , subparagraph
    -- ** Logos & symbols
  , today
+ , thePage
  , tex
  , latex
  , laTeX2
@@ -615,6 +616,9 @@ fbox = liftL $ \l -> TeXComm "fbox" [FixArg l]
 
 today :: LaTeXC l => l
 today = comm0 "today"
+
+thePage :: LaTeXC l => l
+thePage = comm0 "thepage"
 
 tex :: LaTeXC l => l
 tex = comm0 "TeX"
