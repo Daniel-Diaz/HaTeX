@@ -46,7 +46,7 @@ theorem str = liftL $ TeXEnv str []
 --   is used to put a custom title to the proof.
 proof :: LaTeXC l => Maybe l -> l -> l
 proof  Nothing = liftL $ TeXEnv "proof" []
-proof (Just n) = liftL2 (\n -> TeXEnv "proof" [ OptArg n ]) n
+proof (Just n) = liftL2 (\m -> TeXEnv "proof" [OptArg m]) n
 
 -- | Insert the /QED/ symbol.
 qedhere :: LaTeXC l => l

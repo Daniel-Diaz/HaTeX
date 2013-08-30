@@ -85,3 +85,4 @@ Library
   Other-modules: Paths_HaTeX
   Extensions: OverloadedStrings
             , CPP
+  ghc-options: -Wall -fno-warn-orphans

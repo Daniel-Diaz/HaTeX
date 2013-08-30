@@ -45,7 +45,13 @@ module Text.LaTeX.Base
    ) where
 
 -- Internal modules
-import Text.LaTeX.Base.Syntax (LaTeX,(<>),protectString,protectText)
+import Text.LaTeX.Base.Syntax
+  ( LaTeX
+#if __GLASGOW_HASKELL__ < 704
+  , (<>)
+#endif
+  , protectString
+  , protectText)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands

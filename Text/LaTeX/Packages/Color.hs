@@ -31,7 +31,6 @@ import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 --
-import Data.Monoid
 import Data.Text (toLower)
 
 -- | The 'pcolor' package.

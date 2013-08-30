@@ -18,7 +18,6 @@ import Text.LaTeX.Base
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Packages.Trees
 --
-import Data.Monoid
 import Data.List (intersperse)
 
 -- | The 'qtree' package.

@@ -173,7 +173,12 @@ where
 
   cmdArg :: Parser TeXArg
   cmdArg = do
-    whitespace
+    -- A space after the command name indicates the end of the command.
+    -- I comment this line to prevent buggy parsings like "\cap [j_n, \omega)"
+    -- being interpreted as if "[" were the beginning of an argument, when the
+    -- space after "\cap" clearly indicates the opposite.
+    --
+    -- whitespace
     c <- char '[' <|> char '{'
     let e = case c of
               '[' -> "]"

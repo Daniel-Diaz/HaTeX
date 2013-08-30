@@ -53,7 +53,6 @@ module Text.LaTeX.Base.Writer
    ) where
 
 import Control.Monad.Trans.Writer
-import Control.Monad.Trans.State
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
 import Control.Applicative
@@ -73,7 +72,7 @@ newtype LaTeXT m a =
   LaTeXT { unwrapLaTeXT :: WriterT LaTeX m (a,Maybe String) }
 
 instance Functor f => Functor (LaTeXT f) where
- fmap f (LaTeXT c) = LaTeXT $ fmap (first f) c
+ fmap f = LaTeXT . fmap (first f) . unwrapLaTeXT
 
 -- | Pair a value with 'Nothing'.
 pairNoth :: a -> (a,Maybe b)

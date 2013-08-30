@@ -24,8 +24,6 @@ import Data.Text (Text,lines,unlines)
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Data.String
-import Data.Monoid (Monoid (..))
-import qualified Data.Text.IO as T
 import Data.Text.Encoding
 import Data.List (intersperse)
 import qualified Data.ByteString as B

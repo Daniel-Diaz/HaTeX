@@ -107,6 +107,7 @@ labcheck (TeXComm c [FixArg (TeXRaw n)]) =
   "label"   -> newlab n
   "ref"     -> newref n
   "pageref" -> newref n
+  _ -> return ()
 labcheck (TeXEnv _ _ l) = labcheck l
 labcheck (TeXMath _ l) = labcheck l
 labcheck (TeXOp _ l1 l2) = labcheck l1 >> labcheck l2
@@ -115,7 +116,7 @@ labcheck (TeXSeq l1 l2) = labcheck l1 >> labcheck l2
 labcheck _ = return ()
 
 newlab :: Text -> LabSt ()
-newlab n = do
+newlab t = do
  st <- get
  let addLab :: Text -> [LabWarn] -> [LabWarn]
      addLab n [] = [LabelNoRef n]
@@ -127,10 +128,10 @@ newlab n = do
                                   else ys
         LabelRef   m -> if n == m then l
                                   else ys
- put $ addLab n st
+ put $ addLab t st
 
 newref :: Text -> LabSt ()
-newref n = do
+newref t = do
  st <- get
  let addRef :: Text -> [LabWarn] -> [LabWarn]
      addRef n [] = [RefNoLabel n]
@@ -142,5 +143,5 @@ newref n = do
                                   else ys
         LabelRef   m -> if n == m then l
                                   else ys
- put $ addRef n st
+ put $ addRef t st
 

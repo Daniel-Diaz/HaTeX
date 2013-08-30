@@ -105,10 +105,7 @@ module Text.LaTeX.Packages.AMSMath
 
 import Text.LaTeX.Base
 import Text.LaTeX.Base.Syntax
-import Text.LaTeX.Base.Render(render)
 import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Commands (raw,between,label,lnbk,(&))
-import Text.LaTeX.Base.Types
 
 -- External imports
 import Data.List
@@ -385,7 +382,7 @@ ln = comm0 "ln"
 --   When 'Nothing' is supplied, the function will output a square root.
 tsqrt :: LaTeXC l => Maybe l -> l -> l
 tsqrt Nothing  = liftL $ \x -> TeXComm "sqrt" [FixArg x]
-tsqrt (Just n) = liftL2 (\n x -> TeXComm "sqrt" [OptArg n, FixArg x]) n
+tsqrt (Just n) = liftL2 (\m x -> TeXComm "sqrt" [OptArg m, FixArg x]) n
 
 ---- Sum/Integral symbols
 
@@ -398,7 +395,7 @@ sumFromTo :: LaTeXC l
           => l -- ^ Expression below the sigma.
           -> l -- ^ Expression above the sigma.
           -> l
-sumFromTo from to = tsum !: from ^: to
+sumFromTo x y = tsum !: x ^: y
 
 -- | Pi product symbol.
 prod :: LaTeXC l => l
@@ -409,7 +406,7 @@ prodFromTo :: LaTeXC l
            => l -- ^ Expression below the pi.
            -> l -- ^ Expression above the pi.
            -> l
-prodFromTo from to = prod !: from ^: to
+prodFromTo x y = prod !: x ^: y
 
 -- | Integral symbol.
 integral :: LaTeXC l => l
@@ -420,7 +417,7 @@ integralFromTo :: LaTeXC l
                => l -- ^ Lower limit of integration.
                -> l -- ^ Upper limit of integration.
                -> l
-integralFromTo from to = integral !: from ^: to
+integralFromTo x y = integral !: x ^: y
 
 ---- Operator symbols
 

@@ -1,4 +1,6 @@
 
+{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
+
 -- | Definition of the 'LaTeXC' class, used to combine the classic applicative and
 --   the latter monadic interfaces of /HaTeX 3/. The user can define new instances
 --   as well, adding flexibility to the way /HaTeX/ is used.
@@ -25,7 +27,6 @@ module Text.LaTeX.Base.Class (
  ) where
 
 import Text.LaTeX.Base.Syntax
-import Data.Text (Text)
 import Data.Monoid
 import Data.String
 

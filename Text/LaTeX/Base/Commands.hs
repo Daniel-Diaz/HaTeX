@@ -266,7 +266,7 @@ thanks = liftL $ \l -> TeXComm "thanks" [FixArg l]
 -- | Import a package. First argument is a list of options for
 -- the package named in the second argument.
 usepackage :: LaTeXC l => [l] -> PackageName -> l
-usepackage ls pn = liftListL (\ls -> TeXComm "usepackage" [MOptArg ls ,FixArg $ fromString pn]) ls
+usepackage ls pn = liftListL (\ls_ -> TeXComm "usepackage" [MOptArg ls_ ,FixArg $ fromString pn]) ls
 
 -- | The @LaTeX@ logo.
 latex :: LaTeXC l => l
@@ -312,7 +312,7 @@ appendix = comm0 "appendix"
 
 item :: LaTeXC l => Maybe l -> l
 item Nothing    = commS "item "
-item (Just opt) = liftL (\opt -> TeXComm "item" [OptArg opt]) opt
+item (Just opt) = liftL (\opt_ -> TeXComm "item" [OptArg opt_]) opt
 
 enumerate :: LaTeXC l => l -> l
 enumerate = liftL $ TeXEnv "enumerate" []

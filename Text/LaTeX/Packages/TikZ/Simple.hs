@@ -125,6 +125,6 @@ pathImage :: Double -- ^ Precision argument, &#949;.
           -> Figure -- ^ Output figure.
 pathImage eps (a,b) f = Line $ fmap f $ listFrom a
   where
-   listFrom a =
-     if a >= b then [b]
-               else a : listFrom (a+eps)
+   listFrom x =
+     if x >= b then [b]
+               else x : listFrom (x+eps)

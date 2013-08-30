@@ -25,7 +25,6 @@ import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
-import Data.String
 
 -- | The 'beamer' document class. Importing a package is not required. Example:
 --

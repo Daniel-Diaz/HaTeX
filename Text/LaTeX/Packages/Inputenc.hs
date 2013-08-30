@@ -16,7 +16,6 @@ module Text.LaTeX.Packages.Inputenc
  , latin1
    ) where
 
-import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Types
 

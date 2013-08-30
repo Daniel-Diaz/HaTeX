@@ -12,7 +12,6 @@ import Text.LaTeX.Base.Commands
 --
 import Numeric
 import Data.Fixed
-import Data.List (intersperse)
 
 -- | Class of types that can be pretty-printed as 'LaTeX' values.
 class Texy t where
