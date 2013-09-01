@@ -46,6 +46,10 @@ instance Render URL where
 createURL :: String -> URL
 createURL = URL
 
+-- | 'fromString' = 'createURL'.
+instance IsString URL where
+ fromString = createURL
+
 -- | Reference to an 'URL'.
 href :: LaTeXC l => [HRefOption] -> URL -> l -> l
 href options u = liftL $ \t -> TeXComm "href" [ MOptArg $ fmap rendertex options
