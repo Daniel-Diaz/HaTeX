@@ -123,8 +123,8 @@ pathImage :: Double -- ^ Precision argument, &#949;.
           -> (Double,Double) -- ^ Interval, /(a,b)/.
           -> (Double -> Point) -- ^ Path function, /f/.
           -> Figure -- ^ Output figure.
-pathImage eps (a,b) f = Line $ fmap f $ listFrom a
+pathImage eps (a,b) f = Line $ listFrom a
   where
    listFrom x =
-     if x >= b then [b]
-               else x : listFrom (x+eps)
+     if x >= b then [f b]
+               else f x : listFrom (x+eps)
