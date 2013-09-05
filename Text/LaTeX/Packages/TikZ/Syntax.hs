@@ -185,6 +185,7 @@ startingPoint (Rectangle x _) = startingPoint x
 startingPoint (Circle x _) = startingPoint x
 startingPoint (Ellipse x _ _) = startingPoint x
 startingPoint (Grid x _ _) = startingPoint x
+startingPoint (Node x _) = startingPoint x
 
 -- | Calculate the last point of a 'TPath'.
 lastPoint :: TPath -> TPoint
@@ -195,6 +196,7 @@ lastPoint (Rectangle _ p) = p
 lastPoint (Circle x _) = lastPoint x
 lastPoint (Ellipse x _ _) = lastPoint x
 lastPoint (Grid _ _ p) = p
+lastPoint (Node x _) = lastPoint x
 
 -- Path builders
 

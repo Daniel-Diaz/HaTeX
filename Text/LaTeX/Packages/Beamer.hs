@@ -91,43 +91,41 @@ block = liftL2 $ \tit -> TeXEnv "block" [ FixArg tit ]
 
 -- THEMES --
 
---TODO: Add a short description of each theme.
-
 -- | A 'Theme' of a presentation. See 'usetheme'.
 --   A preview of each one is given below.
 data Theme = 
-    AnnArbor -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewAnnArbor.png>>
-  | Antibes -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewAntibes.png>>
-  | Bergen -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewBergen.png>>
-  | Berkeley -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewBerkeley.png>>
-  | Berlin -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewBerlin.png>>
-  | Boadilla -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewBoadilla.png>>
-  | CambridgeUS -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewCambridgeUS.png>>
-  | Copenhagen -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewCopenhagen.png>>
-  | Darmstadt -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewDarmstadt.png>>
-  | Dresden -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewDresden.png>>
-  | Frankfurt -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewFrankfurt.png>>
-  | Goettingen -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewGoettingen.png>>
-  | Hannover -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewHannover.png>>
-  | Ilmenau -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewIlmenau.png>>
-  | JuanLesPins -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewJuanLesPins.png>>
-  | Luebeck -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewLuebeck.png>>
-  | Madrid -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewMadrid.png>>
-  | Malmoe -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewMalmoe.png>>
-  | Marburg -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewMarburg.png>>
-  | Montpellier -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewMontpellier.png>>
-  | PaloAlto -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewPaloAlto.png>>
-  | Pittsburgh -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewPittsburgh.png>>
-  | Rochester -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewRochester.png>>
-  | Singapore -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewSingapore.png>>
-  | Szeged -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewSzeged.png>>
-  | Warsaw -- ^ <<http://daniel-diaz.github.io/projects/hatex/beamer/previewWarsaw.png>>
+    AnnArbor -- ^ <<docfiles/beamers/previewAnnArbor.png>>
+  | Antibes -- ^ <<docfiles/beamers/previewAntibes.png>>
+  | Bergen -- ^ <<docfiles/beamers/previewBergen.png>>
+  | Berkeley -- ^ <<docfiles/beamers/previewBerkeley.png>>
+  | Berlin -- ^ <<docfiles/beamers/previewBerlin.png>>
+  | Boadilla -- ^ <<docfiles/beamers/previewBoadilla.png>>
+  | CambridgeUS -- ^ <<docfiles/beamers/previewCambridgeUS.png>>
+  | Copenhagen -- ^ <<docfiles/beamers/previewCopenhagen.png>>
+  | Darmstadt -- ^ <<docfiles/beamers/previewDarmstadt.png>>
+  | Dresden -- ^ <<docfiles/beamers/previewDresden.png>>
+  | Frankfurt -- ^ <<docfiles/beamers/previewFrankfurt.png>>
+  | Goettingen -- ^ <<docfiles/beamers/previewGoettingen.png>>
+  | Hannover -- ^ <<docfiles/beamers/previewHannover.png>>
+  | Ilmenau -- ^ <<docfiles/beamers/previewIlmenau.png>>
+  | JuanLesPins -- ^ <<docfiles/beamers/previewJuanLesPins.png>>
+  | Luebeck -- ^ <<docfiles/beamers/previewLuebeck.png>>
+  | Madrid -- ^ <<docfiles/beamers/previewMadrid.png>>
+  | Malmoe -- ^ <<docfiles/beamers/previewMalmoe.png>>
+  | Marburg -- ^ <<docfiles/beamers/previewMarburg.png>>
+  | Montpellier -- ^ <<docfiles/beamers/previewMontpellier.png>>
+  | PaloAlto -- ^ <<docfiles/beamers/previewPaloAlto.png>>
+  | Pittsburgh -- ^ <<docfiles/beamers/previewPittsburgh.png>>
+  | Rochester -- ^ <<docfiles/beamers/previewRochester.png>>
+  | Singapore -- ^ <<docfiles/beamers/previewSingapore.png>>
+  | Szeged -- ^ <<docfiles/beamers/previewSzeged.png>>
+  | Warsaw -- ^ <<docfiles/beamers/previewWarsaw.png>>
     --
   | Boxes
   | Default
     --
   | CustomTheme String
-    deriving Show
+    deriving (Eq,Show)
 
 instance Render Theme where
  render (CustomTheme str) = fromString str

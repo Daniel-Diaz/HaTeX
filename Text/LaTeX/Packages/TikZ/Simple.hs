@@ -14,7 +14,7 @@
 --   contains a complete example of usage of this module with several pictures.
 --   Below you can see a picture along with the code it came from.
 --
---   <<http://daniel-diaz.github.com/projects/hatex/tikzsimple.png>>
+--   <<docfiles/tikz/tikzsimple.png>>
 --
 -- > myFigure :: Figure
 -- > myFigure = Scale 2 $ Figures
@@ -108,7 +108,7 @@ figuretikz (Figures fs) = foldr (\x y -> figuretikz x T.->> y) emptytikz fs
 --
 --   Here is an example with a logarithmic spiral.
 --
---   <<http://daniel-diaz.github.io/projects/hatex/spiral.png>>
+--   <<docfiles/tikz/spiral.png>>
 --
 -- > spiral :: Figure
 -- > spiral = LineWidth (Pt 2) $

@@ -9,7 +9,6 @@ import Data.Monoid
 import Data.Foldable
 import Data.Traversable
 import Control.Applicative
-import Data.String
 
 -- | Tree datatype.
 data Tree a =
