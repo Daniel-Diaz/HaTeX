@@ -14,9 +14,13 @@ module Text.LaTeX.Base.Syntax
    -- * Escaping reserved characters
  , protectString
  , protectText
+   -- * Syntax analysis
+ , lookForCommand
+ , lookForEnv
    ) where
 
-import Data.Text (Text,concatMap)
+import Data.Text (Text)
+import qualified Data.Text
 import Data.Monoid
 import Data.String
 
@@ -113,3 +117,64 @@ protectChar '~'  = "\\~{}"
 protectChar '\\' = "\\textbackslash{}"
 protectChar '_'  = "\\_{}"
 protectChar x = [x]
+
+-- Syntax analysis
+
+-- | Look into a 'LaTeX' syntax tree to find any call to the command with
+--   the given name. It returns a list of arguments with which this command
+--   is called.
+--
+--   If the returned list is empty, the command was not found. However,
+--   if the list contains empty lists, those are callings to the command
+--   with no arguments.
+--
+--   For example
+--
+-- > lookForCommand "author" l
+--
+--   would look for the argument passed to the @\\author@ command in @l@.
+lookForCommand :: String -- ^ Name of the command.
+               -> LaTeX  -- ^ LaTeX syntax tree.
+               -> [[TeXArg]] -- ^ List of arguments passed to the command.
+lookForCommand str (TeXComm n as) =
+  let xs = concatMap (lookForCommandArg str) as
+  in  if n == str then as : xs else xs
+lookForCommand str (TeXCommS n) = if n == str then [[]] else []
+lookForCommand str (TeXEnv _ as l) =
+  let xs = concatMap (lookForCommandArg str) as
+  in  xs ++ lookForCommand str l
+lookForCommand str (TeXMath _ l) = lookForCommand str l
+lookForCommand str (TeXOp _ l1 l2) = lookForCommand str l1 ++ lookForCommand str l2
+lookForCommand str (TeXBraces l) = lookForCommand str l
+lookForCommand str (TeXSeq l1 l2) = lookForCommand str l1 ++ lookForCommand str l2
+lookForCommand _ _ = []
+
+lookForCommandArg :: String -> TeXArg -> [[TeXArg]]
+lookForCommandArg str (OptArg l) = lookForCommand str l
+lookForCommandArg str (FixArg l) = lookForCommand str l
+lookForCommandArg str (MOptArg ls) = concatMap (lookForCommand str) ls
+lookForCommandArg str (SymArg l) = lookForCommand str l
+lookForCommandArg str (MSymArg ls) = concatMap (lookForCommand str) ls
+
+-- | Similar to 'lookForCommand', but applied to environments.
+--   It returns a list with arguments passed and content of the
+--   environment in each call.
+lookForEnv :: String -> LaTeX -> [([TeXArg],LaTeX)]
+lookForEnv str (TeXComm _ as) = concatMap (lookForEnvArg str) as
+lookForEnv str (TeXEnv n as l) =
+  let xs = concatMap (lookForEnvArg str) as
+      ys = lookForEnv str l
+      zs = xs ++ ys
+  in  if n == str then (as,l) : zs else zs
+lookForEnv str (TeXMath _ l) = lookForEnv str l
+lookForEnv str (TeXOp _ l1 l2) = lookForEnv str l1 ++ lookForEnv str l2
+lookForEnv str (TeXBraces l) = lookForEnv str l
+lookForEnv str (TeXSeq l1 l2) = lookForEnv str l1 ++ lookForEnv str l2
+lookForEnv _ _ = []
+
+lookForEnvArg :: String -> TeXArg -> [([TeXArg],LaTeX)]
+lookForEnvArg str (OptArg l) = lookForEnv str l
+lookForEnvArg str (FixArg l) = lookForEnv str l
+lookForEnvArg str (MOptArg ls) = concatMap (lookForEnv str) ls
+lookForEnvArg str (SymArg l) = lookForEnv str l
+lookForEnvArg str (MSymArg ls) = concatMap (lookForEnv str) ls
