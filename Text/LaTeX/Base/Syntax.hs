@@ -39,7 +39,7 @@ data Measure =
 
 -- | Different types of syntax for mathematical expressions.
 data MathType = Parentheses | Square | Dollar
-  deriving (Eq,Show,Ord)
+  deriving (Eq,Show)
 
 -- | Type of @LaTeX@ blocks.
 data LaTeX =
