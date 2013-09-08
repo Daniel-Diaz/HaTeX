@@ -278,7 +278,7 @@ where
   -- Helpers
   ------------------------------------------------------------------------
   isSpecial :: Char -> Bool
-  isSpecial = (`elem` specials) -- ['\\', '[', '(', '{', '}']
+  isSpecial = (`elem` specials)
 
   endCmd :: Char -> Bool
   endCmd c = notLowercaseAlph && notUppercaseAlph
