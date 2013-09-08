@@ -17,6 +17,7 @@ module Text.LaTeX.Base.Syntax
    -- * Syntax analysis
  , lookForCommand
  , lookForEnv
+ , getBody
    ) where
 
 import Data.Text (Text)
@@ -69,10 +70,10 @@ data LaTeX =
 
 -- | An argument for a 'LaTeX' command or environment.
 data TeXArg =
-   OptArg LaTeX -- ^ Optional argument.
- | FixArg LaTeX -- ^ Fixed argument.
+   FixArg LaTeX    -- ^ Fixed argument.
+ | OptArg LaTeX    -- ^ Optional argument.
  | MOptArg [LaTeX] -- ^ Multiple optional argument.
- | SymArg LaTeX -- ^ An argument enclosed between @\<@ and @\>@.
+ | SymArg LaTeX    -- ^ An argument enclosed between @\<@ and @\>@.
  | MSymArg [LaTeX] -- ^ Version of 'SymArg' with multiple options.
    deriving (Eq,Show)
 
@@ -173,8 +174,15 @@ lookForEnv str (TeXSeq l1 l2) = lookForEnv str l1 ++ lookForEnv str l2
 lookForEnv _ _ = []
 
 lookForEnvArg :: String -> TeXArg -> [([TeXArg],LaTeX)]
-lookForEnvArg str (OptArg l) = lookForEnv str l
-lookForEnvArg str (FixArg l) = lookForEnv str l
+lookForEnvArg str (OptArg  l ) = lookForEnv str l
+lookForEnvArg str (FixArg  l ) = lookForEnv str l
 lookForEnvArg str (MOptArg ls) = concatMap (lookForEnv str) ls
-lookForEnvArg str (SymArg l) = lookForEnv str l
+lookForEnvArg str (SymArg  l ) = lookForEnv str l
 lookForEnvArg str (MSymArg ls) = concatMap (lookForEnv str) ls
+
+-- | Extract the content of the 'document' environment, if present.
+getBody :: LaTeX -> Maybe LaTeX
+getBody l =
+  case lookForEnv "document" l of
+    ((_,b):_) -> Just b
+    _ -> Nothing

@@ -128,12 +128,13 @@ mathDisplay :: LaTeXC l => l -> l
 mathDisplay = liftL $ TeXMath Square
 
 -------------------------------------------------------
--- Numeric instances for LaTeX and LaTeXT --
+------- Numeric instances for LaTeX and LaTeXT --------
 -------------------------------------------------------
 
 ----------- LaTeX instances
 
 -- | Careful! Method 'signum' is undefined. Don't use it!
+--   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Num LaTeX where
  (+) = TeXOp "+"
  (-) = TeXOp "-"
@@ -145,11 +146,13 @@ instance Num LaTeX where
  signum _ = error "Cannot use \"signum\" Num method with a LaTeX value."
 
 -- | Division uses the LaTeX 'frac' command.
+--   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Fractional LaTeX where
  (/) = frac
  fromRational = rendertex . (fromRational :: Rational -> Double)
 
 -- | Undefined methods: 'asinh', 'atanh' and 'acosh'.
+--   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Floating LaTeX where
  pi = pi_
  exp = (texp <>)
@@ -174,14 +177,17 @@ instance Floating LaTeX where
 ----------- LaTeXT instances
 
 -- | Warning: this instance only exists for the 'Num' instance.
+--   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Monad m => Eq (LaTeXT m a) where
  _ == _ = error "Cannot use \"(==)\" Eq method with a LaTeXT value."
 
 -- | Warning: this instance only exists for the 'Num' instance.
+--   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Monad m => Show (LaTeXT m a) where
  show _ = error "Cannot use \"show\" Show method with a LaTeXT value."
 
 -- | Careful! Method 'signum' is undefined. Don't use it!
+--   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Monad m => Num (LaTeXT m a) where
  (+) = liftOp (+)
  (-) = liftOp (-)
@@ -193,11 +199,13 @@ instance Monad m => Num (LaTeXT m a) where
  signum _ = error "Cannot use \"signum\" Num method with a LaTeXT value."
 
 -- | Division uses the LaTeX 'frac' command.
+--   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Monad m => Fractional (LaTeXT m a) where
  (/) = liftOp (/)
  fromRational = fromLaTeX . fromRational
 
 -- | Undefined methods: 'asinh', 'atanh' and 'acosh'.
+--   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Monad m => Floating (LaTeXT m a) where
  pi = pi_
  exp = liftFun exp
