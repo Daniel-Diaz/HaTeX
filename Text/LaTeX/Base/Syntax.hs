@@ -15,8 +15,11 @@ module Text.LaTeX.Base.Syntax
  , protectString
  , protectText
    -- * Syntax analysis
+ , matchCommand
  , lookForCommand
+ , matchEnv
  , lookForEnv
+   -- ** Utils
  , getBody
    ) where
 
@@ -125,6 +128,8 @@ protectChar x = [x]
 --   the given name. It returns a list of arguments with which this command
 --   is called.
 --
+-- > lookForCommand = (fmap snd .) . matchCommand . (==)
+--
 --   If the returned list is empty, the command was not found. However,
 --   if the list contains empty lists, those are callings to the command
 --   with no arguments.
@@ -137,48 +142,62 @@ protectChar x = [x]
 lookForCommand :: String -- ^ Name of the command.
                -> LaTeX  -- ^ LaTeX syntax tree.
                -> [[TeXArg]] -- ^ List of arguments passed to the command.
-lookForCommand str (TeXComm n as) =
-  let xs = concatMap (lookForCommandArg str) as
-  in  if n == str then as : xs else xs
-lookForCommand str (TeXCommS n) = if n == str then [[]] else []
-lookForCommand str (TeXEnv _ as l) =
-  let xs = concatMap (lookForCommandArg str) as
-  in  xs ++ lookForCommand str l
-lookForCommand str (TeXMath _ l) = lookForCommand str l
-lookForCommand str (TeXOp _ l1 l2) = lookForCommand str l1 ++ lookForCommand str l2
-lookForCommand str (TeXBraces l) = lookForCommand str l
-lookForCommand str (TeXSeq l1 l2) = lookForCommand str l1 ++ lookForCommand str l2
-lookForCommand _ _ = []
+lookForCommand = (fmap snd .) . matchCommand . (==)
 
-lookForCommandArg :: String -> TeXArg -> [[TeXArg]]
-lookForCommandArg str (OptArg l) = lookForCommand str l
-lookForCommandArg str (FixArg l) = lookForCommand str l
-lookForCommandArg str (MOptArg ls) = concatMap (lookForCommand str) ls
-lookForCommandArg str (SymArg l) = lookForCommand str l
-lookForCommandArg str (MSymArg ls) = concatMap (lookForCommand str) ls
+-- | Traverse a 'LaTeX' syntax tree and returns the commands (see 'TeXComm' and
+--   'TeXCommS') that matches the condition and their arguments in each call.
+matchCommand :: (String -> Bool) -> LaTeX -> [(String,[TeXArg])]
+matchCommand f (TeXComm str as) =
+  let xs = concatMap (matchCommandArg f) as
+  in  if f str then (str,as) : xs else xs
+matchCommand f (TeXCommS str) = if f str then [(str,[])] else []
+matchCommand f (TeXEnv _ as l) =
+  let xs = concatMap (matchCommandArg f) as
+  in  xs ++ matchCommand f l
+matchCommand f (TeXMath _ l) = matchCommand f l
+matchCommand f (TeXOp _ l1 l2) = matchCommand f l1 ++ matchCommand f l2
+matchCommand f (TeXBraces l) = matchCommand f l
+matchCommand f (TeXSeq l1 l2) = matchCommand f l1 ++ matchCommand f l2
+matchCommand _ _ = []
+
+matchCommandArg :: (String -> Bool) -> TeXArg -> [(String,[TeXArg])]
+matchCommandArg f (OptArg  l ) = matchCommand f l
+matchCommandArg f (FixArg  l ) = matchCommand f l
+matchCommandArg f (MOptArg ls) = concatMap (matchCommand f) ls
+matchCommandArg f (SymArg  l ) = matchCommand f l
+matchCommandArg f (MSymArg ls) = concatMap (matchCommand f) ls
 
 -- | Similar to 'lookForCommand', but applied to environments.
 --   It returns a list with arguments passed and content of the
 --   environment in each call.
+--
+-- > lookForEnv = (fmap (\(_,as,l) -> (as,l)) .) . matchEnv . (==)
+--
 lookForEnv :: String -> LaTeX -> [([TeXArg],LaTeX)]
-lookForEnv str (TeXComm _ as) = concatMap (lookForEnvArg str) as
-lookForEnv str (TeXEnv n as l) =
-  let xs = concatMap (lookForEnvArg str) as
-      ys = lookForEnv str l
-      zs = xs ++ ys
-  in  if n == str then (as,l) : zs else zs
-lookForEnv str (TeXMath _ l) = lookForEnv str l
-lookForEnv str (TeXOp _ l1 l2) = lookForEnv str l1 ++ lookForEnv str l2
-lookForEnv str (TeXBraces l) = lookForEnv str l
-lookForEnv str (TeXSeq l1 l2) = lookForEnv str l1 ++ lookForEnv str l2
-lookForEnv _ _ = []
+lookForEnv = (fmap (\(_,as,l) -> (as,l)) .) . matchEnv . (==)
 
-lookForEnvArg :: String -> TeXArg -> [([TeXArg],LaTeX)]
-lookForEnvArg str (OptArg  l ) = lookForEnv str l
-lookForEnvArg str (FixArg  l ) = lookForEnv str l
-lookForEnvArg str (MOptArg ls) = concatMap (lookForEnv str) ls
-lookForEnvArg str (SymArg  l ) = lookForEnv str l
-lookForEnvArg str (MSymArg ls) = concatMap (lookForEnv str) ls
+-- | Traverse a 'LaTeX' syntax tree and returns the environments (see
+--   'TeXEnv') that matches the condition, their arguments and their content
+--   in each call.
+matchEnv :: (String -> Bool) -> LaTeX -> [(String,[TeXArg],LaTeX)]
+matchEnv f (TeXComm _ as) = concatMap (matchEnvArg f) as
+matchEnv f (TeXEnv str as l) =
+  let xs = concatMap (matchEnvArg f) as
+      ys = matchEnv f l
+      zs = xs ++ ys
+  in  if f str then (str,as,l) : zs else zs
+matchEnv f (TeXMath _ l) = matchEnv f l
+matchEnv f (TeXOp _ l1 l2) = matchEnv f l1 ++ matchEnv f l2
+matchEnv f (TeXBraces l) = matchEnv f l
+matchEnv f (TeXSeq l1 l2) = matchEnv f l1 ++ matchEnv f l2
+matchEnv _ _ = []
+
+matchEnvArg :: (String -> Bool) -> TeXArg -> [(String,[TeXArg],LaTeX)]
+matchEnvArg f (OptArg  l ) = matchEnv f l
+matchEnvArg f (FixArg  l ) = matchEnv f l
+matchEnvArg f (MOptArg ls) = concatMap (matchEnv f) ls
+matchEnvArg f (SymArg  l ) = matchEnv f l
+matchEnvArg f (MSymArg ls) = concatMap (matchEnv f) ls
 
 -- | Extract the content of the 'document' environment, if present.
 getBody :: LaTeX -> Maybe LaTeX
