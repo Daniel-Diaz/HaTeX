@@ -26,6 +26,7 @@ where
   import qualified Data.Attoparsec.Text as A   (takeTill)
   import           Data.Char (toLower)
   import           Data.Monoid
+  import           Data.Maybe (fromMaybe)
   import           Data.Text (Text)
   import qualified Data.Text as T 
 
@@ -129,7 +130,7 @@ where
   env = do
     _  <- char '\\'
     n  <- envName "begin"
-    as <- cmdArgs
+    as <- fmap (fromMaybe []) cmdArgs
     b  <- envBody n 
     return $ TeXEnv (T.unpack n) as b
 
@@ -138,7 +139,7 @@ where
     _ <- string k
     _ <- char '{'
     n <- A.takeTill (== '}')
-    _ <- char '}' -- Is not this brace already taken by the takeTill?
+    _ <- char '}'
     return n
 
   envBody :: Text -> Parser LaTeX
@@ -159,26 +160,18 @@ where
                    else do
                      c  <- A.takeTill endCmd
                      as <- cmdArgs
-                     if null as
-                        then return $ TeXCommS (T.unpack c)
-                        else return $ TeXComm  (T.unpack c) as
+                     return $ maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) as
 
   ------------------------------------------------------------------------
   -- Command Arguments
   ------------------------------------------------------------------------
-  cmdArgs :: Parser [TeXArg]
-  cmdArgs = try (whitespace >> string "{}" >> return [FixArg TeXEmpty])
-              <|> many1 cmdArg 
-              <|> return []
+  cmdArgs :: Parser (Maybe [TeXArg])
+  cmdArgs = try (string "{}" >> return (Just []))
+              <|> fmap Just (many1 cmdArg)
+              <|> return Nothing
 
   cmdArg :: Parser TeXArg
   cmdArg = do
-    -- A space after the command name indicates the end of the command.
-    -- I comment this line to prevent buggy parsings like "\cap [j_n, \omega)"
-    -- being interpreted as if "[" were the beginning of an argument, when the
-    -- space after "\cap" clearly indicates the opposite.
-    --
-    -- whitespace
     c <- char '[' <|> char '{'
     let e = case c of
               '[' -> "]"
@@ -189,11 +182,6 @@ where
       '[' -> return $ OptArg b
       '{' -> return $ FixArg b
       _   -> error "this cannot happen!"
-
-  whitespace :: Parser ()
-  whitespace = try (do _ <- char ' '
-                       whitespace)
-                   <|> return ()
 
   ------------------------------------------------------------------------
   -- Special commands (consisting of one char)
