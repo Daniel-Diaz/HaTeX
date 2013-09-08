@@ -94,8 +94,8 @@ where
   --          text2 handles it, starting with ']' 
   ------------------------------------------------------------------------
   block :: Parser LaTeX
-  block = choice [text, dolMath, comment, environment, command, text2]
-    
+  block = foldr1 (<|>) [text, dolMath, comment, text2, command, environment]
+   
   ------------------------------------------------------------------------
   -- Text
   ------------------------------------------------------------------------
@@ -120,7 +120,7 @@ where
   -- Environment
   ------------------------------------------------------------------------
   environment :: Parser LaTeX
-  environment = choice [anonym, env]
+  environment = anonym <|> env
 
   anonym :: Parser LaTeX
   anonym = char '{' >> 
@@ -143,8 +143,15 @@ where
     return n
 
   envBody :: Text -> Parser LaTeX
-  envBody n = mconcat <$> block `manyTill` endenv
+  envBody n = mconcat <$> (bodyBlock n) `manyTill` endenv
     where endenv = try $ string ("\\end{" <> n <> "}")
+
+  bodyBlock :: Text -> Parser LaTeX
+  bodyBlock n = do
+    c <- peekChar
+    case c of 
+       Just _ -> block
+       _ -> fail $ "Environment '" <> T.unpack n <> "' not finalized."
 
   ------------------------------------------------------------------------
   -- Command
@@ -159,8 +166,9 @@ where
                    then special
                    else do
                      c  <- A.takeTill endCmd
-                     as <- cmdArgs
-                     return $ maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) as
+                     if c `elem` ["begin","end"]
+                        then fail $ "Command not allowed: " ++ T.unpack c
+                        else maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) <$> cmdArgs
 
   ------------------------------------------------------------------------
   -- Command Arguments
