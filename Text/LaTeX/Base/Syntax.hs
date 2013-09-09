@@ -19,6 +19,7 @@ module Text.LaTeX.Base.Syntax
  , lookForCommand
  , matchEnv
  , lookForEnv
+ , texmap
    -- ** Utils
  , getBody
    ) where
@@ -198,6 +199,27 @@ matchEnvArg f (FixArg  l ) = matchEnv f l
 matchEnvArg f (MOptArg ls) = concatMap (matchEnv f) ls
 matchEnvArg f (SymArg  l ) = matchEnv f l
 matchEnvArg f (MSymArg ls) = concatMap (matchEnv f) ls
+
+-- | The function 'texmap' looks for subexpressions that match a given
+--   condition and applies a function to them.
+texmap :: (LaTeX -> Bool) -- ^ Condition.
+       -> (LaTeX -> LaTeX) -- ^ Function to apply when the condition matches.
+       -> LaTeX -> LaTeX
+texmap c f = go
+  where
+   go l@(TeXComm str as)  = if c l then f l else TeXComm str $ fmap go' as
+   go l@(TeXEnv str as b) = if c l then f l else TeXEnv str (fmap go' as) $ go b
+   go l@(TeXMath t b)     = if c l then f l else TeXMath t $ go b
+   go l@(TeXOp str l1 l2) = if c l then f l else TeXOp str (go l1) (go l2)
+   go l@(TeXBraces b)     = if c l then f l else TeXBraces $ go b
+   go l@(TeXSeq l1 l2)    = if c l then f l else TeXSeq (go l1) (go l2)
+   go l = if c l then f l else l 
+   --
+   go' (FixArg  l ) = FixArg  $ go l
+   go' (OptArg  l ) = OptArg  $ go l
+   go' (MOptArg ls) = MOptArg $ fmap go ls
+   go' (SymArg  l ) = SymArg  $ go l
+   go' (MSymArg ls) = MSymArg $ fmap go ls
 
 -- | Extract the content of the 'document' environment, if present.
 getBody :: LaTeX -> Maybe LaTeX
