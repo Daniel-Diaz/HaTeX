@@ -218,6 +218,8 @@ raw = fromLaTeX . TeXRaw
 
 -- | Calling 'between' @c l1 l2@ puts @c@ between @l1@ and @l2@ and
 --   appends them.
+--
+-- > between c l1 l2 = l1 <> c <> l2
 between :: Monoid m => m -> m -> m -> m
 between c l1 l2 = l1 <> c <> l2
 
@@ -232,7 +234,7 @@ comment = fromLaTeX . TeXComment
 --
 -- Since you are writing in Haskell, you may not need to output comments
 -- as you can add them in the Haskell source. I added this feature
--- for completeness.
+-- for completeness. It may be useful for debugging the output as well.
 (%:) :: LaTeXC l => l -> Text -> l
 (%:) l = (l <>) . comment
 
@@ -290,15 +292,19 @@ chapter = liftL $ \c -> TeXComm "chapter" [FixArg c]
 section :: LaTeXC l => l -> l
 section = liftL $ \s -> TeXComm "section" [FixArg s]
 
+-- | Start a new subsection.
 subsection :: LaTeXC l => l -> l
 subsection = liftL $ \sub -> TeXComm "subsection" [FixArg sub]
 
+-- | Start a new sub/sub/section.
 subsubsection :: LaTeXC l => l -> l
 subsubsection = liftL $ \sub -> TeXComm "subsubsection" [FixArg sub]
 
+-- | Start a paragraph.
 paragraph :: LaTeXC l => l -> l
 paragraph = liftL $ \p -> TeXComm "paragraph" [FixArg p]
 
+-- | Start a subparagraph (minimal level of sectioning).
 subparagraph :: LaTeXC l => l -> l
 subparagraph = liftL $ \p -> TeXComm "subparagraph" [FixArg p]
 
@@ -310,25 +316,34 @@ tableofcontents = comm0 "tableofcontents"
 appendix :: LaTeXC l => l
 appendix = comm0 "appendix"
 
+-- | An item of a list (see 'enumerate' or 'itemize').
+--   The optional argument sets the design of the item.
 item :: LaTeXC l => Maybe l -> l
 item Nothing    = commS "item "
 item (Just opt) = liftL (\opt_ -> TeXComm "item" [OptArg opt_]) opt
 
+-- | Environment of ordered lists. Use 'item' to start each list
+--   item.
 enumerate :: LaTeXC l => l -> l
 enumerate = liftL $ TeXEnv "enumerate" []
 
+-- | Environment of unordered lists. Use 'item' to start each list
+--   item.
 itemize :: LaTeXC l => l -> l
 itemize = liftL $ TeXEnv "itemize" []
 
 description :: LaTeXC l => l -> l
 description = liftL $ TeXEnv "description" []
 
+-- | Left-justify the argument.
 flushleft :: LaTeXC l => l -> l
 flushleft = liftL $ TeXEnv "flushleft" []
 
+-- | Right-justify the argument.
 flushright :: LaTeXC l => l -> l
 flushright = liftL $ TeXEnv "flushright" []
 
+-- | Center-justify the argument.
 center :: LaTeXC l => l -> l
 center = liftL $ TeXEnv "center" []
 
@@ -355,6 +370,7 @@ figure :: LaTeXC l =>
 figure Nothing  = liftL $ TeXEnv "figure" []
 figure (Just p) = liftL $ TeXEnv "figure" [ OptArg $ TeXRaw $ render p ]
 
+-- | Abstract section.
 abstract :: LaTeXC l => l -> l
 abstract = liftL $ TeXEnv "abstract" []
 
@@ -520,6 +536,7 @@ openright = OpenRight
 openany :: ClassOption
 openany = OpenAny
 
+-- | The 'document' environment contains the body of the document.
 document :: LaTeXC l => l -> l
 document = liftL $ TeXEnv "document" []
 
@@ -614,15 +631,19 @@ mbox = liftL $ \l -> TeXComm "mbox" [FixArg l]
 fbox :: LaTeXC l => l -> l
 fbox = liftL $ \l -> TeXComm "fbox" [FixArg l]
 
+-- | Render the date at compilation time.
 today :: LaTeXC l => l
 today = comm0 "today"
 
+-- | Render the current page.
 thePage :: LaTeXC l => l
 thePage = comm0 "thepage"
 
+-- | TeX logo.
 tex :: LaTeXC l => l
 tex = comm0 "TeX"
 
+-- | LaTeX logo.
 laTeX2 :: LaTeXC l => l
 laTeX2 = comm0 "LaTeX"
 
