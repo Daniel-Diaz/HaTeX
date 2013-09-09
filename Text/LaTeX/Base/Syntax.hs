@@ -220,7 +220,7 @@ texmapM :: (Applicative m, Monad m)
 texmapM c f = go
   where
    go l@(TeXComm str as)  = if c l then f l else TeXComm str <$> mapM go' as
-   go l@(TeXEnv str as b) = if c l then f l else TeXEnv str <$> (mapM go' as) <*> go b
+   go l@(TeXEnv str as b) = if c l then f l else TeXEnv str <$> mapM go' as <*> go b
    go l@(TeXMath t b)     = if c l then f l else TeXMath t <$> go b
    go l@(TeXOp str l1 l2) = if c l then f l else liftA2 (TeXOp str) (go l1) (go l2)
    go l@(TeXBraces b)     = if c l then f l else TeXBraces <$> go b
