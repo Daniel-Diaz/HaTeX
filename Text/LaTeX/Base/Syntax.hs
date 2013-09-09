@@ -20,7 +20,7 @@ module Text.LaTeX.Base.Syntax
  , matchEnv
  , lookForEnv
  , texmap
- , texmapA
+ , texmapM
    -- ** Utils
  , getBody
    ) where
@@ -206,18 +206,18 @@ matchEnvArg f (MSymArg ls) = concatMap (matchEnv f) ls
 -- | The function 'texmap' looks for subexpressions that match a given
 --   condition and applies a function to them.
 --
--- > texmap c f = runIdentity . texmapA c (pure . f)
+-- > texmap c f = runIdentity . texmapM c (pure . f)
 texmap :: (LaTeX -> Bool) -- ^ Condition.
        -> (LaTeX -> LaTeX) -- ^ Function to apply when the condition matches.
        ->  LaTeX -> LaTeX
-texmap c f = runIdentity . texmapA c (pure . f)
+texmap c f = runIdentity . texmapM c (pure . f)
 
 -- | Version of 'texmap' where the function returns values in a 'Monad'.
-texmapA :: (Applicative m, Monad m)
+texmapM :: (Applicative m, Monad m)
         => (LaTeX -> Bool) -- ^ Condition.
         -> (LaTeX -> m LaTeX) -- ^ Function to apply when the condition matches.
         ->  LaTeX -> m LaTeX
-texmapA c f = go
+texmapM c f = go
   where
    go l@(TeXComm str as)  = if c l then f l else TeXComm str <$> mapM go' as
    go l@(TeXEnv str as b) = if c l then f l else TeXEnv str <$> (mapM go' as) <*> go b
