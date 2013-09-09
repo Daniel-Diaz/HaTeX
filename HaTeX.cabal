@@ -26,47 +26,12 @@ Extra-source-files:
   ReleaseNotes
   README.md
   -- Examples
-  Examples/fibs.hs
-  Examples/comments.hs
-  Examples/simple.hs
-  Examples/tree.hs
-  Examples/beamer.hs
-  Examples/matrices.hs
-  Examples/texy.hs
-  Examples/tikz.hs
-  Examples/tikzsimple.hs
-  Examples/fancyhdr.hs
+  Examples/*.hs
 Extra-doc-files:
   -- TikZ
-  docfiles/tikz/tikzsimple.png
-  docfiles/tikz/spiral.png
+  docfiles/tikz/*.png
   -- Beamer
-  docfiles/beamers/previewAnnArbor.png
-  docfiles/beamers/previewAntibes.png
-  docfiles/beamers/previewBergen.png
-  docfiles/beamers/previewBerkeley.png
-  docfiles/beamers/previewBerlin.png
-  docfiles/beamers/previewBoadilla.png
-  docfiles/beamers/previewCambridgeUS.png
-  docfiles/beamers/previewCopenhagen.png
-  docfiles/beamers/previewDarmstadt.png
-  docfiles/beamers/previewDresden.png
-  docfiles/beamers/previewFrankfurt.png
-  docfiles/beamers/previewGoettingen.png
-  docfiles/beamers/previewHannover.png
-  docfiles/beamers/previewIlmenau.png
-  docfiles/beamers/previewJuanLesPins.png
-  docfiles/beamers/previewLuebeck.png
-  docfiles/beamers/previewMadrid.png
-  docfiles/beamers/previewMalmoe.png
-  docfiles/beamers/previewMarburg.png
-  docfiles/beamers/previewMontpellier.png
-  docfiles/beamers/previewPaloAlto.png
-  docfiles/beamers/previewPittsburgh.png
-  docfiles/beamers/previewRochester.png
-  docfiles/beamers/previewSingapore.png
-  docfiles/beamers/previewSzeged.png
-  docfiles/beamers/previewWarsaw.png
+  docfiles/beamers/*.png
 
 Source-repository head
   type: git
