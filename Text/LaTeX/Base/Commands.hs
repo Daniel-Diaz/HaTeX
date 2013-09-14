@@ -189,6 +189,9 @@ module Text.LaTeX.Base.Commands
  , hline
  , cline
  , multicolumn
+   -- ** External files
+ , input
+ , include
    -- ** Others
  , footnote
  , protect
@@ -933,3 +936,15 @@ ref = liftL $ \l -> TeXComm "ref" [FixArg $ TeXRaw $ render l]
 
 pageref :: LaTeXC l => l -> l
 pageref = liftL $ \l -> TeXComm "pageref" [FixArg $ TeXRaw $ render l]
+
+-- Exteral files
+
+-- | Import an external file and insert its content /as it is/.
+input :: LaTeXC l => FilePath -> l
+input fp = fromLaTeX $ TeXComm "input" [FixArg $ TeXRaw $ fromString fp]
+
+-- | Similar to 'input', but forces a page break.
+--
+-- /Note: the file you are including cannot include other files./
+include :: LaTeXC l => FilePath -> l
+include fp = fromLaTeX $ TeXComm "include" [FixArg $ TeXRaw $ fromString fp]
