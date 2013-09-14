@@ -7,7 +7,7 @@ before_script:
   - mv dist/HaTeX*.tar.gz travisbuild/HaTeX.tar.gz
   - cd travisbuild
   - tar xzvf HaTeX.tar.gz
-  - cd HaTeX
+  - cd HaTeX*
 script:
   - cabal configure
   - cabal build
