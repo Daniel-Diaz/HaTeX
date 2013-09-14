@@ -189,15 +189,15 @@ module Text.LaTeX.Base.Commands
  , hline
  , cline
  , multicolumn
-   -- ** External files
- , input
- , include
    -- ** Others
  , footnote
  , protect
  , hyphenation
  , hyp
  , qts
+   -- * External files
+ , input
+ , include
    ) where
 
 import Data.String
