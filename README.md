@@ -25,6 +25,10 @@ However, note that the API may be unstable and is subject to any kind of change.
 In the other hand, this package follows the [_Package Versioning Policy_](http://www.haskell.org/haskellwiki/Package_versioning_policy),
 so it is unlikely to suffer from API breakages if you follow it too when importing the library.
 
+## Travis automatic build
+
+[![Build Status](https://travis-ci.org/Daniel-Diaz/HaTeX.png?branch=master)](https://travis-ci.org/Daniel-Diaz/HaTeX)
+
 ## HaTeX User's Guide
 
 The HaTeX User's Guide lives [here](https://github.com/Daniel-Diaz/hatex-guide)... and is also done in Haskell!
