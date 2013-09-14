@@ -1,6 +1,6 @@
 # HaTeX ReadMe
 
-HaTeX is a Haskell library that implements the LaTeX syntax.
+HaTeX is a Haskell library that implements the *LaTeX syntax*.
 
 Check a list of examples of usage in the [examples](Examples/) directory.
 A good starting point may be [simple.hs](Examples/simple.hs).
