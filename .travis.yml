@@ -1,0 +1,13 @@
+language: haskell
+notifications:
+  email: false
+before_script:
+  - cabal sdist
+  - mkdir travisbuild
+  - mv dist/HaTeX*.tar.gz travisbuild/HaTeX.tar.gz
+  - cd travisbuild
+  - tar xzvf HaTeX.tar.gz
+  - cd HaTeX
+script:
+  - cabal configure
+  - cabal build
