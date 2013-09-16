@@ -23,6 +23,7 @@ module Text.LaTeX.Base.Syntax
  , texmapM
    -- ** Utils
  , getBody
+ , getPreamble
    ) where
 
 import Data.Text (Text)
@@ -239,3 +240,10 @@ getBody l =
   case lookForEnv "document" l of
     ((_,b):_) -> Just b
     _ -> Nothing
+
+-- | Extract the preamble of a 'LaTeX' document (everything before the 'document'
+--   environment). It could be empty.
+getPreamble :: LaTeX -> LaTeX
+getPreamble (TeXEnv "document" _ _) = mempty
+getPreamble (TeXSeq l1 l2) = getPreamble l1 <> getPreamble l2
+getPreamble l = l
