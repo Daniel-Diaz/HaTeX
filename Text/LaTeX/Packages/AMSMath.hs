@@ -89,6 +89,7 @@ module Text.LaTeX.Packages.AMSMath
  , to , mapsto
  , forall , exists
  , dagger, ddagger
+ , infty
    -- * Fonts
  , mathdefault
  , mathbf
@@ -403,7 +404,7 @@ sumFromTo :: LaTeXC l
           => l -- ^ Expression below the sigma.
           -> l -- ^ Expression above the sigma.
           -> l
-sumFromTo x y = tsum !: x ^: y
+sumFromTo x y = commS "sum" !: x ^: y
 
 -- | Pi product symbol.
 prod :: LaTeXC l => l
@@ -414,7 +415,7 @@ prodFromTo :: LaTeXC l
            => l -- ^ Expression below the pi.
            -> l -- ^ Expression above the pi.
            -> l
-prodFromTo x y = prod !: x ^: y
+prodFromTo x y = commS "prod" !: x ^: y
 
 -- | Integral symbol.
 integral :: LaTeXC l => l
@@ -425,7 +426,7 @@ integralFromTo :: LaTeXC l
                => l -- ^ Lower limit of integration.
                -> l -- ^ Upper limit of integration.
                -> l
-integralFromTo x y = integral !: x ^: y
+integralFromTo x y = commS "int" !: x ^: y
 
 ---- Operator symbols
 
@@ -436,7 +437,6 @@ notop :: LaTeXC l =>
 notop op =
  \l1 l2 ->
    (l1 <> commS "not") `op` l2
-
 
 -- | Plus-or-minus operator (±).
 pm :: LaTeXC l => l -> l -> l
@@ -528,7 +528,6 @@ propto  = between $ comm0 "propto"
 equiv :: LaTeXC l => l -> l -> l
 equiv  = between $ comm0 "equiv"
 
-
 -- | Element-of (∈).
 in_ :: LaTeXC l => l -> l -> l
 in_ = between $ comm0 "in"
@@ -561,7 +560,6 @@ cup  = between $ comm0 "cup"
 setminus :: LaTeXC l => l -> l -> l
 setminus  = between $ comm0 "setminus"
 
-
 -- | Angle pointing downwards (∨).
 vee :: LaTeXC l => l -> l -> l
 vee  = between $ comm0 "vee"
@@ -569,7 +567,6 @@ vee  = between $ comm0 "vee"
 -- | Angle pointing upwards (∧).
 wedge :: LaTeXC l => l -> l -> l
 wedge  = between $ comm0 "wedge"
-
 
 -- | Circled plus operator (⊕).
 oplus :: LaTeXC l => l -> l -> l
@@ -590,9 +587,6 @@ oslash  = between $ comm0 "oslash"
 -- | Circled dot operator (⊙).
 odot :: LaTeXC l => l -> l -> l
 odot  = between $ comm0 "odot"
-
-
-
 
 ---- Greek alphabet
 
@@ -781,6 +775,10 @@ dagger = comm0 "dagger"
 -- | Double dagger symbol, ‡.
 ddagger :: LaTeXC l => l
 ddagger = comm0 "ddagger"
+
+-- | Infinity symbol.
+infty :: LaTeXC l => l
+infty = comm0 "infty"
 
 -------------------------------------
 ------------ Math Fonts -------------
