@@ -395,7 +395,8 @@ tsqrt (Just n) = liftL2 (\m x -> TeXComm "sqrt" [OptArg m, FixArg x]) n
 
 ---- Sum/Integral symbols
 
--- | Sigma sumation symbol.
+-- | Sigma sumation symbol. Use 'sumFromTo' instead if you want to
+--   specify the limits of the sum.
 tsum :: LaTeXC l => l
 tsum = comm0 "sum"
 
@@ -406,7 +407,8 @@ sumFromTo :: LaTeXC l
           -> l
 sumFromTo x y = commS "sum" !: x ^: y
 
--- | Pi product symbol.
+-- | Pi product symbol. Use 'prodFromTo' if you want to specify the
+--   limits of the product.
 prod :: LaTeXC l => l
 prod = comm0 "prod"
 
@@ -417,7 +419,8 @@ prodFromTo :: LaTeXC l
            -> l
 prodFromTo x y = commS "prod" !: x ^: y
 
--- | Integral symbol.
+-- | Integral symbol. Use 'integralFromTo' if you want to specify
+--   the limits of the integral.
 integral :: LaTeXC l => l
 integral = comm0 "int"
 
