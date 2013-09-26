@@ -8,14 +8,14 @@ License-file: license
 Maintainer: Daniel Díaz (dhelta `dot` diaz `at` gmail `dot` com)
 Bug-reports: https://github.com/Daniel-Diaz/HaTeX/issues
 Synopsis: The Haskell LaTeX library.
-Description: The LaTeX project site states: \"LaTeX is a high-quality typesetting system\". This library provides
-             a bridge between LaTeX and Haskell, implementing the LaTeX syntax in Haskell.
+Description: This library provides a bridge between LaTeX and Haskell, implementing the LaTeX /syntax/
+             in Haskell.
              .
-             Some of the things you can do are:
+             Some of the things you can do with HaTeX are:
              .
              Write LaTeX documents with all the advantages you already have in Haskell (recursion,
              type system, high order functions, ...), create a LaTeX backend for your own program,
-             make analysis of LaTeX code through its Abstract Syntax Tree (AST), pretty-print Haskell
+             parse a LaTeX file and obtain its Abstract Syntax Tree (AST), pretty-print Haskell
              values in LaTeX, generate TikZ scripts easily, ...
              .
              See the @examples@ directory in the source distribution to look some simple examples.
