@@ -32,6 +32,7 @@ import Data.Monoid
 import Data.String
 import Control.Applicative
 import Data.Functor.Identity (runIdentity)
+import Data.Typeable
 
 -- | Measure units defined in LaTeX. Use 'CustomMeasure' to use commands like 'textwidth'.
 --   For instance:
@@ -126,6 +127,9 @@ protectChar '~'  = "\\~{}"
 protectChar '\\' = "\\textbackslash{}"
 protectChar '_'  = "\\_{}"
 protectChar x = [x]
+
+instance Typeable LaTeX where
+  typeOf _ = mkTyConApp (mkTyCon3 "HaTeX" "Text.LaTeX.Base.Syntax" "LaTeX") []
 
 -- Syntax analysis
 
