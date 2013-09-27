@@ -34,14 +34,12 @@ module Text.LaTeX.Base
  , module Text.LaTeX.Base.Commands
  , module Text.LaTeX.Base.Writer
  , module Text.LaTeX.Base.Texy
-   -- * External re-exports
+   -- * Monoids
    --
    -- | Since the 'Monoid' instance is the only way to append 'LaTeX'
-   --   values, a re-export of "Data.Monoid" is given here.
- , module Data.Monoid
-#if __GLASGOW_HASKELL__ < 704
+   --   values, a re-export of the 'Monoid' class is given here for convenience.
+ , Monoid (..)
  , (<>)
-#endif
    ) where
 
 -- Internal modules
