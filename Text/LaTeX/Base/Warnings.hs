@@ -4,7 +4,7 @@
 -- | This module provides functionality for check a 'LaTeX' value for
 --   possibly undesired things (like the call to an undefined label),
 --   returning 'Warning's. These are called 'Warning's because they
---   never terminates the program execution.
+--   never terminate the program execution.
 module Text.LaTeX.Base.Warnings (
    -- * Warnings datatype
    Warning (..)
