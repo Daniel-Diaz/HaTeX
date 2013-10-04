@@ -21,16 +21,16 @@ theBody = mapM_ (center . tikzpicture . figuretikz) [myFigure,myFigure2,myFigure
 myFigure :: Figure
 myFigure = Scale 3 $ Figures
  [ RectangleFilled (0,0) 1 1
- , Colored Green $ RectangleFilled (-1,1) 1 1
- , Colored Red   $ RectangleFilled ( 0,2) 1 1
- , Colored Blue  $ RectangleFilled ( 1,1) 1 1
+ , Colored (BasicColor Green) $ RectangleFilled (-1,1) 1 1
+ , Colored (BasicColor Red)   $ RectangleFilled ( 0,2) 1 1
+ , Colored (BasicColor Blue)  $ RectangleFilled ( 1,1) 1 1
    ]
 
 myFigure2 :: Figure
 myFigure2 = Scale 2 $ Figures
- [ Colored Blue $ PolygonFilled [(-2,-1),(0,1),(2,-1)]
+ [ Colored (RGBColor 100 35 255) $ PolygonFilled [(-2,-1),(0,1),(2,-1)]
  , Text (0,1.4) $ "Is this a " <> textit "blue" <> " triangle?"
- , Rotate (pi/9) $ Colored Yellow $ Text (-0.2,-0.2) "Yes, it is!"
+ , Rotate (pi/9) $ Colored (BasicColor Yellow) $ Text (-0.2,-0.2) "Yes, it is!"
    ]
 
 myFigure3 :: Figure

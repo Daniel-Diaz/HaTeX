@@ -30,7 +30,7 @@ module Text.LaTeX.Packages.TikZ.Simple (
    -- * Figures
  , Figure (..)
  , Point
-   -- | /In the future we will accept colors other than the basic ones./
+ , TikZColor (..)
  , Color (..)
    -- * Additional functions
  , pathImage
@@ -42,7 +42,7 @@ module Text.LaTeX.Packages.TikZ.Simple (
 
 import Text.LaTeX.Base.Syntax (LaTeX)
 import Text.LaTeX.Base.Types (Measure)
-import Text.LaTeX.Packages.TikZ (TikZ,Color,tikzpicture,emptytikz,tikz)
+import Text.LaTeX.Packages.TikZ (TikZ,TikZColor,Color,tikzpicture,emptytikz,tikz)
 import qualified Text.LaTeX.Packages.TikZ as T
 
 -- | A point in the plane.
@@ -64,7 +64,7 @@ data Figure =
  | EllipseFilled Point Double Double -- ^ Same as 'Ellipse', but filled with some color.
  | Text Point LaTeX -- ^ Insert some 'LaTeX' code, centered at the given 'Point'.
                     --   The text should not be very complex to fit nicely in the picture.
- | Colored Color Figure -- ^ Color for the given 'Figure'.
+ | Colored TikZColor Figure -- ^ Color for the given 'Figure'.
  | LineWidth Measure Figure -- ^ Line width for the given 'Figure'.
  | Scale Double Figure -- ^ Scaling of the given 'Figure' by a factor.
  | Rotate Double Figure -- ^ Rotate a 'Figure' by a given angle (in radians).

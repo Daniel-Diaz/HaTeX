@@ -27,6 +27,7 @@ module Text.LaTeX.Packages.TikZ.Syntax (
   , (->-)
     -- * Parameters
   , Parameter (..)
+  , TikZColor (..)
   , Color (..)
     -- * TikZ
   , TikZ
@@ -52,7 +53,7 @@ import Numeric (showFFloat)
 
 -- POINTS
 
--- | A point in TikZ.
+-- | A point in Ti/k/Z.
 data TPoint =
     DimPoint Measure Measure
   | XYPoint Double Double
@@ -61,6 +62,7 @@ data TPoint =
   | RelPoint_ TPoint
     deriving Show
 
+-- | Newtype of double with a custom 'Show' instance.
 newtype TikZDouble = TikZDouble Double
 
 instance Show TikZDouble where
@@ -215,11 +217,23 @@ lastPoint (Node x _) = lastPoint x
 
 -- Parameters
 
+-- | Color models accepted by Ti/k/Z.
+data TikZColor =
+   BasicColor Color
+ | RGBColor Int Int Int
+   deriving Show
+
+instance Render TikZColor where
+  render (BasicColor c) = render c
+  render (RGBColor r g b) = "{rgb:red,"  <> render r
+                            <> ";green," <> render g
+                            <> ";blue,"  <> render b <> "}"
+
 -- | Parameters to use in a 'scope' to change how things
 --   are rendered within that scope.
 data Parameter =
    TWidth Measure
- | TColor Color
+ | TColor TikZColor
  | TScale Double
  | TRotate Double -- ^ Angle is in degrees.
      deriving Show
