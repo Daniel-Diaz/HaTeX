@@ -28,7 +28,7 @@ myFigure = Scale 3 $ Figures
 
 myFigure2 :: Figure
 myFigure2 = Scale 2 $ Figures
- [ Colored (RGBColor 100 35 255) $ PolygonFilled [(-2,-1),(0,1),(2,-1)]
+ [ Colored (RGBColor 100 35 150) $ PolygonFilled [(-2,-1),(0,1),(2,-1)]
  , Text (0,1.4) $ "Is this a " <> textit "blue" <> " triangle?"
  , Rotate (pi/9) $ Colored (BasicColor Yellow) $ Text (-0.2,-0.2) "Yes, it is!"
    ]

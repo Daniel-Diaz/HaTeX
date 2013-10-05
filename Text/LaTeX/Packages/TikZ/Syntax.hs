@@ -225,9 +225,7 @@ data TikZColor =
 
 instance Render TikZColor where
   render (BasicColor c) = render c
-  render (RGBColor r g b) = "{rgb:red,"  <> render r
-                            <> ";green," <> render g
-                            <> ";blue,"  <> render b <> "}"
+  render (RGBColor r g b) = "{rgb,255:red," <> render r <> ";green," <> render g <> ";blue," <> render b <> "}"
 
 -- | Parameters to use in a 'scope' to change how things
 --   are rendered within that scope.
