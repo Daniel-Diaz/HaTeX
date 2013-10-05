@@ -19,9 +19,9 @@
 -- > myFigure :: Figure
 -- > myFigure = Scale 2 $ Figures
 -- >   [ RectangleFilled (0,0) 1 1
--- >   , Colored Green $ RectangleFilled (-1,1) 1 1
--- >   , Colored Red   $ RectangleFilled ( 0,2) 1 1
--- >   , Colored Blue  $ RectangleFilled ( 1,1) 1 1
+-- >   , Colored (BasicColor Green) $ RectangleFilled (-1,1) 1 1
+-- >   , Colored (BasicColor Red)   $ RectangleFilled ( 0,2) 1 1
+-- >   , Colored (BasicColor Blue)  $ RectangleFilled ( 1,1) 1 1
 -- >     ]
 --
 module Text.LaTeX.Packages.TikZ.Simple (
@@ -32,6 +32,7 @@ module Text.LaTeX.Packages.TikZ.Simple (
  , Point
  , TikZColor (..)
  , Color (..)
+ , Word8
    -- * Additional functions
  , pathImage
    -- * Figure scripting
@@ -42,7 +43,9 @@ module Text.LaTeX.Packages.TikZ.Simple (
 
 import Text.LaTeX.Base.Syntax (LaTeX)
 import Text.LaTeX.Base.Types (Measure)
-import Text.LaTeX.Packages.TikZ (TikZ,TikZColor,Color,tikzpicture,emptytikz,tikz)
+import Text.LaTeX.Packages.TikZ
+           ( TikZ, TikZColor, Color, Word8
+           , tikzpicture, emptytikz, tikz )
 import qualified Text.LaTeX.Packages.TikZ as T
 
 -- | A point in the plane.

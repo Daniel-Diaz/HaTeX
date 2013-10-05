@@ -27,6 +27,7 @@ import Data.String
 import Data.Text.Encoding
 import Data.List (intersperse)
 import qualified Data.ByteString as B
+import Data.Word (Word8)
 
 -- | Class of values that can be transformed to 'Text'.
 -- You mainly will use this to obtain the 'Text' output
@@ -151,6 +152,7 @@ instance Render Int where
 instance Render Integer where
 instance Render Float where
 instance Render Double where
+instance Render Word8 where
 
 instance Render a => Render [a] where
  render xs = "[" <> renderCommas xs <> "]"

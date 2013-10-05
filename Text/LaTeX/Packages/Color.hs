@@ -18,6 +18,10 @@ module Text.LaTeX.Packages.Color
  , ColorName (..)
  , ColorModel (..)
  , ColSpec (..)
+   -- * Words
+   -- | RGB255 colors are determined by three parameters of the 'Word8' type.
+   --   Values of type 'Word8' lie within 0 and 255.
+ , Word8
    -- * Commands
  , pagecolor
  , color
@@ -32,6 +36,7 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 --
 import Data.Text (toLower)
+import Data.Word (Word8)
 
 -- | The 'pcolor' package.
 --
@@ -75,8 +80,11 @@ data Color =
 -- | Specify your own color using one of the different color models.
 data ColorModel =
    RGB Float Float Float
- | RGB255 Int Int Int
+     -- ^ Each parameter determines the proportion of red, green and
+     --   blue, with a value within the [0,1] interval.
+ | RGB255 Word8 Word8 Word8
  | GrayM Float
+     -- ^ Grayscale, from 0 (black) to 1 (white).
  | HTML String
  | CMYK Float Float Float Float
    deriving Show

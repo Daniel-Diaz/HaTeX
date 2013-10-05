@@ -29,6 +29,7 @@ module Text.LaTeX.Packages.TikZ.Syntax (
   , Parameter (..)
   , TikZColor (..)
   , Color (..)
+  , Word8
     -- * TikZ
   , TikZ
   , emptytikz
@@ -45,7 +46,6 @@ import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Packages.Color
--- TODO: Extend colors to anything accepted in TikZ.
 import Data.Monoid
 import Data.Foldable (foldMap)
 import qualified Data.Sequence as S
@@ -220,7 +220,7 @@ lastPoint (Node x _) = lastPoint x
 -- | Color models accepted by Ti/k/Z.
 data TikZColor =
    BasicColor Color
- | RGBColor Int Int Int
+ | RGBColor Word8 Word8 Word8
    deriving Show
 
 instance Render TikZColor where
