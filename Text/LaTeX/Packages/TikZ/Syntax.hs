@@ -78,12 +78,15 @@ instance Render TPoint where
  render (RelPoint p) = "++" <> render p
  render (RelPoint_ p) = "+" <> render p
 
+-- | Point using 'Measure's for coordinantes.
 pointAt :: Measure -> Measure -> TPoint
 pointAt = DimPoint
 
+-- | Point using numbers as coordinates.
 pointAtXY :: Double -> Double -> TPoint
 pointAtXY = XYPoint
 
+-- | Three-dimensional point.
 pointAtXYZ :: Double -> Double -> Double -> TPoint
 pointAtXYZ = XYZPoint
 
