@@ -65,5 +65,5 @@ last developments.
 
 * [TeX-my-math](https://github.com/leftaroundabout/Symbolic-math-HaTeX): Experimental library to ease the production
 of mathematical expressions using HaTeX.
-* [haskintex](https://github.com/Daniel-Diaz/haskintex): Tool to use Haskell and in particular the HaTeX library
+* [haskintex](http://daniel-diaz.github.io/projects/haskintex): Tool to use Haskell and in particular the HaTeX library
 within a LaTeX file.
