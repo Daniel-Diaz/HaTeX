@@ -1,10 +1,10 @@
-# HaTeX ReadMe
+# The HaTeX library
 
 HaTeX is a Haskell library that implements the *LaTeX syntax*.
 
-Check a list of examples of usage in the [examples](Examples/) directory.
-A good starting point may be [simple.hs](Examples/simple.hs).
-Run the script using the ``main`` function.
+Check a list of examples of usage in the [Examples](https://github.com/Daniel-Diaz/HaTeX/tree/master/Examples) directory.
+A good starting point may be [simple.hs](https://github.com/Daniel-Diaz/HaTeX/blob/master/Examples/simple.hs).
+Run any example script executing the ``main`` function.
 
 ## Installation notes
 
@@ -39,11 +39,16 @@ can be found [here](http://daniel-diaz.github.com/projects/hatex/hatex-guide.pdf
 To be sure that you are reading the last version, go to the github repository of the guide and follow instructions
 to build it. It is fairly easy.
 
-## Contributing
+## Community and Contributions
 
-To contribute to HaTeX, please, visit our code repository in GitHub:
+There are many ways to get involved in the HaTeX project.
 
-https://github.com/Daniel-Diaz/HaTeX
+* Fork the [GitHub repository](https://github.com/Daniel-Diaz/HaTeX).
+* Report bugs or make suggestions opening a ticket in the [Issue Tracker](https://github.com/Daniel-Diaz/HaTeX/issues).
+* Help us to improve and extend our [hatex-guide](https://github.com/Daniel-Diaz/hatex-guide).
+* Join the [Mailing List](http://projects.haskell.org/cgi-bin/mailman/listinfo/hatex) for help or announcements of the
+last developments.
+* Drop by the IRC channel at `#hatex`.
 
 ## TODO list
 
