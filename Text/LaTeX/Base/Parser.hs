@@ -66,7 +66,7 @@ latexParser :: Parser LaTeX
 latexParser = mconcat <$> latexBlockParser `manyTill` endOfInput 
 
 blockTillDoc :: Parser LaTeX
-blockTillDoc  = do
+blockTillDoc = do
   b <- latexBlockParser
   if isMainDoc b then return  b
                  else mappend b <$> blockTillDoc
@@ -89,7 +89,7 @@ text :: Parser LaTeX
 text = do
   mbC <- peekChar
   case mbC of
-    Nothing -> return TeXEmpty
+    Nothing -> fail "text: Empty input."
     Just c | c `elem` "$%\\{]}" -> fail "not text"
            | otherwise          -> TeXRaw <$> A.takeTill (`elem` "$%\\{]}")
 
