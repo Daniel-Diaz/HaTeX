@@ -116,6 +116,7 @@ env :: Parser LaTeX
 env = do
   _  <- char '\\'
   n  <- envName "begin"
+  skipSpace
   as <- fmap (fromMaybe []) cmdArgs
   b  <- envBody n 
   return $ TeXEnv (T.unpack n) as b
@@ -130,7 +131,7 @@ envName k = do
 
 envBody :: Text -> Parser LaTeX
 envBody n = mconcat <$> (bodyBlock n) `manyTill` endenv
-  where endenv = try $ string ("\\end{" <> n <> "}")
+  where endenv = try $ string ("\\end") >> skipSpace >> string ("{" <> n <> "}")
 
 bodyBlock :: Text -> Parser LaTeX
 bodyBlock n = do
