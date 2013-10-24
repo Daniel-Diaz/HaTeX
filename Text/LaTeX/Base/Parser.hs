@@ -78,7 +78,7 @@ isMainDoc _ = False
 
 -- | Parser of a single 'LaTeX' constructor, no appending blocks.
 latexBlockParser :: Parser LaTeX
-latexBlockParser = foldr1 (<|>) [text, dolMath, comment, text2, command, environment]
+latexBlockParser = foldr1 (<|>) [text, dolMath, comment, text2, environment, command]
 -- Note: text stops on ']'; if the other parsers fail on the rest
 --       text2 handles it, starting with ']' 
   
@@ -152,9 +152,10 @@ command = do
                   then special
                   else do
                     c  <- A.takeTill endCmd
-                    if c `elem` ["begin","end"]
-                       then fail $ "Command not allowed: " ++ T.unpack c
-                       else maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) <$> cmdArgs
+                    -- if c `elem` ["begin","end"]
+                    --    then fail $ "Command not allowed: " ++ T.unpack c
+                    --    else maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) <$> cmdArgs
+                    maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) <$> cmdArgs
 
 ------------------------------------------------------------------------
 -- Command Arguments
