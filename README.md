@@ -54,6 +54,7 @@ last developments.
 
 * Add more examples.
 * More testing on the parser (See [#15](https://github.com/Daniel-Diaz/HaTeX/issues/15)).
+  This includes adding more test cases to the [parsertest folder](https://github.com/Daniel-Diaz/HaTeX/tree/master/parsertest).
 * Add more documentation.
 * BibTeX support.
 
