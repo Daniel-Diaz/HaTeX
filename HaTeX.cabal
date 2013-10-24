@@ -28,6 +28,9 @@ Extra-source-files:
   README.md
   -- Examples
   Examples/*.hs
+  -- Tests
+  parsertest/*.tex
+  parsertest/parsertest.hs
 Extra-doc-files:
   -- TikZ
   docfiles/tikz/*.png
