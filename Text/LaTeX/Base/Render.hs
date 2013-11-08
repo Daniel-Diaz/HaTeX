@@ -18,6 +18,8 @@ module Text.LaTeX.Base.Render
  , rendertex
    -- * Reading files
  , readFileTex
+   -- * Util
+ , showFloat
    ) where
 
 import Data.Text (Text,lines,unlines)
@@ -28,6 +30,7 @@ import Data.Text.Encoding
 import Data.List (intersperse)
 import qualified Data.ByteString as B
 import Data.Word (Word8)
+import Numeric (showFFloat)
 
 -- | Class of values that can be transformed to 'Text'.
 -- You mainly will use this to obtain the 'Text' output
@@ -148,10 +151,16 @@ instance Render TeXArg where
 
 -- Other instances
 
+-- | Show a signed floating number using standard decimal notation using 5 decimals.
+showFloat :: RealFloat a => a -> String
+showFloat x = showFFloat (Just 5) x []
+
 instance Render Int where
 instance Render Integer where
 instance Render Float where
+  render = fromString . showFloat
 instance Render Double where
+  render = fromString . showFloat
 instance Render Word8 where
 
 instance Render a => Render [a] where
