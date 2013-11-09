@@ -49,7 +49,6 @@ import Text.LaTeX.Packages.Color
 import Data.Monoid
 import Data.Foldable (foldMap)
 import qualified Data.Sequence as S
-import Numeric (showFFloat)
 
 -- POINTS
 
@@ -62,19 +61,10 @@ data TPoint =
   | RelPoint_ TPoint
     deriving Show
 
--- | Newtype of double with a custom 'Show' instance.
-newtype TikZDouble = TikZDouble Double
-
-instance Show TikZDouble where
-  show (TikZDouble x) = showFFloat (Just 5) x []
-
-instance Render TikZDouble where
-  render = fromString . show
-
 instance Render TPoint where
  render (DimPoint x y) = "(" <> renderCommas [x,y] <> ")"
- render (XYPoint x y) = "(" <> renderCommas [TikZDouble x,TikZDouble y] <> ")"
- render (XYZPoint x y z) = "(" <> renderCommas [TikZDouble x,TikZDouble y,TikZDouble z] <> ")"
+ render (XYPoint x y) = "(" <> renderCommas [x,y] <> ")"
+ render (XYZPoint x y z) = "(" <> renderCommas [x,y,z] <> ")"
  render (RelPoint p) = "++" <> render p
  render (RelPoint_ p) = "+" <> render p
 
