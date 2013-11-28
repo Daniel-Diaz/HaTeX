@@ -91,7 +91,7 @@ it stores and append values from a 'Monoid', in this case, the 'Monoid' of the '
 Both interfaces are fused into one under the 'LaTeXC' class, the class of LaTeX blocks.
 Particular documentation of each feature can be found in the corresponding module.
 Further explanation of the library and its concepts can be found in the /HaTeX User's Guide/
-(<http://daniel-diaz.github.com/projects/hatex/HaTeX-Guide.pdf>).
+(<https://github.com/Daniel-Diaz/hatex-guide/blob/master/README.md>).
 -}
 
 {- $exm
