@@ -1,6 +1,27 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | Beamer is a LaTeX package for the creation of slides.
+--
+--   Each frame is contained within the 'frame' function. Here is an example:
+--
+-- > {-# LANGUAGE OverloadedStrings #-}
+-- >
+-- > import Text.LaTeX
+-- > import Text.LaTeX.Packages.Beamer
+-- >
+-- > mySlides :: Monad m => LaTeXT m ()
+-- > mySlides = do
+-- >   frame $ do
+-- >     frametitle "First frame"
+-- >     "Content of the first frame."
+-- >   frame $ do
+-- >     frametitle "Second frame"
+-- >     "Content of the second frame." 
+-- >     pause
+-- >     " And actually a little more."
+--
+--   The 'pause' command in the second frame makes the second part of the text
+--   to appear one screen later.
 module Text.LaTeX.Packages.Beamer
  ( -- * Beamer package
    beamer
