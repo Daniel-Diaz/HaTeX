@@ -1,5 +1,5 @@
 
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, DeriveDataTypeable #-}
 
 -- | LaTeX syntax description in the definition of the 'LaTeX' datatype.
 --   If you want to add new commands or environments not defined in
@@ -75,7 +75,7 @@ data LaTeX =
                       -- Use '<>' preferably.
  | TeXEmpty -- ^ An empty block.
             -- /Neutral element/ of '<>'.
-   deriving (Eq,Show)
+   deriving (Eq,Show,Typeable)
 
 -- | An argument for a 'LaTeX' command or environment.
 data TeXArg =
@@ -127,9 +127,6 @@ protectChar '~'  = "\\~{}"
 protectChar '\\' = "\\textbackslash{}"
 protectChar '_'  = "\\_{}"
 protectChar x = [x]
-
-instance Typeable LaTeX where
-  typeOf _ = mkTyConApp (mkTyCon3 "HaTeX" "Text.LaTeX.Base.Syntax" "LaTeX") []
 
 -- Syntax analysis
 
