@@ -15,7 +15,6 @@ module Text.LaTeX.Base.Parser (
   , latexParser
   , latexBlockParser
   , latexAtOnce
-  , latexDocParser
 #ifdef _TEST
   , specials
 #endif
@@ -50,31 +49,15 @@ parseLaTeX t | T.null t  = return TeXEmpty
 
 {-# DEPRECATED latexAtOnce "Use parseLaTeX instead." #-}
 
+-- | Same as 'parseLaTeX'.
 latexAtOnce :: Text -> Either String LaTeX
 latexAtOnce = parseLaTeX
-
-------------------------------------------------------------------------
--- | Incremental Parser that terminates after the /document/ envionment
-------------------------------------------------------------------------
-latexDocParser :: Parser LaTeX
-latexDocParser = blockTillDoc
 
 ------------------------------------------------------------------------
 -- | Incremental 'LaTeX' parser.
 ------------------------------------------------------------------------
 latexParser :: Parser LaTeX
 latexParser = mconcat <$> latexBlockParser `manyTill` endOfInput 
-
-blockTillDoc :: Parser LaTeX
-blockTillDoc = do
-  b <- latexBlockParser
-  if isMainDoc b then return  b
-                 else mappend b <$> blockTillDoc
-
--- | Test if a 'LaTeX' block is a @document@ environment.
-isMainDoc :: LaTeX -> Bool
-isMainDoc (TeXEnv "document" _ _) = True
-isMainDoc _ = False
 
 -- | Parser of a single 'LaTeX' constructor, no appending blocks.
 latexBlockParser :: Parser LaTeX
