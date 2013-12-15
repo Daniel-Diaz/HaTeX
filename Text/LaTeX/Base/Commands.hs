@@ -235,6 +235,10 @@ comment = fromLaTeX . TeXComment
 --
 -- > textbf "I'm just an example." %: "Insert a few words here."
 --
+-- The implementation is
+--
+-- > (%:) l = (l <>) . comment
+--
 -- Since you are writing in Haskell, you may not need to output comments
 -- as you can add them in the Haskell source. I added this feature
 -- for completeness. It may be useful for debugging the output as well.
@@ -248,15 +252,15 @@ maketitle = comm0 "maketitle"
 
 -- | Set the title of your document.
 title :: LaTeXC l => l -> l
-title = liftL $ \t -> TeXComm "title" [FixArg t]
+title = comm1 "title"
 
 -- | Set a date for your document.
 date :: LaTeXC l => l -> l
-date = liftL $ \t -> TeXComm "date" [FixArg t]
+date = comm1 "date"
 
 -- | Set the author(s) of the document.
 author :: LaTeXC l => l -> l
-author = liftL $ \t -> TeXComm "author" [FixArg t]
+author = comm1 "author"
 
 -- | Set either an institute or an organization
 -- for the document. It does /not/ work for
@@ -266,7 +270,7 @@ institute  Nothing = liftL $ \l -> TeXComm "institute" [FixArg l]
 institute (Just s) = liftL2 (\l1 l2 -> TeXComm "institute" [OptArg l1,FixArg l2]) s
 
 thanks :: LaTeXC l => l -> l
-thanks = liftL $ \l -> TeXComm "thanks" [FixArg l]
+thanks = comm1 "thanks"
 
 -- | Import a package. First argument is a list of options for
 -- the package named in the second argument.
@@ -286,30 +290,30 @@ newline :: LaTeXC l => l
 newline = comm0 "newline"
 
 part :: LaTeXC l => l -> l
-part = liftL $ \p -> TeXComm "part" [FixArg p]
+part = comm1 "part"
 
 chapter :: LaTeXC l => l -> l
-chapter = liftL $ \c -> TeXComm "chapter" [FixArg c]
+chapter = comm1 "chapter"
 
 -- | Start a new section with a given title.
 section :: LaTeXC l => l -> l
-section = liftL $ \s -> TeXComm "section" [FixArg s]
+section = comm1 "section"
 
 -- | Start a new subsection.
 subsection :: LaTeXC l => l -> l
-subsection = liftL $ \sub -> TeXComm "subsection" [FixArg sub]
+subsection = comm1 "subsection"
 
 -- | Start a new sub/sub/section.
 subsubsection :: LaTeXC l => l -> l
-subsubsection = liftL $ \sub -> TeXComm "subsubsection" [FixArg sub]
+subsubsection = comm1 "subsubsection"
 
 -- | Start a paragraph.
 paragraph :: LaTeXC l => l -> l
-paragraph = liftL $ \p -> TeXComm "paragraph" [FixArg p]
+paragraph = comm1 "paragraph"
 
 -- | Start a subparagraph (minimal level of sectioning).
 subparagraph :: LaTeXC l => l -> l
-subparagraph = liftL $ \p -> TeXComm "subparagraph" [FixArg p]
+subparagraph = comm1 "subparagraph"
 
 -- | Create the table of contents, automatically generated
 -- from your 'section's, 'subsection's, and other related stuff.
