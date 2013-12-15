@@ -4,7 +4,7 @@ import Text.LaTeX.Base.Parser
 import qualified Data.Text.IO as T
 
 testNumbers :: [Int]
-testNumbers = [1 .. 2]
+testNumbers = [1 .. 3]
 
 testFile :: Int -> IO Bool
 testFile i = do
@@ -15,7 +15,7 @@ testFile i = do
                    putStrLn $ "The error was: " ++ err
                    return False
     Right _  -> putStrLn "Succeed." >> return True
-  
+
 main :: IO ()
 main = do
   putStrLn "Running Parser Test..."
