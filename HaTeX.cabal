@@ -72,6 +72,7 @@ Library
         Text.LaTeX.Packages.Color
         Text.LaTeX.Packages.Fancyhdr
         Text.LaTeX.Packages.Fontenc
+        Text.LaTeX.Packages.Geometry
         Text.LaTeX.Packages.Graphicx
         Text.LaTeX.Packages.Hyperref
         Text.LaTeX.Packages.Inputenc
