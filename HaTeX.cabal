@@ -1,5 +1,5 @@
 Name: HaTeX
-Version: 3.9.2.0
+Version: 3.10.0.0
 Author: Daniel Díaz
 Category: Text, LaTeX
 Build-type: Simple
@@ -47,7 +47,7 @@ Library
                , bytestring >= 0.9.2.1 && < 0.11
                , transformers >= 0.2.2 && < 0.4
                , text >= 0.11.2.3 && < 2
-               , attoparsec >= 0.10.2 && < 0.11
+               , attoparsec >= 0.10.2 && < 0.12
                , matrix
                , containers >= 0.4.2.1 && < 0.6
   Exposed-modules:
