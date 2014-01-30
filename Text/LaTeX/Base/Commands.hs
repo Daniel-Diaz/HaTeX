@@ -216,6 +216,10 @@ import Paths_HaTeX
 -- | Insert a raw piece of 'Text'.
 -- This functions doesn't care about @LaTeX@ reserved characters,
 -- it insert the text just as it is received.
+--
+-- /Warning:/ This function is /unsafe/, in the sense that it does
+-- not check that the input text is a valid LaTeX /block/.
+-- Make sure any braces, commands or environments are properly closed.
 raw :: LaTeXC l => Text -> l
 raw = fromLaTeX . TeXRaw
 
