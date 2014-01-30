@@ -163,5 +163,10 @@ instance Render Double where
   render = fromString . showFloat
 instance Render Word8 where
 
+-- | 'Render' instance for 'Bool'. It satisfies @render True = "true"@ and @render False = "false"@.
+instance Render Bool where
+  render True = "true"
+  render _ = "false"
+
 instance Render a => Render [a] where
  render xs = "[" <> renderCommas xs <> "]"

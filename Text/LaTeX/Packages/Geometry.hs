@@ -26,6 +26,9 @@ data GeometryOption =
   | GWidth  Measure
   | GPaper PaperType
   | GCentered
+  | GPaperHeight Measure
+  | GPaperWidth Measure
+  | GLandscape Bool
     deriving Show
 
 renderOption :: Render a => Text -> a -> Text
@@ -36,6 +39,9 @@ instance Render GeometryOption where
   render (GWidth  m) = renderOption "width"  m
   render (GPaper  p) = render (Paper p)
   render GCentered   = "centered"
+  render (GPaperHeight m) = renderOption "paperheight" m
+  render (GPaperWidth m) = renderOption "paperwidth" m
+  render (GLandscape b) = renderOption "landscape" b
 
 applyGeometry :: LaTeXC l => [GeometryOption] -> l
 applyGeometry opts = fromLaTeX $ TeXComm "geometry" [FixArg $ raw $ renderCommas opts]
