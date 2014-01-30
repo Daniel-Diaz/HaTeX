@@ -1,9 +1,13 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | The geometry package provides an easy interface to page dimensions.
+--
+-- CTAN page for geometry: <http://www.ctan.org/pkg/geometry>.
 module Text.LaTeX.Packages.Geometry (
     -- * Geometry package
     geometry
+  , importGeometry
     -- * Geometry options
   , GeometryOption (..)
   , applyGeometry
@@ -17,6 +21,7 @@ import Text.LaTeX.Base.Class
 --
 -- > usepackage [] geometry
 --
+-- In most cases, it is recommended to use 'importGeometry' instead.
 geometry :: PackageName
 geometry = "geometry"
 
@@ -43,5 +48,10 @@ instance Render GeometryOption where
   render (GPaperWidth m) = renderOption "paperwidth" m
   render (GLandscape b) = renderOption "landscape" b
 
+-- | Apply the given geometry options to the document.
 applyGeometry :: LaTeXC l => [GeometryOption] -> l
 applyGeometry opts = fromLaTeX $ TeXComm "geometry" [FixArg $ raw $ renderCommas opts]
+
+-- | Import the geometry package with additional options.
+importGeometry :: LaTeXC l => [GeometryOption] -> l
+importGeometry opts = usepackage (fmap rendertex opts) geometry
