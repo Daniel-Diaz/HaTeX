@@ -60,10 +60,6 @@ last developments.
 * Add more documentation.
 * BibTeX support.
 
-## Packages to be implemented
-
-* geometry
-
 ## Related projects
 
 * [TeX-my-math](https://github.com/leftaroundabout/Symbolic-math-HaTeX): Experimental library to ease the production
