@@ -256,7 +256,7 @@ getPreamble l = l
 
 arbitraryChar :: Gen Char
 arbitraryChar = elements $
-     ['A'..'z']
+     ['A'..'Z']
   ++ ['a'..'z']
   ++ "\n-+*/!\"$%&()[]{}^_.,:;'#@<>?\\ "
 
