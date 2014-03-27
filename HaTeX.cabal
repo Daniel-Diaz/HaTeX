@@ -50,6 +50,7 @@ Library
                , attoparsec >= 0.10.2 && < 0.12
                , matrix
                , containers >= 0.4.2.1 && < 0.6
+               , QuickCheck
   Exposed-modules:
     Text.LaTeX
       -- Base (Core of the library)
@@ -88,3 +89,13 @@ Library
   Default-extensions: OverloadedStrings
   Other-extensions: CPP
   ghc-options: -Wall -fno-warn-orphans
+
+Test-Suite matrix-test
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Main.hs
+  build-depends: base == 4.*
+               , HaTeX
+               , tasty
+               , QuickCheck
+               , tasty-quickcheck

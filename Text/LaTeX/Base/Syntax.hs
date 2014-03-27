@@ -26,13 +26,15 @@ module Text.LaTeX.Base.Syntax
  , getPreamble
    ) where
 
-import Data.Text (Text)
+import Data.Text (Text,pack)
 import qualified Data.Text
 import Data.Monoid
 import Data.String
 import Control.Applicative
+import Control.Monad (replicateM)
 import Data.Functor.Identity (runIdentity)
 import Data.Typeable
+import Test.QuickCheck
 
 -- | Measure units defined in LaTeX. Use 'CustomMeasure' to use commands like 'textwidth'.
 --   For instance:
@@ -248,3 +250,79 @@ getPreamble :: LaTeX -> LaTeX
 getPreamble (TeXEnv "document" _ _) = mempty
 getPreamble (TeXSeq l1 l2) = getPreamble l1 <> getPreamble l2
 getPreamble l = l
+
+---------------------------------------
+-- LaTeX Arbitrary instance
+
+arbitraryChar :: Gen Char
+arbitraryChar = elements $
+     ['A'..'z']
+  ++ ['a'..'z']
+  ++ "\n-+*/!\"$%&()[]{}^_.,:;'#@<>?\\ "
+
+-- | Utility for the instance of 'LaTeX' to 'Arbitrary'.
+--   We generate a short sequence of characters and
+--   escape reserved characters with 'protectText'.
+arbitraryRaw :: Gen Text
+arbitraryRaw = do
+  n <- choose (1,20)
+  protectText . pack <$> replicateM n arbitraryChar
+
+-- | Generator for names of command and environments.
+--   We use only alphabetical characters.
+arbitraryName :: Gen String
+arbitraryName = do
+  n <- choose (1,10)
+  replicateM n $ elements $ ['a' .. 'z'] ++ ['A' .. 'Z']
+
+-- | Just generate a random operator symbol.
+--
+-- Note: I am not sure if TeXOp should stay
+-- any longer as a data constructor for LaTeX.
+-- It doesn't seem to be any special syntax, but
+-- a singular case of TeXRaw surrounded by two
+-- LaTeX expressions. Even most operators in LaTeX
+-- are commands instead of plain strings.
+arbitraryOp :: Gen String
+arbitraryOp = elements ["+","-","*","="]
+
+instance Arbitrary Measure where
+  arbitrary = do
+     n <- choose (0,5)
+     let f = [Pt,Mm,Cm,In,Ex,Em] !! n
+     f <$> arbitrary
+
+instance Arbitrary LaTeX where
+  arbitrary = do
+     -- We give more chances to 'TeXRaw'.
+     -- This results in arbitrary 'LaTeX' values
+     -- not getting too large.
+     n <- choose (0,16 :: Int)
+     case n of
+       0 -> pure TeXEmpty
+       1 -> do m <- choose (0,5)
+               TeXComm <$> arbitraryName <*> vectorOf m arbitrary
+       2 -> TeXCommS <$> arbitraryName
+       3 -> do m <- choose (0,5)
+               TeXEnv <$> arbitraryName <*> vectorOf m arbitrary <*> arbitrary
+       4 -> do m <- choose (0,2)
+               let t = [Parentheses,Square,Dollar] !! m
+               TeXMath <$> pure t <*> arbitrary
+       5 -> TeXLineBreak <$> arbitrary <*> arbitrary
+       6 -> TeXOp <$> arbitraryOp <*> arbitrary <*> arbitrary
+       7 -> TeXBraces <$> arbitrary
+       8 -> TeXComment <$> arbitraryRaw
+       9 -> TeXSeq <$> arbitrary <*> arbitrary
+       _ -> TeXRaw <$> arbitraryRaw
+
+instance Arbitrary TeXArg where
+  arbitrary = do
+     n <- choose (0,4 :: Int)
+     case n of
+       0 -> OptArg <$> arbitrary
+       1 -> do m <- choose (1,5)
+               MOptArg <$> vectorOf m arbitrary
+       2 -> SymArg <$> arbitrary
+       3 -> do m <- choose (1,5)
+               MSymArg <$> vectorOf m arbitrary
+       _ -> FixArg <$> arbitrary
