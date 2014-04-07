@@ -45,6 +45,8 @@ instance Render URL where
 
 createURL :: String -> URL
 createURL = URL
+-- TODO: This function should check that the input
+-- String is a valid URL.
 
 -- | 'fromString' = 'createURL'.
 instance IsString URL where
