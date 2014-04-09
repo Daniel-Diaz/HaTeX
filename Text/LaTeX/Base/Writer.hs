@@ -34,9 +34,14 @@
 module Text.LaTeX.Base.Writer
  ( -- * @LaTeXT@ writer
    LaTeXT
- , LaTeXT_
  , runLaTeXT
  , execLaTeXT
+   -- ** Synonyms
+ , LaTeXT_
+ , LaTeXM
+ , runLaTeXM
+ , execLaTeXM
+   -- * Utils
  , execLaTeXTWarn
  , extractLaTeX
  , extractLaTeX_
@@ -47,25 +52,27 @@ module Text.LaTeX.Base.Writer
    -- * Errors
  , throwError
  , merror
-   -- * Re-export
+   -- * Re-exports
  , lift
  , liftIO
    ) where
 
-import Control.Monad.Trans.Writer
-import Control.Monad.IO.Class
-import Control.Monad.Trans.Class
+-- base
 import Control.Applicative
+import Control.Monad (liftM)
 import Control.Arrow
 import Data.String
 import Data.Monoid
---
+-- transformers
+import Control.Monad.Trans.Writer
+import Control.Monad.IO.Class
+import Control.Monad.Trans.Class
+import Data.Functor.Identity
+-- HaTeX
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Warnings (Warning,checkAll,check)
---
-import Control.Monad (liftM)
 
 -- | 'WriterT' monad transformer applied to 'LaTeX' values.
 newtype LaTeXT m a =
@@ -84,6 +91,23 @@ instance Applicative f => Applicative (LaTeXT f) where
 
 -- | Type synonym for empty 'LaTeXT' computations.
 type LaTeXT_ m = LaTeXT m ()
+
+-- | The 'LaTeXT' monad transformed applied to 'Identity'.
+type LaTeXM = LaTeXT Identity
+
+-- | A particular case of 'runLaTeXT'.
+--
+-- > runLaTeXM = runIdentity . runLaTeXT
+--
+runLaTeXM :: LaTeXM a -> (Either String a, LaTeX)
+runLaTeXM = runIdentity . runLaTeXT
+
+-- | A particular case of 'execLaTeXT'.
+--
+-- > execLaTeXM = runIdentity . execLaTeXT
+--
+execLaTeXM :: LaTeXM a -> LaTeX
+execLaTeXM = runIdentity . execLaTeXT
 
 instance MonadTrans LaTeXT where
  lift = LaTeXT . liftM pairNoth . lift
