@@ -110,7 +110,6 @@ labcheck (TeXComm c [FixArg (TeXRaw n)]) =
   _ -> return ()
 labcheck (TeXEnv _ _ l) = labcheck l
 labcheck (TeXMath _ l) = labcheck l
-labcheck (TeXOp _ l1 l2) = labcheck l1 >> labcheck l2
 labcheck (TeXBraces l) = labcheck l
 labcheck (TeXSeq l1 l2) = labcheck l1 >> labcheck l2
 labcheck _ = return ()

@@ -137,8 +137,8 @@ mathDisplay = liftL $ TeXMath Square
 -- | Careful! Method 'signum' is undefined. Don't use it!
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Num LaTeX where
- (+) = TeXOp "+"
- (-) = TeXOp "-"
+ (+) = between "+"
+ (-) = between "-"
  (*) = (<>)
  negate = (TeXEmpty -)
  fromInteger = rendertex
@@ -491,7 +491,7 @@ infixr 4 =: , /=:
 --
 -- > infixr 4 =:
 (=:) :: LaTeXC l => l -> l -> l
-(=:)  = liftL2 $ TeXOp "="
+(=:)  = between "="
 
 -- | Not equal (≠).
 --
@@ -501,7 +501,7 @@ infixr 4 =: , /=:
 
 -- | Greater.
 (>:) :: LaTeXC l => l -> l -> l
-(>:) = liftL2 $ TeXOp ">"
+(>:) = between ">"
 
 -- | Greater or equal (≥).
 (>=:) :: LaTeXC l => l -> l -> l
@@ -509,7 +509,7 @@ infixr 4 =: , /=:
 
 -- | Lesser.
 (<:) :: LaTeXC l => l -> l -> l
-(<:) = liftL2 $ TeXOp "<"
+(<:) = between "<"
 
 -- | Lesser or equal (≤).
 (<=:) :: LaTeXC l => l -> l -> l

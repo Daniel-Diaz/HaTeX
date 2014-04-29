@@ -72,7 +72,6 @@ data LaTeX =
                                 -- Third, its content.
  | TeXMath MathType LaTeX -- ^ Mathematical expressions.
  | TeXLineBreak (Maybe Measure) Bool -- ^ Line break command.
- | TeXOp String LaTeX LaTeX -- ^ Operators.
  | TeXBraces LaTeX -- ^ A expression between braces.
  | TeXComment Text -- ^ Comments.
  | TeXSeq LaTeX LaTeX -- ^ Sequencing of 'LaTeX' expressions.
@@ -165,7 +164,6 @@ matchCommand f (TeXEnv _ as l) =
   let xs = concatMap (matchCommandArg f) as
   in  xs ++ matchCommand f l
 matchCommand f (TeXMath _ l) = matchCommand f l
-matchCommand f (TeXOp _ l1 l2) = matchCommand f l1 ++ matchCommand f l2
 matchCommand f (TeXBraces l) = matchCommand f l
 matchCommand f (TeXSeq l1 l2) = matchCommand f l1 ++ matchCommand f l2
 matchCommand _ _ = []
@@ -197,7 +195,6 @@ matchEnv f (TeXEnv str as l) =
       zs = xs ++ ys
   in  if f str then (str,as,l) : zs else zs
 matchEnv f (TeXMath _ l) = matchEnv f l
-matchEnv f (TeXOp _ l1 l2) = matchEnv f l1 ++ matchEnv f l2
 matchEnv f (TeXBraces l) = matchEnv f l
 matchEnv f (TeXSeq l1 l2) = matchEnv f l1 ++ matchEnv f l2
 matchEnv _ _ = []
@@ -228,7 +225,6 @@ texmapM c f = go
    go l@(TeXComm str as)  = if c l then f l else TeXComm str <$> mapM go' as
    go l@(TeXEnv str as b) = if c l then f l else TeXEnv str <$> mapM go' as <*> go b
    go l@(TeXMath t b)     = if c l then f l else TeXMath t <$> go b
-   go l@(TeXOp str l1 l2) = if c l then f l else liftA2 (TeXOp str) (go l1) (go l2)
    go l@(TeXBraces b)     = if c l then f l else TeXBraces <$> go b
    go l@(TeXSeq l1 l2)    = if c l then f l else liftA2 TeXSeq (go l1) (go l2)
    go l = if c l then f l else pure l
@@ -277,17 +273,6 @@ arbitraryName = do
   n <- choose (1,10)
   replicateM n $ elements $ ['a' .. 'z'] ++ ['A' .. 'Z']
 
--- | Just generate a random operator symbol.
---
--- Note: I am not sure if TeXOp should stay
--- any longer as a data constructor for LaTeX.
--- It doesn't seem to be any special syntax, but
--- a singular case of TeXRaw surrounded by two
--- LaTeX expressions. Even most operators in LaTeX
--- are commands instead of plain strings.
-arbitraryOp :: Gen String
-arbitraryOp = elements ["+","-","*","="]
-
 instance Arbitrary Measure where
   arbitrary = do
      n <- choose (0,5)
@@ -311,10 +296,9 @@ instance Arbitrary LaTeX where
                let t = [Parentheses,Square,Dollar] !! m
                TeXMath <$> pure t <*> arbitrary
        5 -> TeXLineBreak <$> arbitrary <*> arbitrary
-       6 -> TeXOp <$> arbitraryOp <*> arbitrary <*> arbitrary
-       7 -> TeXBraces <$> arbitrary
-       8 -> TeXComment <$> arbitraryRaw
-       9 -> TeXSeq <$> arbitrary <*> arbitrary
+       6 -> TeXBraces <$> arbitrary
+       7 -> TeXComment <$> arbitraryRaw
+       8 -> TeXSeq <$> arbitrary <*> arbitrary
        _ -> TeXRaw <$> arbitraryRaw
 
 instance Arbitrary TeXArg where

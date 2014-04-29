@@ -848,7 +848,7 @@ tabular (Just p) ts = liftL $ TeXEnv "tabular" [ OptArg $ TeXRaw $ render p , Fi
 
 -- | Column separator.
 (&) :: LaTeXC l => l -> l -> l
-(&) = liftL2 $ TeXOp "&"
+(&) = between "&"
 
 -- | Horizontal line.
 hline :: LaTeXC l => l
