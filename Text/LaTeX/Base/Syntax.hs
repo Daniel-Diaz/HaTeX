@@ -64,6 +64,8 @@ data LaTeX =
                            -- First argument is the name of the command.
                            -- Second, its arguments.
  | TeXCommS String -- ^ Constructor for commands with no arguments.
+                   --   When rendering, no space or @{}@ will be added at
+                   --   the end.
  | TeXEnv String [TeXArg] LaTeX -- ^ Constructor for environments.
                                 -- First argument is the name of the environment.
                                 -- Second, its arguments.
