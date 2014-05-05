@@ -45,7 +45,7 @@ Library
   Default-language: Haskell2010
   Build-depends: base == 4.*
                , bytestring >= 0.9.2.1 && < 0.11
-               , transformers >= 0.2.2 && < 0.4
+               , transformers >= 0.2.2 && < 0.5
                , text >= 0.11.2.3 && < 2
                , attoparsec >= 0.10.2 && < 0.12
                , matrix
