@@ -52,7 +52,7 @@ Library
                , containers >= 0.4.2.1 && < 0.6
                , QuickCheck
                  -- For pretty-printing
-               , wl-pprint-extras
+               , wl-pprint-extras >= 3.5
   Exposed-modules:
     Text.LaTeX
       -- Base (Core of the library)
