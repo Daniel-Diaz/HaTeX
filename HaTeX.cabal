@@ -51,6 +51,8 @@ Library
                , matrix
                , containers >= 0.4.2.1 && < 0.6
                , QuickCheck
+                 -- For pretty-printing
+               , wl-pprint-extras
   Exposed-modules:
     Text.LaTeX
       -- Base (Core of the library)
@@ -58,6 +60,7 @@ Library
         Text.LaTeX.Base.Class
         Text.LaTeX.Base.Commands
         Text.LaTeX.Base.Parser
+        Text.LaTeX.Base.Pretty
         Text.LaTeX.Base.Render
         Text.LaTeX.Base.Syntax
         Text.LaTeX.Base.Texy
