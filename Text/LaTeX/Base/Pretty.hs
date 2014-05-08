@@ -1,5 +1,7 @@
 
 -- | 'LaTeX' values pretty printer.
+--
+--   Still experimental. Give it a try and send us your feedback! :)
 module Text.LaTeX.Base.Pretty (
     -- * @LaTeX@ pretty printer
     prettyLaTeX
