@@ -13,7 +13,7 @@ import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Render
 import Text.PrettyPrint.Free
   ( Doc, text, char
-  , backslash, hardline
+  , backslash, line, hardline
   , braces, brackets
   , indent, align, vsep
   , list, encloseSep
@@ -27,15 +27,15 @@ import Data.Monoid (mconcat,mempty)
 --   the function from the "Text.PrettyPrint.Free" module.
 docLaTeX :: LaTeX -> Doc ()
 docLaTeX (TeXRaw t) = text $ unpack t
-docLaTeX (TeXComm n as) = backslash <> text n <> align (mconcat (fmap docTeXArg as)) <> hardline
-docLaTeX (TeXCommS n) = backslash <> text n <> hardline
+docLaTeX (TeXComm n as) = backslash <> text n <> align (mconcat (fmap docTeXArg as)) <> line
+docLaTeX (TeXCommS n) = backslash <> text n <> line
 docLaTeX (TeXEnv n as b) =
   let a = FixArg $ fromString n
   in  mconcat
-       [ hardline
+       [ line
        , docLaTeX $ TeXComm "begin" $ a : as
        , indent 4 $ docLaTeX b
-       , hardline
+       , line
        , docLaTeX $ TeXComm "end" [a]
          ]
 docLaTeX (TeXMath t b) =
@@ -52,7 +52,7 @@ docLaTeX (TeXComment t) =
   let ls = Data.Text.lines t
   in  if null ls
          then char '%' <> hardline
-         else align $ vsep $ fmap (text . ("% "++) . unpack) ls
+         else (align $ vsep $ fmap (text . ("% "++) . unpack) ls) <> hardline
 docLaTeX (TeXSeq l1 l2) = docLaTeX l1 <> docLaTeX l2
 docLaTeX TeXEmpty = mempty
 
