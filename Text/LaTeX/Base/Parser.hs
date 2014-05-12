@@ -28,7 +28,7 @@ import           Data.Maybe (fromMaybe)
 import           Data.Text (Text)
 import qualified Data.Text as T 
 
-import           Control.Applicative ((<|>), (<$>))
+import           Control.Applicative ((<|>), (<$>),many)
 import           Control.Monad (unless)
 
 import           Text.LaTeX.Base.Syntax
@@ -99,13 +99,15 @@ env :: Parser LaTeX
 env = do
   _  <- char '\\'
   n  <- envName "begin"
-  skipSpace
+  sps <- many $ char ' '
+  let lsps = if null sps then mempty else TeXRaw $ T.pack sps
   as <- cmdArgs
   b  <- envBody n 
   return $ TeXEnv (T.unpack n) (fromMaybe [] as) $
-    if as == Just []
-       then TeXBraces mempty <> b
-       else b
+    case as of
+     Just [] -> lsps <> TeXBraces mempty <> b
+     Nothing -> lsps <> b
+     _ -> b
 
 envName :: Text -> Parser Text
 envName k = do
