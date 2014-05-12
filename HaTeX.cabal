@@ -93,7 +93,8 @@ Library
   Other-extensions: CPP
   ghc-options: -Wall -fno-warn-orphans
 
-Test-Suite matrix-test
+Test-Suite hatex-test
+  Default-language: Haskell2010
   type: exitcode-stdio-1.0
   hs-source-dirs: test
   main-is: Main.hs

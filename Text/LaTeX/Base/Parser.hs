@@ -100,9 +100,12 @@ env = do
   _  <- char '\\'
   n  <- envName "begin"
   skipSpace
-  as <- fmap (fromMaybe []) cmdArgs
+  as <- cmdArgs
   b  <- envBody n 
-  return $ TeXEnv (T.unpack n) as b
+  return $ TeXEnv (T.unpack n) (fromMaybe [] as) $
+    if as == Just []
+       then TeXBraces mempty <> b
+       else b
 
 envName :: Text -> Parser Text
 envName k = do
@@ -222,7 +225,7 @@ rbrace = brace "}"
 vert   = brace "|"
 
 brace :: String -> Parser LaTeX
-brace = return . TeXCommS
+brace = return . TeXCommS -- The same as commS?
 
 commS :: String -> Parser LaTeX
 commS = return . TeXCommS
