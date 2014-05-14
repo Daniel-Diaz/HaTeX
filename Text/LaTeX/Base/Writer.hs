@@ -48,9 +48,6 @@ module Text.LaTeX.Base.Writer
  , rendertexM
  , liftFun
  , liftOp
-   -- * Errors
- , throwError
- , merror
    -- * Re-exports
  , lift
  , liftIO
@@ -75,18 +72,14 @@ import Text.LaTeX.Base.Warnings (Warning,checkAll,check)
 
 -- | 'WriterT' monad transformer applied to 'LaTeX' values.
 newtype LaTeXT m a =
-  LaTeXT { unwrapLaTeXT :: WriterT LaTeX m (a,Maybe String) }
+  LaTeXT { unwrapLaTeXT :: WriterT LaTeX m a }
 
 instance Functor f => Functor (LaTeXT f) where
- fmap f = LaTeXT . fmap (first f) . unwrapLaTeXT
-
--- | Pair a value with 'Nothing'.
-pairNoth :: a -> (a,Maybe b)
-pairNoth x = (x,Nothing)
+ fmap f = LaTeXT . fmap f . unwrapLaTeXT
 
 instance Applicative f => Applicative (LaTeXT f) where
- pure = LaTeXT . pure . pairNoth
- (LaTeXT f) <*> (LaTeXT x) = LaTeXT $ fmap (first . fst) f <*> x
+ pure = LaTeXT . pure
+ (LaTeXT f) <*> (LaTeXT x) = LaTeXT $ f <*> x
 
 -- | Type synonym for empty 'LaTeXT' computations.
 type LaTeXT_ m = LaTeXT m ()
@@ -98,7 +91,7 @@ type LaTeXM = LaTeXT Identity
 --
 -- > runLaTeXM = runIdentity . runLaTeXT
 --
-runLaTeXM :: LaTeXM a -> (Either String a, LaTeX)
+runLaTeXM :: LaTeXM a -> (a, LaTeX)
 runLaTeXM = runIdentity . runLaTeXT
 
 -- | A particular case of 'execLaTeXT'.
@@ -109,15 +102,15 @@ execLaTeXM :: LaTeXM a -> LaTeX
 execLaTeXM = runIdentity . execLaTeXT
 
 instance MonadTrans LaTeXT where
- lift = LaTeXT . liftM pairNoth . lift
+ lift = LaTeXT . lift
 
 instance Monad m => Monad (LaTeXT m) where
- return = LaTeXT . return . pairNoth
+ return = LaTeXT . return
  (LaTeXT c) >>= f = LaTeXT $ do 
-  (a,_) <- c
+  a <- c
   let LaTeXT c' = f a
   c'
- fail = throwError
+ fail = return . error
 
 instance MonadIO m => MonadIO (LaTeXT m) where
  liftIO = lift . liftIO
@@ -125,15 +118,9 @@ instance MonadIO m => MonadIO (LaTeXT m) where
 instance (Monad m, a ~ ()) => LaTeXC (LaTeXT m a) where
  liftListL f xs = mapM extractLaTeX_ xs >>= textell . f
 
--- | Running a 'LaTeXT' computation returns the final 'LaTeX' value
---   and either a 'String' if the computation didn't contain any value
---   or the value itself otherwise.
-runLaTeXT :: Monad m => LaTeXT m a -> m (Either String a,LaTeX)
-runLaTeXT (LaTeXT c) = runWriterT c >>= (
-  \((a,m),l) -> case m of
-             Nothing  -> return (Right a ,l)
-             Just err -> return (Left err,l)
-       )
+-- | Running a 'LaTeXT' computation returns the final 'LaTeX' value.
+runLaTeXT :: Monad m => LaTeXT m a -> m (a,LaTeX)
+runLaTeXT = runWriterT . unwrapLaTeXT
 
 -- | This is the usual way to run the 'LaTeXT' monad
 --   and obtain a 'LaTeX' value.
@@ -158,9 +145,7 @@ execLaTeXTWarn = liftM (id &&& check checkAll) . execLaTeXT
 -- | This function run a 'LaTeXT' computation,
 --   lifting the result again in the monad.
 extractLaTeX :: Monad m => LaTeXT m a -> LaTeXT m (a,LaTeX)
-extractLaTeX (LaTeXT c) = LaTeXT $ do
- ((a,m),l) <- lift $ runWriterT c
- return ((a,l),m)
+extractLaTeX = LaTeXT . lift . runWriterT . unwrapLaTeXT
 
 -- | Executes a 'LaTeXT' computation, embedding it again in
 --   the 'LaTeXT' monad.
@@ -177,7 +162,7 @@ extractLaTeX_ = liftM snd . extractLaTeX
 -- | With 'textell' you can append 'LaTeX' values to the
 --   state of the 'LaTeXT' monad.
 textell :: Monad m => LaTeX -> LaTeXT m ()
-textell = LaTeXT . liftM pairNoth . tell
+textell = LaTeXT . tell
 
 -- | Lift a function over 'LaTeX' values to a function
 --   acting over the state of a 'LaTeXT' computation.
@@ -209,18 +194,6 @@ liftOp op (LaTeXT c) (LaTeXT c') = LaTeXT $ do
 -- > rendertexM = textell . rendertex
 rendertexM :: (Render a, Monad m) => a -> LaTeXT m ()
 rendertexM = textell . rendertex
-
--- Error throwing
-
--- | The 'fail' method of the 'LaTeXT' monad.
-throwError :: Monad m => String -> LaTeXT m a
-throwError = LaTeXT . return . (error &&& Just)
-
--- | Function 'merror' casts a value contained in a monad @m@ to the
---   bottom value of another type. If you try to evaluate this value, you will
---   get an error message with the 'String' passed as argument to 'merror'.
-merror :: Monad m => String -> LaTeXT m a -> LaTeXT m b
-merror = flip (>>) . throwError
 
 -- Overloaded Strings
 
