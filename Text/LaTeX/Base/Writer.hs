@@ -227,12 +227,9 @@ merror = flip (>>) . throwError
 
 -- Overloaded Strings
 
--- | Be careful when using 'fromString' over a 'LaTeXT' value,
---   the returned value of the computation is bottom (i.e. 'undefined').
 instance (Monad m, a ~ ()) => IsString (LaTeXT m a) where
  fromString = textell . fromString
 
--- | 'mappend' @=@ '>>'.
 instance (Monad m, a ~ ()) => Monoid (LaTeXT m a) where
  mempty = return ()
  mappend = (>>)
