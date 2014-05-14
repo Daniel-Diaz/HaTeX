@@ -22,7 +22,6 @@
 -- > anotherExample :: LaTeXT IO ()
 -- > anotherExample = lift (readFileTex "foo") >>= verbatim
 --
---
 -- This way, it is easy (without carrying arguments) to include IO outputs
 -- in the LaTeX document, like files, times or random objects.
 --
@@ -31,8 +30,6 @@
 --
 -- Of course, you can always use the simpler interface provided by the plain 'LaTeX' type.
 --
--- Another thing you should know about the LaTeX Writer Monad. Don't try to get values
--- from computations with no results (like @raw "foo"@).
 module Text.LaTeX.Base.Writer
  ( -- * @LaTeXT@ writer
    LaTeXT
