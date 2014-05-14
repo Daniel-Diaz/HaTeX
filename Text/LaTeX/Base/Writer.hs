@@ -126,7 +126,7 @@ instance MonadIO m => MonadIO (LaTeXT m) where
  liftIO = lift . liftIO
 
 instance (Monad m, a ~ ()) => LaTeXC (LaTeXT m a) where
- liftListL f xs = mapM extractLaTeX_ xs >>= {-merror "liftListL" .-} textell . f
+ liftListL f xs = mapM extractLaTeX_ xs >>= textell . f
 
 -- | Running a 'LaTeXT' computation returns the final 'LaTeX' value
 --   and either a 'String' if the computation didn't contain any value
