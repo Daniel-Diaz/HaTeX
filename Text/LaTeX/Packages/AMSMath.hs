@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
+
+{-# LANGUAGE OverloadedStrings, TypeFamilies #-}
 
 -- | \AMSMath\ support. Also numeric instances ('Num', 'Fractional' and 'Floating') for 'LaTeX' and 'LaTeXT'.
 module Text.LaTeX.Packages.AMSMath
@@ -179,17 +180,17 @@ instance Floating LaTeX where
 
 -- | Warning: this instance only exists for the 'Num' instance.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
-instance Monad m => Eq (LaTeXT m a) where
+instance Eq (LaTeXT m a) where
  _ == _ = error "Cannot use \"(==)\" Eq method with a LaTeXT value."
 
 -- | Warning: this instance only exists for the 'Num' instance.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
-instance Monad m => Show (LaTeXT m a) where
+instance Show (LaTeXT m a) where
  show _ = error "Cannot use \"show\" Show method with a LaTeXT value."
 
 -- | Careful! Method 'signum' is undefined. Don't use it!
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
-instance Monad m => Num (LaTeXT m a) where
+instance (Monad m, a ~ ()) => Num (LaTeXT m a) where
  (+) = liftOp (+)
  (-) = liftOp (-)
  (*) = (>>)
@@ -201,13 +202,13 @@ instance Monad m => Num (LaTeXT m a) where
 
 -- | Division uses the LaTeX 'frac' command.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
-instance Monad m => Fractional (LaTeXT m a) where
+instance (Monad m, a ~ ()) => Fractional (LaTeXT m a) where
  (/) = liftOp (/)
  fromRational = fromLaTeX . fromRational
 
 -- | Undefined methods: 'asinh', 'atanh' and 'acosh'.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
-instance Monad m => Floating (LaTeXT m a) where
+instance (Monad m, a ~ ()) => Floating (LaTeXT m a) where
  pi = pi_
  exp = liftFun exp
  sqrt = liftFun sqrt

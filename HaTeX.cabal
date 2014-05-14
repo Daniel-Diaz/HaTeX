@@ -1,5 +1,5 @@
 Name: HaTeX
-Version: 3.11.0.1
+Version: 3.12.0.0
 Author: Daniel Díaz
 Category: Text, LaTeX
 Build-type: Simple
@@ -89,7 +89,7 @@ Library
           Text.LaTeX.Packages.TikZ.Simple
           Text.LaTeX.Packages.TikZ.Syntax
   Other-modules: Paths_HaTeX
-  Default-extensions: OverloadedStrings
+  Default-extensions: OverloadedStrings, TypeFamilies
   Other-extensions: CPP
   ghc-options: -Wall -fno-warn-orphans
 

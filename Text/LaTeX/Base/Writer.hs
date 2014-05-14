@@ -1,4 +1,6 @@
 
+{-# LANGUAGE TypeFamilies #-}
+
 -- | The writer monad applied to 'LaTeX' values. Useful to compose 'LaTeX' values
 --   using the @do@ notation:
 --
@@ -123,8 +125,8 @@ instance Monad m => Monad (LaTeXT m) where
 instance MonadIO m => MonadIO (LaTeXT m) where
  liftIO = lift . liftIO
 
-instance Monad m => LaTeXC (LaTeXT m a) where
- liftListL f xs = mapM extractLaTeX_ xs >>= merror "liftListL" . textell . f
+instance (Monad m, a ~ ()) => LaTeXC (LaTeXT m a) where
+ liftListL f xs = mapM extractLaTeX_ xs >>= {-merror "liftListL" .-} textell . f
 
 -- | Running a 'LaTeXT' computation returns the final 'LaTeX' value
 --   and either a 'String' if the computation didn't contain any value
