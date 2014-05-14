@@ -229,10 +229,10 @@ merror = flip (>>) . throwError
 
 -- | Be careful when using 'fromString' over a 'LaTeXT' value,
 --   the returned value of the computation is bottom (i.e. 'undefined').
-instance Monad m => IsString (LaTeXT m a) where
- fromString = merror "LaTeXT: fromString!" . textell . fromString
+instance (Monad m, a ~ ()) => IsString (LaTeXT m a) where
+ fromString = textell . fromString
 
 -- | 'mappend' @=@ '>>'.
-instance Monad m => Monoid (LaTeXT m a) where
- mempty = throwError "LaTeXT: mempty!"
+instance (Monad m, a ~ ()) => Monoid (LaTeXT m a) where
+ mempty = return ()
  mappend = (>>)

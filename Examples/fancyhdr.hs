@@ -1,4 +1,6 @@
 
+{-# LANGUAGE OverloadedStrings #-}
+
 import Text.LaTeX
 import Text.LaTeX.Packages.Fancyhdr
 
