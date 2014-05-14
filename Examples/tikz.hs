@@ -42,6 +42,6 @@ theBody = do
  center $ tikzpicture $
       draw (Start (pointAtXY   0    1) ->- pointAtXY  0     (-1))
   ->> draw (Start (pointAtXY (-0.2) 0) ->- pointAtXY (3*pi)   0 )
-  ->> scope [TColor Blue, TWidth (Pt 1)] (draw $ bpath (pointAtXY 0 0) $
+  ->> scope [TColor $ BasicColor Blue, TWidth (Pt 1)] (draw $ bpath (pointAtXY 0 0) $
         mapM_ line [ pointAtXY x (sin x) | x <- [0,0.05 .. 3*pi] ]
              )
