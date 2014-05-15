@@ -19,7 +19,7 @@
 -- * If the parsed value is again rendered, you get the initial input.
 --
 --   In other words, 'parseLaTeX' is a partial function defined over the
---   set of valid LaTeX files, and 'render' is its inverse.
+--   set of valid LaTeX files, and 'render' is its /left/ inverse.
 --
 module Text.LaTeX.Base.Parser (
     -- * The parser
