@@ -31,8 +31,14 @@ module Text.LaTeX.Base.Parser (
   , ParseError
   , errorPos
   , errorMessages
+    -- ** Error messages
   , Message (..)
   , messageString
+    -- ** Source positions
+  , SourcePos
+  , sourceLine
+  , sourceColumn
+  , sourceName
     ) where
 
 import           Text.Parsec hiding ((<|>),many)
