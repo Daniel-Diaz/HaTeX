@@ -6,6 +6,9 @@ import Test.Tasty
 import qualified Test.Tasty.QuickCheck as QC
 import Test.QuickCheck
 
+instance Eq ParseError where
+  _ == _ = undefined
+
 main :: IO ()
 main = defaultMain $ testGroup "HaTeX"
   [ testGroup "LaTeX"
@@ -17,9 +20,7 @@ main = defaultMain $ testGroup "HaTeX"
     ]
   , testGroup "Parser"
     [ QC.testProperty "render . parse = id" $
-         \l0 -> let t = render (l0 :: LaTeX)
-                in case parseLaTeX t of
-                     Left _ -> False
-                     Right l -> render l == t
+         \l -> let t = render (l :: LaTeX)
+               in  fmap render (parseLaTeX t) == Right t
     ]
   ]

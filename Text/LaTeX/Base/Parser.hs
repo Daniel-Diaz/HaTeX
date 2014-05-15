@@ -1,6 +1,26 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | The /LaTeX/ parser.
+-- 
+--   Use 'parseLaTeX' to parse a 'Text' containing /LaTeX/ code.
+--   If the 'Text' is in a file, you may want to use 'parseLaTeXFile'.
+--   Use this module together with "Text.LaTeX.Base.Syntax" to perform
+--   analysis and transformations of /LaTeX/ code. The parser ('parseLaTeX')
+--   is related with the renderer ('render') by the following property:
+--
+--   /If @t :: Text@ is a syntactically valid LaTeX block, then:/
+--
+-- > fmap render (parseLaTeX t) == Right t
+-- 
+--   This property says two things:
+--
+-- * Given a valid LaTeX input, 'parseLaTeX' returns a 'LaTeX' value.
+-- * If the parsed value is again rendered, you get the initial input.
+--
+--   In other words, 'parseLaTeX' is a partial function defined over the
+--   set of valid LaTeX files, and 'render' is its inverse.
+--
 module Text.LaTeX.Base.Parser (
     parseLaTeX
   , parseLaTeXFile
