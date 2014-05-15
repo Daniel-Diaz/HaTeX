@@ -256,7 +256,7 @@ arbitraryChar :: Gen Char
 arbitraryChar = elements $
      ['A'..'Z']
   ++ ['a'..'z']
-  ++ "\n-+*/!\"$%&(){}^_.,:;'#@<>? "
+  ++ "\n-+*/!\"$%&(){}^_.,:;'#@<>?\\ "
 
 -- | Utility for the instance of 'LaTeX' to 'Arbitrary'.
 --   We generate a short sequence of characters and
