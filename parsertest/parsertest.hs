@@ -12,7 +12,7 @@ testFile i = do
   t <- T.readFile $ "example" ++ show i ++ ".tex"
   case parseLaTeX t of
     Left err -> do putStrLn "Failed."
-                   putStrLn $ "The error was: " ++ err
+                   putStrLn $ "The error was: " ++ show err
                    return False
     Right _  -> putStrLn "Succeed." >> return True
 
@@ -23,4 +23,4 @@ main = do
   let b = and bs
   putStrLn $ "Parser Test Passed: " ++ show b
   if b then return ()
-       else putStrLn $ "Number of errors: " ++ show (length $ filter (==False) bs)
+       else putStrLn $ "Test result: " ++ show (length $ filter (==True) bs) ++ "/" ++ show (length bs)

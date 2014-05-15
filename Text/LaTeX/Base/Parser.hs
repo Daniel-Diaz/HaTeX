@@ -1,67 +1,52 @@
-{-# LANGUAGE CPP #-}
+
 {-# LANGUAGE OverloadedStrings #-}
--------------------------------------------------------------------------------
--- |
--- Module     : Text/LaTeX/Base/Parser.hs
--- Copyright  : (c) Tobias Schoofs
--- License    : LGPL 
--- Stability  : experimental
--- Portability: portable
---
--- LaTeX Parser based on Attoparsec
--------------------------------------------------------------------------------
+
 module Text.LaTeX.Base.Parser (
     parseLaTeX
+  , parseLaTeXFile
   , latexParser
   , latexBlockParser
-  , latexAtOnce
-#ifdef _TEST
-  , specials
-#endif
+    -- Parsing errors
+  , ParseError
     ) where
 
-import           Data.Attoparsec.Text hiding (take, takeTill)
-import qualified Data.Attoparsec.Text as A   (takeTill)
-import           Data.Char (toLower)
+import           Text.Parsec hiding ((<|>),many)
+import           Text.Parsec.Text
+import           Data.Char (toLower,digitToInt)
 import           Data.Monoid
 import           Data.Maybe (fromMaybe)
-import           Data.Text (Text)
 import qualified Data.Text as T 
 
-import           Control.Applicative ((<|>), (<$>),many)
+import           Control.Applicative
 import           Control.Monad (unless)
 
 import           Text.LaTeX.Base.Syntax
+import           Text.LaTeX.Base.Render
 
 -- | Parse a 'Text' sequence as a 'LaTeX' block. If it fails, it returns
 --   an error string.
-parseLaTeX :: Text -> Either String LaTeX
+parseLaTeX :: Text -> Either ParseError LaTeX
 parseLaTeX t | T.null t  = return TeXEmpty
-             | otherwise = 
-  case parse latexParser t of
-    Fail _ _ e     -> Left e
-    Done _ r       -> Right r
-    rx@(Partial _) -> -- Left "incomplete input"
-                      case feed rx T.empty of
-                        Fail _ _ e -> Left e
-                        Partial _  -> Left "incomplete input"
-                        Done _ r   -> Right r
+             | otherwise = parse latexParser "parseLaTeX input" t
 
-{-# DEPRECATED latexAtOnce "Use parseLaTeX instead." #-}
+-- | Read a file and parse it as 'LaTeX'.
+parseLaTeXFile :: FilePath -> IO (Either ParseError LaTeX)
+parseLaTeXFile fp = parse latexParser fp <$> readFileTex fp
 
--- | Same as 'parseLaTeX'.
-latexAtOnce :: Text -> Either String LaTeX
-latexAtOnce = parseLaTeX
-
-------------------------------------------------------------------------
--- | Incremental 'LaTeX' parser.
-------------------------------------------------------------------------
+-- | The 'LaTeX' parser.
 latexParser :: Parser LaTeX
-latexParser = mconcat <$> latexBlockParser `manyTill` endOfInput 
+latexParser = mconcat <$> latexBlockParser `manyTill` eof
 
 -- | Parser of a single 'LaTeX' constructor, no appending blocks.
 latexBlockParser :: Parser LaTeX
-latexBlockParser = foldr1 (<|>) [text, dolMath, comment, text2, environment, command]
+latexBlockParser = foldr1 (<|>)
+  [ text        <?> "text"
+  , dolMath     <?> "inline math ($)"
+  , comment     <?> "comment"
+  , text2       <?> "text2"
+  , environment <?> "environment"
+  , command     <?> "command"
+    ]
 -- Note: text stops on ']'; if the other parsers fail on the rest
 --       text2 handles it, starting with ']' 
   
@@ -74,7 +59,7 @@ text = do
   case mbC of
     Nothing -> fail "text: Empty input."
     Just c | c `elem` "$%\\{]}" -> fail "not text"
-           | otherwise          -> TeXRaw <$> A.takeTill (`elem` "$%\\{]}")
+           | otherwise          -> TeXRaw <$> takeTill (`elem` "$%\\{]}")
 
 ------------------------------------------------------------------------
 -- Text without stopping on ']'
@@ -92,41 +77,43 @@ environment :: Parser LaTeX
 environment = anonym <|> env
 
 anonym :: Parser LaTeX
-anonym = char '{' >> 
-    TeXBraces . mconcat <$> latexBlockParser `manyTill` char '}'
+anonym = do
+  _ <- char '{'
+  l <- TeXBraces . mconcat <$> many latexBlockParser
+  _ <- char '}'
+  return l
 
 env :: Parser LaTeX
 env = do
-  _  <- char '\\'
-  n  <- envName "begin"
+  n  <- try $ char '\\' *> envName "begin"
   sps <- many $ char ' '
   let lsps = if null sps then mempty else TeXRaw $ T.pack sps
   as <- cmdArgs
   b  <- envBody n 
-  return $ TeXEnv (T.unpack n) (fromMaybe [] as) $
+  return $ TeXEnv n (fromMaybe [] as) $
     case as of
      Just [] -> lsps <> TeXBraces mempty <> b
      Nothing -> lsps <> b
      _ -> b
 
-envName :: Text -> Parser Text
+envName :: String -> Parser String
 envName k = do
   _ <- string k
   _ <- char '{'
-  n <- A.takeTill (== '}')
+  n <- takeTill (== '}')
   _ <- char '}'
-  return n
+  return $ T.unpack n
 
-envBody :: Text -> Parser LaTeX
+envBody :: String -> Parser LaTeX
 envBody n = mconcat <$> (bodyBlock n) `manyTill` endenv
-  where endenv = try $ string ("\\end") >> skipSpace >> string ("{" <> n <> "}")
+  where endenv = try $ string ("\\end") >> spaces >> string ("{" <> n <> "}")
 
-bodyBlock :: Text -> Parser LaTeX
+bodyBlock :: String -> Parser LaTeX
 bodyBlock n = do
   c <- peekChar
   case c of 
      Just _ -> latexBlockParser
-     _ -> fail $ "Environment '" <> T.unpack n <> "' not finalized."
+     _ -> fail $ "Environment '" <> n <> "' not finalized."
 
 ------------------------------------------------------------------------
 -- Command
@@ -140,7 +127,7 @@ command = do
     Just x  -> if isSpecial x
                   then special
                   else do
-                    c  <- A.takeTill endCmd
+                    c  <- takeTill endCmd
                     -- if c `elem` ["begin","end"]
                     --    then fail $ "Command not allowed: " ++ T.unpack c
                     --    else maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) <$> cmdArgs
@@ -161,7 +148,7 @@ cmdArg = do
             '[' -> "]"
             '{' -> "}"
             _   -> error "this cannot happen!"
-  b <- mconcat <$> latexBlockParser `manyTill` string e
+  b <- mconcat <$> manyTill latexBlockParser (string e)
   case c of  
     '[' -> return $ OptArg b
     '{' -> return $ FixArg b
@@ -185,6 +172,7 @@ special = do
 ------------------------------------------------------------------------
 -- Line break
 ------------------------------------------------------------------------
+
 lbreak :: Parser LaTeX
 lbreak = do
   y <- try (char '[' <|> char '*' <|> return ' ')  
@@ -197,13 +185,13 @@ lbreak = do
     _   -> return (TeXLineBreak Nothing False)
 
 linebreak :: Bool -> Parser LaTeX
-linebreak t = do m <- measure
+linebreak t = do m <- measure <?> "measure"
                  _ <- char ']'
                  s <- try (char '*' <|> return ' ')
                  return $ TeXLineBreak (Just m) (t || s == '*')
 
 measure :: Parser Measure
-measure = try (double >>= unit) <|> CustomMeasure <$> latexBlockParser
+measure = try (floating >>= unit) <|> (CustomMeasure . mconcat) <$> manyTill latexBlockParser (lookAhead $ char ']')
 
 unit :: Double -> Parser Measure
 unit f = do
@@ -241,7 +229,7 @@ dolMath = do
   b <- mconcat <$> latexBlockParser `manyTill` char '$'
   return $ TeXMath Dollar b
 
-math :: MathType -> Text -> Parser LaTeX
+math :: MathType -> String -> Parser LaTeX
 math t eMath = do
    b <- mconcat <$> latexBlockParser `manyTill` try (string eMath)
    return $ TeXMath t b
@@ -252,7 +240,7 @@ math t eMath = do
 comment :: Parser LaTeX
 comment = do
   _  <- char '%'
-  c  <- A.takeTill (== '\n')
+  c  <- takeTill (== '\n')
   e  <- atEnd
   unless e (char '\n' >>= \_ -> return ())
   return $ TeXComment c
@@ -260,6 +248,7 @@ comment = do
 ------------------------------------------------------------------------
 -- Helpers
 ------------------------------------------------------------------------
+
 isSpecial :: Char -> Bool
 isSpecial = (`elem` specials)
 
@@ -272,3 +261,40 @@ endCmd c = notLowercaseAlph && notUppercaseAlph
 
 specials :: String
 specials = "'(),.-\"!^$&#{}%~|/:;=[]\\` "
+
+peekChar :: Parser (Maybe Char)
+peekChar = Just <$> (try $ lookAhead anyChar) <|> pure Nothing
+
+atEnd :: Parser Bool
+atEnd = (eof *> pure True) <|> pure False
+
+takeTill :: (Char -> Bool) -> Parser Text
+takeTill p = T.pack <$> many (satisfy (not . p))
+
+-- Parsing doubles
+--
+-- Code for 'floating', 'fractExponent', and 'sign' comes from parsers package:
+--
+-- http://hackage.haskell.org/package/parsers
+--
+
+floating :: Parser Double
+floating = decimal <**> fractExponent
+
+fractExponent :: Parser (Integer -> Double)
+fractExponent = (\fract expo n -> (fromInteger n + fract) * expo) <$> fraction <*> option 1.0 exponent'
+            <|> (\expo n -> fromInteger n * expo) <$> exponent' where
+  fraction = foldr op 0.0 <$> (char '.' *> (some digit <?> "fraction"))
+  op d f = (f + fromIntegral (digitToInt d))/10.0
+  exponent' = ((\f e -> power (f e)) <$ oneOf "eE" <*> sign <*> (decimal <?> "exponent")) <?> "exponent"
+  power e
+    | e < 0     = 1.0/power(-e)
+    | otherwise = fromInteger (10^e)
+
+decimal :: Parser Integer
+decimal = read <$> many1 digit
+
+sign :: Parser (Integer -> Integer)
+sign = negate <$ char '-'
+   <|> id <$ char '+'
+   <|> pure id
