@@ -60,12 +60,12 @@ latexParser = mconcat <$> latexBlockParser `manyTill` eof
 -- | Parser of a single 'LaTeX' constructor, no appending blocks.
 latexBlockParser :: Parser LaTeX
 latexBlockParser = foldr1 (<|>)
-  [ text        <?> "text"
-  , dolMath     <?> "inline math ($)"
-  , comment     <?> "comment"
-  , text2       <?> "text2"
-  , environment <?> "environment"
-  , command     <?> "command"
+  [ text            <?> "text"
+  , dolMath         <?> "inline math ($)"
+  , comment         <?> "comment"
+  , text2           <?> "text2"
+  , try environment <?> "environment"
+  , command         <?> "command"
     ]
 -- Note: text stops on ']'; if the other parsers fail on the rest
 --       text2 handles it, starting with ']' 
@@ -105,7 +105,7 @@ anonym = do
 
 env :: Parser LaTeX
 env = do
-  n  <- try $ char '\\' *> envName "begin"
+  n  <- char '\\' *> envName "begin"
   sps <- many $ char ' '
   let lsps = if null sps then mempty else TeXRaw $ T.pack sps
   as <- cmdArgs
