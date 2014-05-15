@@ -22,16 +22,22 @@
 --   set of valid LaTeX files, and 'render' is its inverse.
 --
 module Text.LaTeX.Base.Parser (
+    -- * The parser
     parseLaTeX
   , parseLaTeXFile
   , latexParser
   , latexBlockParser
-    -- Parsing errors
+    -- * Parsing errors
   , ParseError
+  , errorPos
+  , errorMessages
+  , Message (..)
+  , messageString
     ) where
 
 import           Text.Parsec hiding ((<|>),many)
 import           Text.Parsec.Text
+import           Text.Parsec.Error
 import           Data.Char (toLower,digitToInt)
 import           Data.Monoid
 import           Data.Maybe (fromMaybe)
