@@ -39,7 +39,7 @@ Extra-doc-files:
 
 Source-repository head
   type: git
-  location: git clone git://github.com/Daniel-Diaz/HaTeX.git
+  location: git://github.com/Daniel-Diaz/HaTeX.git
 
 Library
   Default-language: Haskell2010
