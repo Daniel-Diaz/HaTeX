@@ -1,5 +1,5 @@
 Name: HaTeX
-Version: 3.13.0.1
+Version: 3.13.1.0
 Author: Daniel Díaz
 Category: Text, LaTeX
 Build-type: Simple
@@ -9,19 +9,32 @@ Maintainer: Daniel Díaz (dhelta `dot` diaz `at` gmail `dot` com)
 Bug-reports: https://github.com/Daniel-Diaz/HaTeX/issues
 homepage: http://daniel-diaz.github.io/projects/hatex
 Synopsis: The Haskell LaTeX library.
-Description: This library provides a bridge between LaTeX and Haskell, implementing the LaTeX /syntax/
-             in Haskell.
+Description: This library implements the LaTeX syntax and provides some useful abstractions.
              .
              Some of the things you can do with HaTeX are:
              .
-             Write LaTeX documents with all the advantages you already have in Haskell (recursion,
-             type system, high order functions, ...), create a LaTeX backend for your own program,
-             parse a LaTeX file and obtain its Abstract Syntax Tree (AST), pretty-print Haskell
-             values in LaTeX, generate TikZ scripts easily, ...
+             * Write LaTeX documents with all the advantages you already have in Haskell: recursion,
+               type system, high order functions, ...
+             .
+             * Create a LaTeX backend for your own program.
+             .
+             * Parse a LaTeX file and obtain its Abstract Syntax Tree (AST).
+             .
+             * Pretty-print Haskell values in LaTeX.
+             .
+             * Generate TikZ scripts (images!) easily.
              .
              Browse the @examples@ directory in the source distribution to see some simple examples.
-             It would be good to get you started. The HaTeX User's Guide is available at
+             It might help you to get started. The HaTeX User's Guide is available at
              <https://github.com/Daniel-Diaz/hatex-guide/blob/master/README.md>.
+             We also have a mailing list (http://projects.haskell.org/cgi-bin/mailman/listinfo/hatex)
+             and an IRC channel (@#hatex@). If you just want to read a short introduction, read
+             the "Text.LaTeX" module.
+             .
+             If you prefer to write in LaTeX and all you want is to /program/ some parts of the document,
+             or if you already have the LaTeX document written and you just want to add some automatically
+             generated LaTeX code somewhere, check haskintex: <http://daniel-diaz.github.io/projects/haskintex>.
+             It allows you to embed Haskell in LaTeX. It also makes you easy to use HaTeX within a LaTeX document.
 Cabal-version: >= 1.10
 Extra-source-files:
   ReleaseNotes

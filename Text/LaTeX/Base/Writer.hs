@@ -174,7 +174,6 @@ liftFun f (LaTeXT c) = LaTeXT $ do
  tell $ f l
  return p
 
-
 -- | Lift an operator over 'LaTeX' values to an operator
 --   acting over the state of two 'LaTeXT' computations.
 --
@@ -192,6 +191,7 @@ liftOp op (LaTeXT c) (LaTeXT c') = LaTeXT $ do
 -- | Just like 'rendertex', but with 'LaTeXT' output.
 --
 -- > rendertexM = textell . rendertex
+--
 rendertexM :: (Render a, Monad m) => a -> LaTeXT m ()
 rendertexM = textell . rendertex
 
@@ -200,6 +200,9 @@ rendertexM = textell . rendertex
 instance (Monad m, a ~ ()) => IsString (LaTeXT m a) where
  fromString = textell . fromString
 
+-- Monoids
+
 instance (Monad m, a ~ ()) => Monoid (LaTeXT m a) where
  mempty = return ()
  mappend = (>>)
+
