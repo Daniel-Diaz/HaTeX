@@ -8,7 +8,7 @@ import qualified Data.Text.IO as T
 
 main :: IO ()
 main = case parseLaTeX example of
-  Left err -> putStrLn err
+  Left err -> print err
   Right l  -> do
     putStrLn "Printing LaTeX AST..."
     print l
