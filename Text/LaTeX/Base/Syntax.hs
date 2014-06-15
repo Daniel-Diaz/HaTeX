@@ -96,6 +96,9 @@ instance Monoid LaTeX where
  mempty = TeXEmpty
  mappend TeXEmpty x = x
  mappend x TeXEmpty = x
+ -- This equation is to make 'mappend' associative.
+ mappend (TeXSeq x y) z = TeXSeq x $ mappend y z
+ --
  mappend x y = TeXSeq x y
 
 -- Since GHC starting from 7.4 provides (<>) as synonym to 'mappend' (see "Data.Monoid"),

@@ -16,7 +16,7 @@ main = defaultMain $ testGroup "HaTeX"
          \l -> (mempty <> l) == (l <> mempty)
             && (mempty <> l) == (l :: LaTeX)
     , QC.testProperty "LaTeX mappend" $
-         \l1 l2 l3 -> render (l1 <> (l2 <> l3)) == render ((l1 <> l2) <> (l3 :: LaTeX))
+         \l1 l2 l3 -> l1 <> (l2 <> l3) == (l1 <> l2) <> (l3 :: LaTeX)
     ]
   , testGroup "Parser"
     [ QC.testProperty "render . parse = id" $
