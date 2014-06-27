@@ -1,6 +1,10 @@
+
 {-# LANGUAGE OverloadedStrings #-}
 
--- | LaTeX standard commands and environments.
+-- | This module is the /Prelude/ of LaTeX functions.
+--   It includes commands, environments, and some other
+--   useful abstractions, that don't require you to
+--   import additional LaTeX packages.
 module Text.LaTeX.Base.Commands
  ( -- * Basic functions
    raw , between , comment , (%:)
@@ -214,7 +218,7 @@ import Data.List (find, intercalate)
 import Paths_HaTeX
 
 -- | Insert a raw piece of 'Text'.
--- This functions doesn't care about @LaTeX@ reserved characters,
+-- This functions doesn't escape @LaTeX@ reserved characters,
 -- it insert the text just as it is received.
 --
 -- /Warning:/ This function is /unsafe/, in the sense that it does
@@ -296,6 +300,7 @@ newline = comm0 "newline"
 part :: LaTeXC l => l -> l
 part = comm1 "part"
 
+-- | Start a new chapter with the given title.
 chapter :: LaTeXC l => l -> l
 chapter = comm1 "chapter"
 
@@ -320,7 +325,7 @@ subparagraph :: LaTeXC l => l -> l
 subparagraph = comm1 "subparagraph"
 
 -- | Create the table of contents, automatically generated
--- from your 'section's, 'subsection's, and other related stuff.
+-- from your 'section's, 'subsection's, and related functions.
 tableofcontents :: LaTeXC l => l
 tableofcontents = comm0 "tableofcontents"
 
