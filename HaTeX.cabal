@@ -49,6 +49,8 @@ Extra-doc-files:
   docfiles/tikz/*.png
   -- Beamer
   docfiles/beamers/*.png
+  -- Others
+  docfiles/others/*.png
 
 Source-repository head
   type: git

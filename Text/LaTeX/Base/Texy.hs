@@ -8,7 +8,6 @@ module Text.LaTeX.Base.Texy (
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
-import Text.LaTeX.Base.Commands
 --
 import Numeric
 import Data.Fixed
@@ -23,7 +22,7 @@ instance Texy LaTeX where
  texy = fromLaTeX
 
 instance Texy Text where
- texy = raw . protectText
+ texy = fromLaTeX . TeXRaw . protectText
 
 instance Texy Int where
  texy = rendertex

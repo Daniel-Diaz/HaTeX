@@ -193,6 +193,8 @@ module Text.LaTeX.Base.Commands
  , hline
  , cline
  , multicolumn
+   -- *** Special tables
+ , matrixTabular
    -- ** Others
  , footnote
  , protect
@@ -212,8 +214,10 @@ import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
+import Text.LaTeX.Base.Texy
 import Data.Version
-import Data.List (find, intercalate)
+import Data.List (find, intercalate,intersperse)
+import Data.Matrix (Matrix,nrows,ncols,(!))
 --
 import Paths_HaTeX
 
@@ -866,6 +870,69 @@ multicolumn n c = liftL $ \l -> TeXComm "multicolumn"
   , FixArg . TeXRaw $ renderAppend c
   , FixArg l
   ]
+
+-----------------------------------------
+-- Special Tables (Tabulars)
+
+-- | If you are able to arrange some data in matrix form, you
+--   might want to use this function to quickly generate a
+--   tabular with your data. Each element of the matrix is
+--   rendered using the 'Texy' instance of its type. If you
+--   want a custom instance for an already instantiated type,
+--   wrap that type using @newtype@, and then create your own
+--   instance. Since every element of a matrix must be of the
+--   same type, for mixed tables you might want to create an
+--   union type. For example, if your data matrix contains
+--   'Int's and 'Double's:
+--
+-- > data Number = R Double | I Int
+-- >
+-- > instance Texy Number where
+-- >   texy (R x) = texy x
+-- >   texy (I x) = texy x
+--
+--   Now you can have a matrix of type @Matrix Number@ and use it
+--   to render your mixed data in a LaTeX table.
+--
+--   The function 'matrixTabular' does not give you many options,
+--   so it is not as flexible as generating the table by yourself,
+--   but it uses a reasonable standard style.
+--
+--   A very simple example:
+--
+-- > matrixTabular (fmap textbf ["x","y","z"]) $
+-- >   fromList 3 3 [ (1 :: Int)..]
+--
+--   This code generates the following table:
+--
+--   <<docfiles/others/table.png>>
+--
+--   For more examples see the file @Examples/tables.hs@, included
+--   in the source distribution.
+--
+--   For more info about how to generate and manipulate matrices,
+--   see "Data.Matrix".
+--
+matrixTabular :: (LaTeXC l, Texy a)
+              => [l] -- ^ (Non-empty) List of column titles
+              -> Matrix a -- ^ Matrix of data
+              -> l -- ^ Data organized in a tabular environment
+matrixTabular ts m =
+  let spec = VerticalLine : (intersperse VerticalLine $ replicate (ncols m) CenterColumn) ++ [VerticalLine]
+  in  tabular Nothing spec $ mconcat
+        [ hline
+        , foldl1 (&) ts
+        , lnbk
+        , hline
+        , mconcat $ fmap (
+            \i -> mconcat [ foldl1 (&) $ fmap (\j -> texy (m ! (i,j))) [1 .. ncols m]
+                          , lnbk
+                          , hline
+                            ] ) [1 .. nrows m]
+          ]
+
+-----------------------------------------
+-----------------------------------------
 
 -- | @cline i j@ writes a partial horizontal line beginning in column @i@ and ending in column @j@.
 cline :: LaTeXC l => Int -> Int -> l
