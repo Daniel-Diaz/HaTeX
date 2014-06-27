@@ -39,6 +39,7 @@ Cabal-version: >= 1.10
 Extra-source-files:
   ReleaseNotes
   README.md
+  CHANGELOG.md
   -- Examples
   Examples/*.hs
   -- Tests
