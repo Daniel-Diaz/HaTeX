@@ -64,6 +64,8 @@ docTeXArg (MOptArg ls) =
              else list $ fmap docLaTeX ls
 docTeXArg (SymArg l) = docTeXArg $ MSymArg [l]
 docTeXArg (MSymArg ls) = encloseSep (char '<') (char '>') (char ',') $ fmap docLaTeX ls
+docTeXArg (ParArg l) = docTeXArg $ MParArg [l]
+docTeXArg (MParArg ls) = encloseSep (char '(') (char ')') (char ',') $ fmap docLaTeX ls
 
 -- | Pretty print a 'LaTeX' value. It produces a more human-friendly output than 'render'.
 --

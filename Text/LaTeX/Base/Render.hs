@@ -146,6 +146,8 @@ instance Render TeXArg where
  render (MOptArg ls) = "[" <> renderCommas ls <> "]"
  render (SymArg l) = "<" <> render l <> ">"
  render (MSymArg ls) = "<" <> renderCommas ls <> ">"
+ render (ParArg l) = "(" <> render l <> ")"
+ render (MParArg ls) = "(" <> renderCommas ls <> ")"
 
 -- Other instances
 
