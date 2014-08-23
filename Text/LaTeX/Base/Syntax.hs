@@ -87,6 +87,8 @@ data TeXArg =
  | MOptArg [LaTeX] -- ^ Multiple optional argument.
  | SymArg LaTeX    -- ^ An argument enclosed between @\<@ and @\>@.
  | MSymArg [LaTeX] -- ^ Version of 'SymArg' with multiple options.
+ | ParArg LaTeX    -- ^ An argument enclosed between @(@ and @)@.
+ | MParArg [LaTeX] -- ^ Version of 'ParArg' with multiple options.
    deriving (Eq,Show)
 
 -- Monoid instance for 'LaTeX'.
@@ -177,6 +179,8 @@ matchCommandArg f (FixArg  l ) = matchCommand f l
 matchCommandArg f (MOptArg ls) = concatMap (matchCommand f) ls
 matchCommandArg f (SymArg  l ) = matchCommand f l
 matchCommandArg f (MSymArg ls) = concatMap (matchCommand f) ls
+matchCommandArg f (ParArg  l ) = matchCommand f l
+matchCommandArg f (MParArg ls) = concatMap (matchCommand f) ls
 
 -- | Similar to 'lookForCommand', but applied to environments.
 --   It returns a list with arguments passed and content of the
@@ -208,6 +212,8 @@ matchEnvArg f (FixArg  l ) = matchEnv f l
 matchEnvArg f (MOptArg ls) = concatMap (matchEnv f) ls
 matchEnvArg f (SymArg  l ) = matchEnv f l
 matchEnvArg f (MSymArg ls) = concatMap (matchEnv f) ls
+matchEnvArg f (ParArg  l ) = matchEnv f l
+matchEnvArg f (MParArg ls) = concatMap (matchEnv f) ls
 
 -- | The function 'texmap' looks for subexpressions that match a given
 --   condition and applies a function to them.
@@ -237,6 +243,8 @@ texmapM c f = go
    go' (MOptArg ls) = MOptArg <$> mapM go ls
    go' (SymArg  l ) = SymArg  <$> go l
    go' (MSymArg ls) = MSymArg <$> mapM go ls
+   go' (ParArg  l ) = ParArg  <$> go l
+   go' (MParArg ls) = MParArg <$> mapM go ls
 
 -- | Extract the content of the 'document' environment, if present.
 getBody :: LaTeX -> Maybe LaTeX
@@ -306,7 +314,7 @@ instance Arbitrary LaTeX where
 
 instance Arbitrary TeXArg where
   arbitrary = do
-     n <- choose (0,4 :: Int)
+     n <- choose (0,6 :: Int)
      case n of
        0 -> OptArg <$> arbitrary
        1 -> do m <- choose (1,5)
@@ -314,4 +322,7 @@ instance Arbitrary TeXArg where
        2 -> SymArg <$> arbitrary
        3 -> do m <- choose (1,5)
                MSymArg <$> vectorOf m arbitrary
+       4 -> ParArg <$> arbitrary
+       5 -> do m <- choose (1,5)
+               MParArg <$> vectorOf m arbitrary
        _ -> FixArg <$> arbitrary
