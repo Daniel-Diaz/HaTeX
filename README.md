@@ -49,14 +49,12 @@ There are many ways to get involved in the HaTeX project.
 * Report bugs or make suggestions opening a ticket in the [Issue Tracker](https://github.com/Daniel-Diaz/HaTeX/issues).
 * Help us to improve and extend our [hatex-guide](https://github.com/Daniel-Diaz/hatex-guide).
 * Join the [Mailing List](http://projects.haskell.org/cgi-bin/mailman/listinfo/hatex) for help or announcements of the
-last developments.
+latest developments.
 * Drop by the IRC channel at `#hatex`.
 
 ## TODO list
 
 * Add more examples.
-* More testing on the parser (See [#15](https://github.com/Daniel-Diaz/HaTeX/issues/15)).
-  This includes adding more test cases to the [parsertest folder](https://github.com/Daniel-Diaz/HaTeX/tree/master/parsertest).
 * Add more documentation.
 * BibTeX support.
 
