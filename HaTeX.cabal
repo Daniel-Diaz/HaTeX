@@ -121,3 +121,11 @@ Test-Suite hatex-test
                , tasty
                , QuickCheck
                , tasty-quickcheck
+Test-Suite parser-tests
+  Default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  hs-source-dirs: parsertest
+  main-is: parsertest.hs
+  build-depends: base == 4.*
+               , HaTeX
+               , text
