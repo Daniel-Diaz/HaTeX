@@ -1,4 +1,8 @@
 language: haskell
+ghc:
+  - 7.4
+  - 7.6
+  - 7.8
 notifications:
   email: false
   irc: "chat.freenode.net#hatex"
@@ -10,5 +14,6 @@ before_script:
   - tar xzvf HaTeX.tar.gz
   - cd HaTeX*
 script:
-  - cabal configure
+  - cabal configure --enable-tests
   - cabal build
+  - cabal test
