@@ -160,9 +160,6 @@ command = do
                   then special
                   else do
                     c  <- takeTill endCmd
-                    -- if c `elem` ["begin","end"]
-                    --    then fail $ "Command not allowed: " ++ T.unpack c
-                    --    else maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) <$> cmdArgs
                     maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) <$> cmdArgs
 
 ------------------------------------------------------------------------
