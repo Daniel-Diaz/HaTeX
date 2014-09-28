@@ -5,7 +5,7 @@ import qualified Data.Text.IO as T
 import System.Exit (exitSuccess, exitFailure)
 
 testNumbers :: [Int]
-testNumbers = [1 .. 4]
+testNumbers = [1 .. 5]
 
 testFile :: Int -> IO Bool
 testFile i = do
