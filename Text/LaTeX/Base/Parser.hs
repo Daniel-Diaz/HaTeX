@@ -167,7 +167,7 @@ command = do
 ------------------------------------------------------------------------
 cmdArgs :: Parser (Maybe [TeXArg])
 cmdArgs = try (string "{}" >> return (Just []))
-            <|> fmap Just (many1 cmdArg)
+            <|> fmap Just (try $ many1 cmdArg)
             <|> return Nothing
 
 cmdArg :: Parser TeXArg
