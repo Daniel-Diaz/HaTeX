@@ -121,6 +121,7 @@ Test-Suite hatex-test
                , tasty
                , QuickCheck
                , tasty-quickcheck
+  ghc-options: -Wall
 Test-Suite parser-tests
   Default-language: Haskell2010
   type: exitcode-stdio-1.0
@@ -129,3 +130,4 @@ Test-Suite parser-tests
   build-depends: base == 4.*
                , HaTeX
                , text
+  ghc-options: -Wall

@@ -14,6 +14,6 @@ before_script:
   - tar xzvf HaTeX.tar.gz
   - cd HaTeX*
 script:
-  - cabal configure --enable-tests
+  - cabal configure --enable-tests --ghc-option=-Werror
   - cabal build
   - cabal test
