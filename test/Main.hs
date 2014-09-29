@@ -4,7 +4,6 @@ import Text.LaTeX.Base.Parser
 
 import Test.Tasty
 import qualified Test.Tasty.QuickCheck as QC
-import Test.QuickCheck
 
 instance Eq ParseError where
   _ == _ = undefined
