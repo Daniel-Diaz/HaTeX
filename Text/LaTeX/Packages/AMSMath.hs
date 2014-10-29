@@ -103,6 +103,8 @@ module Text.LaTeX.Packages.AMSMath
  , pmatrix  , bmatrix
  , b2matrix , vmatrix
  , v2matrix
+   -- * Math spacing
+ , quad, qquad
    ) where
 
 import Text.LaTeX.Base
