@@ -7,7 +7,6 @@ module Text.LaTeX.Packages.AMSSymb
  , checkmark
    ) where
 
-import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Types
 
