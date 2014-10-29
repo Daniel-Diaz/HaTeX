@@ -944,7 +944,7 @@ parbox (Just p) w = liftL $ \t -> TeXComm "parbox" [ OptArg $ TeXRaw $ render p
                                                    , FixArg $ TeXRaw $ render w
                                                    , FixArg t ]
 
-makebox :: LaTeXC l => Maybe Measure -> Maybe Pos -> l -> l
+makebox :: LaTeXC l => Maybe Measure -> Maybe HPos -> l -> l
 makebox Nothing  Nothing  = liftL $ \t -> TeXComm "makebox" [ FixArg t ]
 makebox (Just w) Nothing  = liftL $ \t -> TeXComm "makebox" [ OptArg $ TeXRaw $ render w
                                                             , FixArg t ]
@@ -954,7 +954,7 @@ makebox (Just w) (Just p) = liftL $ \t -> TeXComm "makebox" [ OptArg $ TeXRaw $ 
                                                             , OptArg $ TeXRaw $ render p
                                                             , FixArg t ]	
 
-framebox :: LaTeXC l =>  Maybe Measure -> Maybe Pos -> l -> l
+framebox :: LaTeXC l =>  Maybe Measure -> Maybe HPos -> l -> l
 framebox Nothing Nothing   = liftL $ \t -> TeXComm "framebox" [ FixArg t ]
 framebox (Just w) Nothing  = liftL $ \t -> TeXComm "framebox" [ OptArg $ TeXRaw $ render w
                                                               , FixArg t ]
