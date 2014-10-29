@@ -167,12 +167,12 @@ data CoverOption =
                              -- transparency.
  | HighlyDynamic             -- ^ Has the same effect as dynamic, but
                              -- the effect is stronger.
- | StillCovered [Opaqueness] -- ^ Specifies how to render covered items
-                             -- that have not yet been uncovered.
- | AgainCovered [Opaqueness] -- ^ Specifies how to render covered items
-                             -- that have once more been covered, that
-                             -- is, that had been shown before but are
-                             -- now covered again.
+ -- | StillCovered [Opaqueness] -- ^ Specifies how to render covered items
+ --                             -- that have not yet been uncovered.
+ -- | AgainCovered [Opaqueness] -- ^ Specifies how to render covered items
+ --                             -- that have once more been covered, that
+ --                             -- is, that had been shown before but are
+ --                             -- now covered again.
    deriving Show
 
 instance Render CoverOption where
