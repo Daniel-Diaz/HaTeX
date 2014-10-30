@@ -3,6 +3,9 @@ ghc:
   - 7.4
   - 7.6
   - 7.8
+os:
+  - linux
+  - osx
 notifications:
   email: false
   irc: "chat.freenode.net#hatex"
