@@ -68,6 +68,7 @@ data TableSpec =
  | ParColumnBot LaTeX -- ^ Paragraph column with text vertically aligned at the bottom. Requires 'array' package.
  | VerticalLine       -- ^ Vertical line between two columns.
  | DVerticalLine      -- ^ Double vertical line between two columns.
+ | Separator LaTeX    -- ^ Column separator. Requires 'array' package.
    deriving Show
 
 instance Render TableSpec where
@@ -79,3 +80,4 @@ instance Render TableSpec where
  render (ParColumnBot l) = "b" <> render (FixArg l)
  render VerticalLine     = "|"
  render DVerticalLine    = "||"
+ render (Separator l)    = "@" <> render (FixArg l)

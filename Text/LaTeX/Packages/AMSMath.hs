@@ -103,6 +103,8 @@ module Text.LaTeX.Packages.AMSMath
  , pmatrix  , bmatrix
  , b2matrix , vmatrix
  , v2matrix
+   -- * Math spacing
+ , quad, qquad
    ) where
 
 import Text.LaTeX.Base
@@ -902,3 +904,26 @@ instance Texy a => Texy (Matrix a) where
 -- | Instance defined in "Text.LaTeX.Packages.AMSMath".
 instance Texy a => Texy [a] where
  texy = autoSquareBrackets . mconcat .  intersperse "," .  fmap texy
+
+-------------------------------------
+----------- Math Spacing-------------
+
+-- | \quad space equal to the current font size (= 18 mu)
+quad :: LaTeXC l => l
+quad = comm0 "quad"
+
+-- | \qquad twice of \quad (= 36 mu) 
+qquad :: LaTeXC l => l
+qquad = comm0 "qquad"
+
+{-
+  The following commands are pending. Someone needs to find suitable
+  names for them.
+
+  \, 				3/18 of \quad (= 3 mu)
+  \: 				4/18 of \quad (= 4 mu)
+  \; 				5/18 of \quad (= 5 mu)
+  \! 				-3/18 of \quad (= -3 mu)
+  \ (space after backslash!) 	equivalent of space in normal text
+
+-}
