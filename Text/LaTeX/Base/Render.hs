@@ -140,13 +140,15 @@ instance Render LaTeX where
   render TeXEmpty = mempty
 
 instance Render TeXArg where
- render (OptArg l) = "[" <> render l <> "]"
  render (FixArg l) = "{" <> render l <> "}"
+ render (OptArg l) = "[" <> render l <> "]"
  render (MOptArg []) = mempty
  render (MOptArg ls) = "[" <> renderCommas ls <> "]"
  render (SymArg l) = "<" <> render l <> ">"
+ render (MSymArg []) = mempty
  render (MSymArg ls) = "<" <> renderCommas ls <> ">"
  render (ParArg l) = "(" <> render l <> ")"
+ render (MParArg []) = mempty
  render (MParArg ls) = "(" <> renderCommas ls <> ")"
 
 -- Other instances
