@@ -87,7 +87,7 @@ module Text.LaTeX.Packages.AMSMath
  , phiu     , chi        , psi
  , psiu     , omega      , omegau
    -- ** Other symbols
- , to , mapsto
+ , to , mapsto, implies
  , forall , exists
  , dagger, ddagger
  , infty
@@ -765,6 +765,10 @@ to = comm0 "to"
 -- | A right-arrow for function definitions, ↦.
 mapsto :: LaTeXC l => l
 mapsto = comm0 "mapsto"
+
+-- | An implication arrow, =⇒.
+implies :: LaTeXC l => l
+implies = comm0 "implies"
 
 -- | /For all/ symbol, ∀.
 forall :: LaTeXC l => l
