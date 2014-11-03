@@ -5,9 +5,10 @@ module Text.LaTeX.Packages.AMSFonts
    amsfonts
    -- * Fonts
  , mathbb
+   -- * Number sets
+ , naturals, integers, rationals, reals, complexes
    ) where
 
-import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Types
 
@@ -31,4 +32,21 @@ amsfonts = "amsfonts"
 --
 -- /Note the use of overloaded strings./
 mathbb :: LaTeXC l => l -> l
-mathbb = liftL $ \l -> TeXComm "mathbb" [FixArg l]
+mathbb = comm1 "mathbb"
+
+-- | Number sets
+
+naturals :: LaTeXC l => l
+naturals = mathbb "N"
+
+integers :: LaTeXC l => l
+integers = mathbb "Z"
+
+rationals :: LaTeXC l => l
+rationals = mathbb "Q"
+
+reals :: LaTeXC l => l
+reals = mathbb "R"
+
+complexes :: LaTeXC l => l
+complexes = mathbb "C"
