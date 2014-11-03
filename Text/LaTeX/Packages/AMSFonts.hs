@@ -5,9 +5,10 @@ module Text.LaTeX.Packages.AMSFonts
    amsfonts
    -- * Fonts
  , mathbb
+   -- * Number sets
+ , naturals, integers, rationals, reals, complexes
    ) where
 
-import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Types
 
@@ -32,6 +33,8 @@ amsfonts = "amsfonts"
 -- /Note the use of overloaded strings./
 mathbb :: LaTeXC l => l -> l
 mathbb = comm1 "mathbb"
+
+-- | Number sets
 
 naturals :: LaTeXC l => l
 naturals = mathbb "N"
