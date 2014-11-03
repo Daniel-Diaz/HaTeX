@@ -795,32 +795,32 @@ infty = comm0 "infty"
 
 -- | Default math symbol font.
 mathdefault :: LaTeXC l => l -> l
-mathdefault = liftL $ \l -> TeXComm "mathdefault" [FixArg l]
+mathdefault = comm1 "mathdefault"
 
 -- | Bold face.
 mathbf :: LaTeXC l => l -> l
-mathbf = liftL $ \l -> TeXComm "mathbf" [FixArg l]
+mathbf = comm1 "mathbf"
 
 -- | Roman, i.e. not-italic math.
 mathrm :: LaTeXC l => l -> l
-mathrm = liftL $ \l -> TeXComm "mathrm" [FixArg l]
+mathrm = comm1 "mathrm"
 
 -- | Calligraphic math symbols.
 mathcal :: LaTeXC l => l -> l
-mathcal = liftL $ \l -> TeXComm "mathcal" [FixArg l]
+mathcal = comm1 "mathcal"
 
 -- | Sans-serif math.
 mathsf :: LaTeXC l => l -> l
-mathsf = liftL $ \l -> TeXComm "mathsf" [FixArg l]
+mathsf = comm1 "mathsf"
 
 -- | Typewriter font.
 mathtt :: LaTeXC l => l -> l
-mathtt = liftL $ \l -> TeXComm "mathtt" [FixArg l]
+mathtt = comm1 "mathtt"
 
 -- | Italic math. Uses the same glyphs as 'mathdefault', but with spacings
 --   intended for multi-character symbols rather than juxtaposition of single-character symbols.
 mathit :: LaTeXC l => l -> l
-mathit = liftL $ \l -> TeXComm "mathit" [FixArg l]
+mathit = comm1 "mathit"
 
 -------------------------------------
 ------------- Matrices --------------
