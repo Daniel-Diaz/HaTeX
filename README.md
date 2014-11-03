@@ -1,8 +1,9 @@
 # The HaTeX library
 
-HaTeX is a Haskell library that implements the *LaTeX syntax*.
+HaTeX is a Haskell library that implements the *LaTeX syntax*, plus some abstractions over it.
 
-Check a list of examples of usage in the [Examples](https://github.com/Daniel-Diaz/HaTeX/tree/master/Examples) directory.
+Check a list of usage examples in the [Examples](https://github.com/Daniel-Diaz/HaTeX/tree/master/Examples) directory
+of the repository in GitHub.
 A good starting point may be [simple.hs](https://github.com/Daniel-Diaz/HaTeX/blob/master/Examples/simple.hs).
 Run any example script executing the ``main`` function.
 
@@ -13,7 +14,7 @@ To install `HaTeX`, use [cabal-install](http://hackage.haskell.org/package/cabal
     $ cabal update
     $ cabal install HaTeX
 
-This will install the latest official release (recommended).
+This will download and install the latest official release (recommended).
 If you want to try a newer version, use _git_ to clone the code contained
 in this repository.
 
@@ -23,13 +24,10 @@ in this repository.
 
 However, note that the API may be unstable and is subject to any kind of change.
 In the other hand, this package follows the [_Package Versioning Policy_](http://www.haskell.org/haskellwiki/Package_versioning_policy),
-so it is unlikely to suffer from API breakages if you follow it too when importing the library.
+so it is unlikely to suffer from API breakages if you follow it too when importing the library (assuming
+you are using the version in Hackage).
 
 See the [Hackage page of HaTeX](http://hackage.haskell.org/package/HaTeX) to browse older versions.
-
-## Travis automatic build
-
-[![Build Status](https://travis-ci.org/Daniel-Diaz/HaTeX.png?branch=master)](https://travis-ci.org/Daniel-Diaz/HaTeX)
 
 ## HaTeX User's Guide
 
@@ -41,9 +39,11 @@ can be found [here](http://daniel-diaz.github.com/projects/hatex/hatex-guide.pdf
 To be sure that you are reading the last version, go to the github repository of the guide and follow instructions
 to build it. It is fairly easy.
 
+Please note that the user's guide needs to be updated (contributions are more than welcome!).
+
 ## Community and Contributions
 
-There are many ways to get involved in the HaTeX project.
+There are many ways to get involved in the HaTeX project. Use the most comfortable way for you.
 
 * Fork the [GitHub repository](https://github.com/Daniel-Diaz/HaTeX).
 * Report bugs or make suggestions opening a ticket in the [Issue Tracker](https://github.com/Daniel-Diaz/HaTeX/issues).
@@ -61,6 +61,16 @@ latest developments.
 ## Related projects
 
 * [TeX-my-math](https://github.com/leftaroundabout/Symbolic-math-HaTeX): Experimental library to ease the production
-of mathematical expressions using HaTeX.
-* [haskintex](http://daniel-diaz.github.io/projects/haskintex): Tool to use Haskell and in particular the HaTeX library
+of mathematical expressions using HaTeX (_no longer maintained?_).
+* [haskintex](http://daniel-diaz.github.io/projects/haskintex): Tool to use Haskell (and, additionaly, the HaTeX library)
 within a LaTeX file.
+
+## Travis automatic build
+
+Every time code changes in the GitHub repository, an automatic build checks that the library compiles with several
+versions of GHC (7.4, 7.6, and 7.8) and that all tests pass. This label indicates the result of the last automatic
+build.
+
+[![Build Status](https://travis-ci.org/Daniel-Diaz/HaTeX.png?branch=master)](https://travis-ci.org/Daniel-Diaz/HaTeX)
+
+Currently, automatic builds are only running under Linux. We hope Travis will support other systems in the future.
