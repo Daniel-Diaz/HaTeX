@@ -44,7 +44,6 @@ module Text.LaTeX.Packages.AMSMath
  , integral , integralFromTo
    -- ** Operator symbols
    -- *** Arithmetic
- , pm , mp
  , cdot , times , div_
  , frac
  , (*:) , star
@@ -87,6 +86,7 @@ module Text.LaTeX.Packages.AMSMath
  , phiu     , chi        , psi
  , psiu     , omega      , omegau
    -- ** Other symbols
+ , pm , mp
  , to , mapsto, implies
  , forall , exists
  , dagger, ddagger
@@ -444,14 +444,6 @@ notop op =
  \l1 l2 ->
    (l1 <> commS "not") `op` l2
 
--- | Plus-or-minus operator (±).
-pm :: LaTeXC l => l -> l -> l
-pm  = between $ comm0 "pm"
-
--- | Minus-or-plus operator (∓).
-mp :: LaTeXC l => l -> l -> l
-mp  = between $ comm0 "mp"
-
 -- | Centered-dot operator (⋅).
 cdot :: LaTeXC l => l -> l -> l
 cdot  = between $ comm0 "cdot"
@@ -757,6 +749,14 @@ omegau :: LaTeXC l => l
 omegau = comm0 "Omega"
 
 ---- Other symbols
+
+-- | Plus-or-minus symbol (±).
+pm :: LaTeXC l => l
+pm  = comm0 "pm"
+
+-- | Minus-or-plus symbol (∓).
+mp :: LaTeXC l => l
+mp  = comm0 "mp"
 
 -- | A right-arrow, →.
 to :: LaTeXC l => l
