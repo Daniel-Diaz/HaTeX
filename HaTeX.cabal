@@ -99,6 +99,7 @@ Library
         Text.LaTeX.Packages.Graphicx
         Text.LaTeX.Packages.Hyperref
         Text.LaTeX.Packages.Inputenc
+        Text.LaTeX.Packages.Relsize
         -- Trees
         Text.LaTeX.Packages.Trees
           Text.LaTeX.Packages.Trees.Qtree
