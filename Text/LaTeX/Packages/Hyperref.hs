@@ -14,6 +14,7 @@ module Text.LaTeX.Packages.Hyperref
  , hyperbaseurl
  , hyperimage
  , autoref
+ , nameref
    ) where
 
 import Text.LaTeX.Base.Syntax
