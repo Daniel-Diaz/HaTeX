@@ -14,6 +14,7 @@ module Text.LaTeX.Packages.Hyperref
  , hyperbaseurl
  , hyperimage
  , autoref
+ , nameref
    ) where
 
 import Text.LaTeX.Base.Syntax
@@ -78,3 +79,7 @@ hyperimage u = liftL $ \t -> TeXComm "hyperimage" [ FixArg $ rendertex u , FixAr
 -- | This is a replacement for the usual 'ref' command that places a contextual label in front of the reference.
 autoref :: LaTeXC l => Label -> l
 autoref l = fromLaTeX $ TeXComm "autoref" [ FixArg $ rendertex l ]
+
+-- | Similar to 'autoref', but inserts text corresponding to the section name
+nameref :: LaTeXC l => Label -> l
+nameref l = fromLaTeX $ TeXComm "nameref" [ FixArg $ rendertex l ]
