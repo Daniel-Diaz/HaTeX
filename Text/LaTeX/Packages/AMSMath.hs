@@ -282,7 +282,7 @@ autoAngleBrackets x = commS "left"<>langle <> x <> commS "right"<>rangle
 -- 'dblPipe'), ⌊...⌋ (round-off Gauss brackets, 'lfloor' / 'rfloor') etc..
 autoBrackets :: LaTeXC l => LaTeX -> LaTeX -> l -> l
 autoBrackets lBrack rBrack x
-  = commS "left" <> braces (fromLaTeX lBrack) <> x <> commS "right" <> braces (fromLaTeX rBrack)
+  = commS "left" <> fromLaTeX lBrack <> x <> commS "right" <> fromLaTeX rBrack
 
 -- | Left angle bracket, 〈.
 langle :: LaTeXC l => l
