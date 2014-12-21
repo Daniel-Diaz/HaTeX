@@ -80,6 +80,8 @@ hyperimage u = liftL $ \t -> TeXComm "hyperimage" [ FixArg $ rendertex u , FixAr
 autoref :: LaTeXC l => Label -> l
 autoref l = fromLaTeX $ TeXComm "autoref" [ FixArg $ rendertex l ]
 
--- | Similar to 'autoref', but inserts text corresponding to the section name
+-- | Similar to 'autoref', but inserts text corresponding to the section name.
+--   Note that this command comes from the /nameref/ package, but it's automatically
+--   included when importing 'hyperref'.
 nameref :: LaTeXC l => Label -> l
 nameref l = fromLaTeX $ TeXComm "nameref" [ FixArg $ rendertex l ]
