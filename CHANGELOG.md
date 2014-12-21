@@ -9,6 +9,12 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.15.0.0 to 3.16.0.0
+
+* New package implemented: relsize.
+    Thanks José Romildo Malaquias.
+* Fixed bug in autoBrackets ([#42](https://github.com/Daniel-Diaz/HaTeX/pull/42)).
+
 ## From 3.14.0.0 to 3.15.0.0
 
 * New package implemented: AMSSymb.
