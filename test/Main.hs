@@ -19,7 +19,7 @@ main = defaultMain $ testGroup "HaTeX"
     ]
   , testGroup "Parser"
     [ QC.testProperty "render . parse = id" $
-         \l -> let t = render (l :: LaTeX)
+         \l -> let t = render . parse . render (l :: LaTeX)
                in  fmap render (parseLaTeX t) == Right t
     ]
   ]
