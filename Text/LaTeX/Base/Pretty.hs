@@ -13,7 +13,7 @@ import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Render
 import Text.PrettyPrint.Free
   ( Doc, text, char
-  , backslash, line, hardline
+  , backslash, line, softline, hardline
   , braces, brackets
   , indent, align, vsep
   , list, encloseSep
@@ -27,8 +27,8 @@ import Data.Monoid (mconcat,mempty)
 --   the function from the "Text.PrettyPrint.Free" module.
 docLaTeX :: LaTeX -> Doc ()
 docLaTeX (TeXRaw t) = text $ unpack t
-docLaTeX (TeXComm n as) = backslash <> text n <> align (mconcat (fmap docTeXArg as)) <> line
-docLaTeX (TeXCommS n) = backslash <> text n <> line
+docLaTeX (TeXComm n as) = backslash <> text n <> align (mconcat (fmap docTeXArg as)) <> softline
+docLaTeX (TeXCommS n) = backslash <> text n <> softline
 docLaTeX (TeXEnv n as b) =
   let a = FixArg $ fromString n
   in  mconcat
