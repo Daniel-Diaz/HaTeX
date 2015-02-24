@@ -90,8 +90,9 @@ text = do
   mbC <- peekChar
   case mbC of
     Nothing -> fail "text: Empty input."
-    Just c | c `elem` "$%\\{]}" -> fail "not text"
-           | otherwise          -> TeXRaw <$> takeTill (`elem` "$%\\{]}")
+    Just c | c `elemL` "$%\\{]}" -> fail "not text"
+           | otherwise          -> TeXRaw <$> takeTill (`elemL` "$%\\{]}")
+  where elemL = elem :: Eq a => a -> [a] -> Bool
 
 ------------------------------------------------------------------------
 -- Text without stopping on ']'
