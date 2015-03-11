@@ -64,6 +64,10 @@ module Text.LaTeX.Packages.AMSMath
  , vee , wedge
  , oplus , ominus , otimes
  , oslash , odot
+   -- *** Accents
+ , hat, tilde, bar, vec, widehat, widetilde
+ , dot, ddot, dddot
+ , overline
  
    -- ** Greek alphabet
    -- | Functions of greek alphabet symbols.
@@ -585,6 +589,53 @@ oslash  = between $ comm0 "oslash"
 -- | Circled dot operator (⊙).
 odot :: LaTeXC l => l -> l -> l
 odot  = between $ comm0 "odot"
+
+--- Accemts
+{-
+ , hat, tilde, bar, vec, widehat, widetilde
+ , dot, ddot, dddot
+ , overline, underline
+ -}
+
+-- | Add a hat accent above a symbol. 
+hat :: LaTeXC l => l -> l
+hat = comm1 "hat"
+
+-- | Add a tilde accent above a symbol.
+tilde :: LaTeXC l => l -> l
+tilde = comm1 "tilde"
+
+-- | Add a bar accent above a symbol.
+bar :: LaTeXC l => l -> l
+bar = comm1 "bar"
+
+-- | Add a vector arrow accent above a symbol.
+vec :: LaTeXC l => l -> l
+vec = comm1 "vec"
+
+-- | Add a wide hat accent above a symbol.
+widehat :: LaTeXC l => l -> l
+widehat = comm1 "widehat"
+
+-- | Add a wide tilde accent above a symbol.
+widetilde :: LaTeXC l => l -> l
+widetilde = comm1 "widetilde"
+
+-- | Add a dot accent above a symbol, as used to denote a derivative.
+dot :: LaTeXC l => l -> l
+dot = comm1 "dot"
+
+-- | Add a dot accent above a symbol, as used to denote a second derivative.
+ddot :: LaTeXC l => l -> l
+ddot = comm1 "ddot"
+
+-- | Add a triple dot accent above a symbol, as used to denote a third derivative.
+dddot :: LaTeXC l => l -> l
+dddot = comm1 "dddot"
+
+-- | Add a wide line accent above a symbol.
+overline :: LaTeXC l => l -> l
+overline = comm1 "overline"
 
 ---- Greek alphabet
 
