@@ -178,9 +178,9 @@ instance Floating LaTeX where
  sinh = (tsinh <>)
  tanh = (ttanh <>)
  cosh = (tcosh <>)
- asinh = (operatorname "arcsinh" <>)
- atanh = (operatorname "arctanh" <>)
- acosh = (operatorname "arccosh" <>)
+ asinh = (operatorname "arsinh" <>)
+ atanh = (operatorname "artanh" <>)
+ acosh = (operatorname "arcosh" <>)
 
 ----------- LaTeXT instances
 
