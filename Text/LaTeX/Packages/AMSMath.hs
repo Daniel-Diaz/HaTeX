@@ -38,6 +38,8 @@ module Text.LaTeX.Packages.AMSMath
  , texp
  , tlog , ln
  , tsqrt
+   -- ** Custom function symbols
+ , operatorname
    -- ** Sum/Integral symbols
  , tsum , sumFromTo
  , prod , prodFromTo
@@ -141,7 +143,7 @@ mathDisplay = liftL $ TeXMath Square
 
 ----------- LaTeX instances
 
--- | Careful! Method 'signum' is undefined. Don't use it!
+-- | The 'signum' method uses a custom 'operatorname' and will not be automatically translated by babel.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Num LaTeX where
  (+) = between "+"
@@ -150,8 +152,7 @@ instance Num LaTeX where
  negate = (TeXEmpty -)
  fromInteger = rendertex
  abs = autoBrackets "|" "|"
- -- Non-defined methods
- signum _ = error "Cannot use \"signum\" Num method with a LaTeX value."
+ signum = (operatorname "sgn" <>)
 
 -- | Division uses the LaTeX 'frac' command.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
@@ -159,7 +160,7 @@ instance Fractional LaTeX where
  (/) = frac
  fromRational = rendertex . (fromRational :: Rational -> Double)
 
--- | Undefined methods: 'asinh', 'atanh' and 'acosh'.
+-- | The 'asinh', 'atanh' and 'acosh' methods use custom 'operatorname's and will not be automatically translated by babel.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Floating LaTeX where
  pi = pi_
@@ -177,10 +178,9 @@ instance Floating LaTeX where
  sinh = (tsinh <>)
  tanh = (ttanh <>)
  cosh = (tcosh <>)
- -- Non-defined methods
- asinh = error "Function 'asinh' is not defined in AMSMath!"
- atanh = error "Function 'atabh' is not defined in AMSMath!"
- acosh = error "Function 'acosh' is not defined in AMSMath!"
+ asinh = (operatorname "arsinh" <>)
+ atanh = (operatorname "artanh" <>)
+ acosh = (operatorname "arcosh" <>)
 
 ----------- LaTeXT instances
 
@@ -399,6 +399,12 @@ ln = comm0 "ln"
 tsqrt :: LaTeXC l => Maybe l -> l -> l
 tsqrt Nothing  = liftL $ \x -> TeXComm "sqrt" [FixArg x]
 tsqrt (Just n) = liftL2 (\m x -> TeXComm "sqrt" [OptArg m, FixArg x]) n
+
+---- Custom Function Symbols
+-- | Defines a new function symbol.
+-- Note that function symbols defined in this way will not be automatically translated by babel.
+operatorname :: LaTeXC l => l -> l
+operatorname = comm1 "operatorname"
 
 ---- Sum/Integral symbols
 
