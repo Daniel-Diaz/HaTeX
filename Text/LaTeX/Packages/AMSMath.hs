@@ -95,6 +95,7 @@ module Text.LaTeX.Packages.AMSMath
  , forall , exists
  , dagger, ddagger
  , infty
+ , imath, jmath
    -- * Fonts
  , mathdefault
  , mathbf
@@ -840,6 +841,14 @@ ddagger = comm0 "ddagger"
 -- | Infinity symbol.
 infty :: LaTeXC l => l
 infty = comm0 "infty"
+
+-- | Dotless letter i. Strictly speaking this is not a part of the AMSMath package, but it is defined here for convenience.
+imath :: LaTeXC l => l
+imath = comm0 "imath"
+
+-- | Dotless letter j. Strictly speaking this is not a part of the AMSMath package, but it is defined here for convenience.
+jmath :: LaTeXC l => l
+jmath = comm0 "jmath"
 
 -------------------------------------
 ------------ Math Fonts -------------
