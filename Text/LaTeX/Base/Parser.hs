@@ -88,11 +88,12 @@ latexBlockParser = foldr1 (<|>)
 text :: Parser LaTeX
 text = do
   mbC <- peekChar
+  let nottext :: [Char]
+      nottext = "$%\\{]}"
   case mbC of
     Nothing -> fail "text: Empty input."
-    Just c | c `elemL` "$%\\{]}" -> fail "not text"
-           | otherwise          -> TeXRaw <$> takeTill (`elemL` "$%\\{]}")
-  where elemL = elem :: Eq a => a -> [a] -> Bool
+    Just c | c `elem` nottext -> fail "not text"
+           | otherwise          -> TeXRaw <$> takeTill (`elem` nottext)
 
 ------------------------------------------------------------------------
 -- Text without stopping on ']'
