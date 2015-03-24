@@ -9,6 +9,18 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.16.0.0 to 3.16.1.0
+
+* Pretty-printer: Use softline instead of line after commands.
+* Compatibility with GHC-7.10.
+* Added accent commands to AMSMath (dmcclean).
+* Missing Num and Floating class methods now have a default implementation,
+  using the new `operatorname` function (dmcclean).
+* Added `imath` and `jmath` to AMSMath (dmcclean).
+* Support for parsec-3.1.9 (snoyberg).
+
+Thanks to Douglas McClean (dmcclean@GitHub) for the AMSMath additions.
+
 ## From 3.15.0.0 to 3.16.0.0
 
 * New package implemented: relsize.
