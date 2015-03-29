@@ -1,5 +1,5 @@
 
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | This module defines the syntax of a Ti/k/Z script.
 --
@@ -46,9 +46,11 @@ import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Packages.Color
+import qualified Data.Sequence as S
+#if !MIN_VERSION_base(4,8,0)
 import Data.Monoid
 import Data.Foldable (foldMap)
-import qualified Data.Sequence as S
+#endif
 
 -- POINTS
 

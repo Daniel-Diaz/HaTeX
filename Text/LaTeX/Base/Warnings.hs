@@ -1,5 +1,5 @@
 
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | This module provides functionality for check a 'LaTeX' value for
 --   possibly undesired things (like the call to an undefined label),
@@ -24,7 +24,9 @@ import Control.Monad.Trans.State
 import Data.Text
 import Data.Maybe
 import Control.Arrow
+#if !MIN_VERSION_base(4,8,0)
 import Data.Monoid
+#endif
 
 -- | List of possible warnings.
 data Warning =

@@ -1,4 +1,5 @@
 
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
 
 -- | Definition of the 'LaTeXC' class, used to combine the classic applicative and
@@ -27,8 +28,10 @@ module Text.LaTeX.Base.Class (
  ) where
 
 import Text.LaTeX.Base.Syntax
-import Data.Monoid
 import Data.String
+#if !MIN_VERSION_base(4,8,0)
+import Data.Monoid
+#endif
 
 -- | This is the class of 'LaTeX' code generators. It has 'Monoid' and 'IsString' as
 --   superclasses.

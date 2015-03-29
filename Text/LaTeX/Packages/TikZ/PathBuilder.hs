@@ -1,4 +1,6 @@
 
+{-# LANGUAGE CPP #-}
+
 -- | This module provides a monadic interface to build 'TPath' values.
 --   It does so using 'PathBuilder's. The construction of a 'PathBuilder'
 --   is equivalent to the construction of a 'TPath' by hand, but with
@@ -38,7 +40,9 @@ module Text.LaTeX.Packages.TikZ.PathBuilder (
 import Text.LaTeX.Base.Syntax (LaTeX)
 import Text.LaTeX.Packages.TikZ.Syntax
 import Control.Monad.Trans.State
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
+#endif
 
 data PathState = PS { currentPath :: TPath }
 

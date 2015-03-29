@@ -1,5 +1,5 @@
 
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeFamilies, CPP #-}
 
 -- | The writer monad applied to 'LaTeX' values. Useful to compose 'LaTeX' values
 --   using the @do@ notation:
@@ -54,11 +54,13 @@ module Text.LaTeX.Base.Writer
    ) where
 
 -- base
-import Control.Applicative
 import Control.Monad (liftM)
 import Control.Arrow
 import Data.String
+#if !MIN_VERSION_base(4,8,0)
 import Data.Monoid
+import Control.Applicative
+#endif
 -- transformers
 import Control.Monad.Trans.Writer
 import Control.Monad.IO.Class

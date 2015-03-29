@@ -1,4 +1,6 @@
 
+{-# LANGUAGE CPP #-}
+
 -- | 'LaTeX' values pretty printer.
 --
 --   Still experimental. Give it a try and send us your feedback! :)
@@ -20,7 +22,9 @@ import Text.PrettyPrint.Free
   , renderSmart, displayS
     )
 import Data.Text (unpack,lines)
+#if !MIN_VERSION_base(4,8,0)
 import Data.Monoid (mconcat,mempty)
+#endif
 
 -- | This function transforms a value of type 'LaTeX' to a 'Doc'.
 --   You can then choose how to print this 'Doc' value using
