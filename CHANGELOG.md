@@ -9,6 +9,10 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.16.1.0 to 3.16.1.1
+
+* Full compatibility without warnings with GHC-7.10.
+
 ## From 3.16.0.0 to 3.16.1.0
 
 * Pretty-printer: Use softline instead of line after commands.
