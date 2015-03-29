@@ -952,7 +952,7 @@ makebox Nothing (Just p)  = liftL $ \t -> TeXComm "makebox" [ OptArg $ TeXRaw $ 
                                                             , FixArg t ]
 makebox (Just w) (Just p) = liftL $ \t -> TeXComm "makebox" [ OptArg $ TeXRaw $ render w
                                                             , OptArg $ TeXRaw $ render p
-                                                            , FixArg t ]	
+                                                            , FixArg t ]
 
 framebox :: LaTeXC l =>  Maybe Measure -> Maybe HPos -> l -> l
 framebox Nothing Nothing   = liftL $ \t -> TeXComm "framebox" [ FixArg t ]
