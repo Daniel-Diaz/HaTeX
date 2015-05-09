@@ -40,10 +40,11 @@ module Text.LaTeX.Packages.AMSMath
  , tsqrt
    -- ** Custom function symbols
  , operatorname
-   -- ** Sum/Integral symbols
+   -- ** Summation \/ integration \/ differentiation
  , tsum , sumFromTo
  , prod , prodFromTo
  , integral , integralFromTo
+ , partial
    -- ** Operator symbols
    -- *** Arithmetic
  , cdot , times , div_
@@ -444,6 +445,10 @@ integralFromTo :: LaTeXC l
                -> l -- ^ Upper limit of integration.
                -> l
 integralFromTo x y = commS "int" !: x ^: y
+
+-- | Partial-differentiation symbol ∂
+partial :: LaTeXC l => l
+partial = comm0 "partial"
 
 ---- Operator symbols
 
