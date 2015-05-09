@@ -44,7 +44,7 @@ module Text.LaTeX.Packages.AMSMath
  , tsum , sumFromTo
  , prod , prodFromTo
  , integral , integralFromTo
- , partial, totald
+ , partial, totald, partialOf, totaldOf
    -- ** Operator symbols
    -- *** Arithmetic
  , cdot , times , div_
@@ -453,6 +453,14 @@ partial = comm0 "partial"
 -- | Total-differentiation (or integration-variable) symbol d (non-italic!)
 totald :: LaTeXC l => l
 totald = mathrm "d"
+
+-- | Partial-differentiation of variable, e.g. /∂x/.
+partialOf :: LaTeXC l => l -> l
+partialOf v = comm0 "partial" <> v
+
+-- | Total-differentiation of variable, or integration over variable, e.g. d/x/.
+totaldOf :: LaTeXC l => l -> l
+totaldOf v = mathrm "d" <> v
 
 ---- Operator symbols
 
