@@ -444,7 +444,7 @@ integralFromTo :: LaTeXC l
                => l -- ^ Lower limit of integration.
                -> l -- ^ Upper limit of integration.
                -> l
-integralFromTo x y = commS "int" !: x ^: y
+integralFromTo x y = commS "int" <> commS "limits" !: x ^: y
 
 -- | Partial-differentiation symbol ∂
 partial :: LaTeXC l => l
