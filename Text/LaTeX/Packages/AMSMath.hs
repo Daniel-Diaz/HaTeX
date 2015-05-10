@@ -186,6 +186,8 @@ instance Floating LaTeX where
 
 ----------- LaTeXT instances
 
+#if !MIN_VERSION_base(4,5,0)
+
 -- | Warning: this instance only exists for the 'Num' instance.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance Eq (LaTeXT m a) where
@@ -196,6 +198,8 @@ instance Eq (LaTeXT m a) where
 instance Show (LaTeXT m a) where
  show _ = error "Cannot use \"show\" Show method with a LaTeXT value."
 
+#endif
+
 -- | Careful! Method 'signum' is undefined. Don't use it!
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
 instance (Monad m, a ~ ()) => Num (LaTeXT m a) where
@@ -205,8 +209,7 @@ instance (Monad m, a ~ ()) => Num (LaTeXT m a) where
  negate = liftFun negate
  fromInteger = fromLaTeX . fromInteger
  abs = liftFun abs
- -- Non-defined methods
- signum _ = error "Cannot use \"signum\" Num method with a LaTeXT value."
+ signum = liftFun signum
 
 -- | Division uses the LaTeX 'frac' command.
 --   This instance is defined in the "Text.LaTeX.Packages.AMSMath" module.
@@ -232,10 +235,9 @@ instance (Monad m, a ~ ()) => Floating (LaTeXT m a) where
  sinh = liftFun sinh
  tanh = liftFun tanh
  cosh = liftFun cosh
- -- Non-defined methods
- asinh = error "Function 'asinh' is not defined in AMSMath!"
- atanh = error "Function 'atabh' is not defined in AMSMath!"
- acosh = error "Function 'acosh' is not defined in AMSMath!"
+ asinh = liftFun asinh
+ atanh = liftFun atanh
+ acosh = liftFun acosh
 
 -- | A reference to a numbered equation. Use with a 'label' defined in the
 -- scope of the equation refered to.
