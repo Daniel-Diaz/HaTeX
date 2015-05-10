@@ -1,5 +1,5 @@
 
-{-# LANGUAGE OverloadedStrings, TypeFamilies #-}
+{-# LANGUAGE CPP, OverloadedStrings, TypeFamilies #-}
 
 -- | \AMSMath\ support. Also numeric instances ('Num', 'Fractional' and 'Floating') for 'LaTeX' and 'LaTeXT'.
 module Text.LaTeX.Packages.AMSMath
