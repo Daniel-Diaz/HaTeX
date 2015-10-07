@@ -7,7 +7,7 @@ License: BSD3
 License-file: license
 Maintainer: Daniel Díaz (dhelta `dot` diaz `at` gmail `dot` com)
 Bug-reports: https://github.com/Daniel-Diaz/HaTeX/issues
-homepage: http://wrongurl.net/haskell/HaTeX
+homepage: https://github.com/Daniel-Diaz/HaTeX/blob/master/README.md
 Synopsis: The Haskell LaTeX library.
 Description: This library implements the LaTeX syntax and provides some useful abstractions.
              .
