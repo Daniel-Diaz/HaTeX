@@ -9,6 +9,14 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.16.1.1 to 3.16.2.0
+
+* New differentiation symbols (AMSMath).
+* Fix for integralFromTo.
+* Extend definitions for the Num class instance of LaTeXT.
+* Show and Eq instances of LaTeXT dissappear if base version
+  is greater or equal to 4.5.0.0.
+
 ## From 3.16.1.0 to 3.16.1.1
 
 * Full compatibility without warnings with GHC-7.10.
