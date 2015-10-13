@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | This module is the /Prelude/ of LaTeX functions.
@@ -189,6 +188,7 @@ module Text.LaTeX.Base.Commands
  , pageref
    -- ** Tables
  , tabular
+ , array
  , (&)
  , hline
  , cline
@@ -206,20 +206,20 @@ module Text.LaTeX.Base.Commands
  , include
    ) where
 
-import Data.String
-import Data.Maybe (isNothing, catMaybes)
-import Data.Text (toLower)
-import qualified Data.Text as T
-import Text.LaTeX.Base.Syntax
-import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Render
-import Text.LaTeX.Base.Types
-import Text.LaTeX.Base.Texy
-import Data.Version
-import Data.List (find, intercalate,intersperse)
-import Data.Matrix (Matrix,nrows,ncols,(!))
+import           Data.List              (find, intercalate, intersperse)
+import           Data.Matrix            (Matrix, ncols, nrows, (!))
+import           Data.Maybe             (catMaybes, isNothing)
+import           Data.String
+import           Data.Text              (toLower)
+import qualified Data.Text              as T
+import           Data.Version
+import           Text.LaTeX.Base.Class
+import           Text.LaTeX.Base.Render
+import           Text.LaTeX.Base.Syntax
+import           Text.LaTeX.Base.Texy
+import           Text.LaTeX.Base.Types
 --
-import Paths_HaTeX
+import           Paths_HaTeX
 
 -- | Insert a raw piece of 'Text'.
 -- This functions doesn't escape @LaTeX@ reserved characters,
@@ -745,7 +745,7 @@ verbatim = liftL (TeXEnv "verbatim" []) . raw
 -- at all, the first character after @\\verb@ will be the right delimiter as well.
 -- Translating this method to HaTeX wouldn't really make sense since Haskell
 -- has string literals with their own escaping possibilities; instead, we make
--- it secure by automatically choosing a delimiter that does not turn up 
+-- it secure by automatically choosing a delimiter that does not turn up
 -- in the given string.
 verb :: LaTeXC l => Text -> l
 verb vbStr = case find (isNothing . (`T.find`vbStr) . (==))
@@ -854,6 +854,17 @@ tabular :: LaTeXC l =>
         -> l       -- ^ Resulting table syntax.
 tabular Nothing ts  = liftL $ TeXEnv "tabular" [ FixArg $ TeXRaw $ renderAppend ts ]
 tabular (Just p) ts = liftL $ TeXEnv "tabular" [ OptArg $ TeXRaw $ render p , FixArg $ TeXRaw $ renderAppend ts ]
+
+
+-- | Like 'tabular' but in math mode by default
+array :: LaTeXC l =>
+           Maybe Pos   -- ^ This optional parameter can be used to specify the vertical position of the table.
+                       --   Defaulted to 'Center'.
+        -> [TableSpec] -- ^ Table specification of columns and vertical lines.
+        -> l       -- ^ Table content. See '&', 'lnbk', 'hline' and 'cline'.
+        -> l       -- ^ Resulting table syntax.
+array Nothing ts  = liftL $ TeXEnv "array" [ FixArg $ TeXRaw $ renderAppend ts ]
+array (Just p) ts = liftL $ TeXEnv "array" [ OptArg $ TeXRaw $ render p , FixArg $ TeXRaw $ renderAppend ts ]
 
 -- | Column separator.
 (&) :: LaTeXC l => l -> l -> l
