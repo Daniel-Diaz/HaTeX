@@ -14,6 +14,7 @@ module Text.LaTeX.Packages.QRCode
  , final
    ) where
 
+import Text.LaTeX.Base (raw)
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
@@ -58,8 +59,12 @@ draft = "draft"
 final :: LaTeXC l => l
 final = "draft"
 
+-- | Generates a QR code with specified options and content.
+--
+-- This uses the \qrcode command from the package, but the identifier
+-- 'qrcode' is already in use as the 'PackageName'.
 qr :: LaTeXC l => CodeOptions -> Text -> l
-qr opt payload = fromLaTeX $ TeXComm "qrcode" [opts, FixArg . texy . escape $ payload]
+qr opt payload = fromLaTeX $ TeXComm "qrcode" [opts, FixArg . raw . escape $ payload]
   where
     opts = MOptArg [ if includePadding opt then "padding" else "tight" 
                    , if link opt then "link" else "nolink" 
