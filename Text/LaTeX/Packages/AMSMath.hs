@@ -58,6 +58,8 @@ module Text.LaTeX.Packages.AMSMath
  , ll , gg
  , equiv
  , propto
+ , parallel
+ , perp
    -- *** Sets
  , in_ , ni , notin
  , subset , supset
@@ -99,6 +101,7 @@ module Text.LaTeX.Packages.AMSMath
  , dagger, ddagger
  , infty
  , imath, jmath
+ , bot
    -- * Fonts
  , mathdefault
  , mathbf
