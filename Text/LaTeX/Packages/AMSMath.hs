@@ -552,6 +552,14 @@ gg = between $ comm0 "gg"
 propto :: LaTeXC l => l -> l -> l
 propto  = between $ comm0 "propto"
 
+-- | Perpendicular (⟂). This is the infix version of 'bot'.
+perp :: LaTeXC l => l -> l -> l
+perp = between $ comm0 "perp"
+
+-- | Parallel (‖).
+parallel :: LaTeXC l => l -> l -> l
+parallel = between $ comm0 "parallel"
+
 -- | Identical \/ defined-as \/ equivalent (≡).
 equiv :: LaTeXC l => l -> l -> l
 equiv  = between $ comm0 "equiv"
@@ -874,6 +882,10 @@ imath = comm0 "imath"
 -- | Dotless letter j. Strictly speaking this is not a part of the AMSMath package, but it is defined here for convenience.
 jmath :: LaTeXC l => l
 jmath = comm0 "jmath"
+
+-- | Bottom symbol ⟂. For the infix version see 'perp'.
+bot :: LaTeXC l => l
+bot = comm0 "bot"
 
 -------------------------------------
 ------------ Math Fonts -------------
