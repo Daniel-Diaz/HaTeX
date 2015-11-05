@@ -47,6 +47,7 @@ module Text.LaTeX.Packages.AMSMath
  , partial, totald, partialOf, totaldOf
    -- ** Operator symbols
    -- *** Arithmetic
+ , (+-), (-+)
  , cdot , times , div_
  , frac
  , (*:) , star
@@ -477,6 +478,16 @@ notop op =
  \l1 l2 ->
    (l1 <> commS "not") `op` l2
 
+infixl 6 +-, -+
+
+-- | Plus-or-minus operator (±). Also available as symbol 'pm'.
+(+-) :: LaTeXC l => l -> l -> l
+(+-)  = between $ comm0 "pm"
+
+-- | Minus-or-plus operator (∓). Also available as symbol 'mp'.
+(-+) :: LaTeXC l => l -> l -> l
+(-+)  = between $ comm0 "mp"
+
 -- | Centered-dot operator (⋅).
 cdot :: LaTeXC l => l -> l -> l
 cdot  = between $ comm0 "cdot"
@@ -838,7 +849,7 @@ omegau = comm0 "Omega"
 
 ---- Other symbols
 
--- | Plus-or-minus symbol (±).
+-- | Plus-or-minus symbol (±). Also available as infix '+-'.
 pm :: LaTeXC l => l
 pm  = comm0 "pm"
 
