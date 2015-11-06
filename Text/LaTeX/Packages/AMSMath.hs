@@ -174,7 +174,7 @@ instance Floating LaTeX where
  sqrt = tsqrt Nothing
  log = (tlog <>)
  (**) = (^:)
- logBase b x = (tlog !: b) <> x
+ logBase b x = (commS "log" !: b) <> x
  sin = (tsin <>)
  tan = (ttan <>)
  cos = (tcos <>)
