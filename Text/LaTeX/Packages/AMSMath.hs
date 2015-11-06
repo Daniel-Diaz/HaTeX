@@ -49,7 +49,7 @@ module Text.LaTeX.Packages.AMSMath
    -- *** Arithmetic
  , (+-), (-+)
  , cdot , times , div_
- , frac
+ , frac, tfrac
  , (*:) , star
  , circ , bullet
    -- *** Comparison
@@ -503,6 +503,10 @@ div_  = between $ comm0 "div"
 -- | Fraction operator.
 frac :: LaTeXC l => l -> l -> l
 frac = liftL2 $ \p q -> TeXComm "frac" [FixArg p, FixArg q]
+
+-- | Like 'frac' but smaller (uses subscript size for the numerator and denominator.
+tfrac :: LaTeXC l => l -> l -> l
+tfrac = liftL2 $ \p q -> TeXComm "tfrac" [FixArg p, FixArg q]
 
 infixl 7 *:
 
