@@ -1,5 +1,6 @@
-
-{-# LANGUAGE CPP, OverloadedStrings, TypeFamilies #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies      #-}
 
 -- | \AMSMath\ support. Also numeric instances ('Num', 'Fractional' and 'Floating') for 'LaTeX' and 'LaTeXT'.
 module Text.LaTeX.Packages.AMSMath
@@ -14,15 +15,15 @@ module Text.LaTeX.Packages.AMSMath
    -- * Symbols and utilities
    -- | The unicode approximations do, of course, not reliably represent how
    --   LaTeX renders these symbols.
-   
+
    -- ** Brackets / delimiters
  , autoParens
  , autoSquareBrackets, autoBraces, autoAngleBrackets
  , autoBrackets
- 
+
  , langle , rangle
  , lfloor , rfloor
- , lceil , rceil 
+ , lceil , rceil
  , dblPipe
    -- ** Superscript and subscript
  , (^:) , (!:)
@@ -71,7 +72,7 @@ module Text.LaTeX.Packages.AMSMath
  , hat, tilde, bar, vec, widehat, widetilde
  , dot, ddot, dddot
  , overline
- 
+
    -- ** Greek alphabet
    -- | Functions of greek alphabet symbols.
    --
@@ -115,14 +116,14 @@ module Text.LaTeX.Packages.AMSMath
  , quad, qquad
    ) where
 
-import Text.LaTeX.Base
-import Text.LaTeX.Base.Syntax
-import Text.LaTeX.Base.Class
+import           Text.LaTeX.Base
+import           Text.LaTeX.Base.Class
+import           Text.LaTeX.Base.Syntax
 
 -- External imports
-import Data.List
-import Data.Ratio
-import Data.Matrix
+import           Data.List
+import           Data.Matrix
+import           Data.Ratio
 
 -- | AMSMath package.
 -- Example:
@@ -259,11 +260,11 @@ equation_ = liftL $ TeXEnv "equation*" []
 -- | An array of aligned equations. Use '&' to specify the points that should
 -- horizontally match. Each equation is numbered, unless prevented by 'nonumber'.
 align :: LaTeXC l => [l] -> l
-align = liftL(TeXEnv "align" []) . mconcat . intersperse lnbk 
+align = liftL(TeXEnv "align" []) . mconcat . intersperse lnbk
 
 -- | The unnumbered variant of 'align'.
 align_ :: LaTeXC l => [l] -> l
-align_ = liftL(TeXEnv "align*" []) . mconcat . intersperse lnbk 
+align_ = liftL(TeXEnv "align*" []) . mconcat . intersperse lnbk
 
 -------------------------------------
 ------- Symbols and utilities -------
@@ -322,11 +323,11 @@ dblPipe = comm0 "|"
 
 -- | Superscript.
 (^:) :: LaTeXC l => l -> l -> l
-x ^: y = x <> raw "^"  <> braces y
+x ^: y = braces x <> raw "^"  <> braces y
 
 -- | Subscript.
 (!:) :: LaTeXC l => l -> l -> l
-x !: y = x <> raw "_" <> braces y
+x !: y = braces x <> raw "_" <> braces y
 
 ---- Function symbols
 
@@ -623,7 +624,7 @@ odot  = between $ comm0 "odot"
  , overline, underline
  -}
 
--- | Add a hat accent above a symbol. 
+-- | Add a hat accent above a symbol.
 hat :: LaTeXC l => l -> l
 hat = comm1 "hat"
 
@@ -923,7 +924,7 @@ toMatrix str Nothing  = liftL (TeXEnv str []) . matrix2tex
 toMatrix str (Just p) = liftL (TeXEnv (str ++ "*") [OptArg $ rendertex p]) . matrix2tex
 
 -- | LaTeX rendering of a matrix using @pmatrix@ and a custom function to render cells.
---   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing')
 --   is centered.
 --
 -- > ( M )
@@ -932,7 +933,7 @@ pmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 pmatrix = toMatrix "pmatrix"
 
 -- | LaTeX rendering of a matrix using @bmatrix@ and a custom function to render cells.
---   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing')
 --   is centered.
 --
 -- > [ M ]
@@ -941,7 +942,7 @@ bmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 bmatrix = toMatrix "bmatrix"
 
 -- | LaTeX rendering of a matrix using @Bmatrix@ and a custom function to render cells.
---   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing')
 --   is centered.
 --
 -- > { M }
@@ -950,7 +951,7 @@ b2matrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 b2matrix = toMatrix "Bmatrix"
 
 -- | LaTeX rendering of a matrix using @vmatrix@ and a custom function to render cells.
---   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing')
 --   is centered.
 --
 -- > | M |
@@ -959,7 +960,7 @@ vmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 vmatrix = toMatrix "vmatrix"
 
 -- | LaTeX rendering of a matrix using @Vmatrix@ and a custom function to render cells.
---   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
+--   Optional argument sets the alignment of the cells. Default (providing 'Nothing')
 --   is centered.
 --
 -- > || M ||
@@ -977,7 +978,7 @@ instance (Integral a, Texy a) => Texy (Ratio a) where
 -- | Instance defined in "Text.LaTeX.Packages.AMSMath".
 instance (Texy a, Texy b) => Texy (a,b) where
  texy (x,y) = autoParens $ texy x <> "," <> texy y
- 
+
 -- | Instance defined in "Text.LaTeX.Packages.AMSMath".
 instance (Texy a, Texy b, Texy c) => Texy (a,b,c) where
  texy (x,y,z) = autoParens $ texy x <> "," <> texy y <> "," <> texy z
@@ -1001,7 +1002,7 @@ instance Texy a => Texy [a] where
 quad :: LaTeXC l => l
 quad = comm0 "quad"
 
--- | \qquad twice of \quad (= 36 mu) 
+-- | \qquad twice of \quad (= 36 mu)
 qquad :: LaTeXC l => l
 qquad = comm0 "qquad"
 
