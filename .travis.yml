@@ -21,3 +21,4 @@ script:
   - cabal configure --enable-tests --ghc-option=-Werror
   - cabal build
   - cabal test
+sudo: false
