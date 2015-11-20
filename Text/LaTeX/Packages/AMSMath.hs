@@ -47,8 +47,9 @@ module Text.LaTeX.Packages.AMSMath
  , partial, totald, partialOf, totaldOf
    -- ** Operator symbols
    -- *** Arithmetic
+ , (+-), (-+)
  , cdot , times , div_
- , frac
+ , frac, tfrac
  , (*:) , star
  , circ , bullet
    -- *** Comparison
@@ -58,6 +59,8 @@ module Text.LaTeX.Packages.AMSMath
  , ll , gg
  , equiv
  , propto
+ , parallel
+ , perp
    -- *** Sets
  , in_ , ni , notin
  , subset , supset
@@ -99,6 +102,7 @@ module Text.LaTeX.Packages.AMSMath
  , dagger, ddagger
  , infty
  , imath, jmath
+ , bot
    -- * Fonts
  , mathdefault
  , mathbf
@@ -170,7 +174,7 @@ instance Floating LaTeX where
  sqrt = tsqrt Nothing
  log = (tlog <>)
  (**) = (^:)
- logBase b x = (tlog !: b) <> x
+ logBase b x = (commS "log" !: b) <> x
  sin = (tsin <>)
  tan = (ttan <>)
  cos = (tcos <>)
@@ -474,6 +478,16 @@ notop op =
  \l1 l2 ->
    (l1 <> commS "not") `op` l2
 
+infixl 6 +-, -+
+
+-- | Plus-or-minus operator (±). Also available as symbol 'pm'.
+(+-) :: LaTeXC l => l -> l -> l
+(+-)  = between $ comm0 "pm"
+
+-- | Minus-or-plus operator (∓). Also available as symbol 'mp'.
+(-+) :: LaTeXC l => l -> l -> l
+(-+)  = between $ comm0 "mp"
+
 -- | Centered-dot operator (⋅).
 cdot :: LaTeXC l => l -> l -> l
 cdot  = between $ comm0 "cdot"
@@ -489,6 +503,10 @@ div_  = between $ comm0 "div"
 -- | Fraction operator.
 frac :: LaTeXC l => l -> l -> l
 frac = liftL2 $ \p q -> TeXComm "frac" [FixArg p, FixArg q]
+
+-- | Like 'frac' but smaller (uses subscript size for the numerator and denominator.
+tfrac :: LaTeXC l => l -> l -> l
+tfrac = liftL2 $ \p q -> TeXComm "tfrac" [FixArg p, FixArg q]
 
 infixl 7 *:
 
@@ -551,6 +569,14 @@ gg = between $ comm0 "gg"
 -- | Proportional-to (∝).
 propto :: LaTeXC l => l -> l -> l
 propto  = between $ comm0 "propto"
+
+-- | Perpendicular (⟂). This is the infix version of 'bot'.
+perp :: LaTeXC l => l -> l -> l
+perp = between $ comm0 "perp"
+
+-- | Parallel (‖).
+parallel :: LaTeXC l => l -> l -> l
+parallel = between $ comm0 "parallel"
 
 -- | Identical \/ defined-as \/ equivalent (≡).
 equiv :: LaTeXC l => l -> l -> l
@@ -827,7 +853,7 @@ omegau = comm0 "Omega"
 
 ---- Other symbols
 
--- | Plus-or-minus symbol (±).
+-- | Plus-or-minus symbol (±). Also available as infix '+-'.
 pm :: LaTeXC l => l
 pm  = comm0 "pm"
 
@@ -874,6 +900,10 @@ imath = comm0 "imath"
 -- | Dotless letter j. Strictly speaking this is not a part of the AMSMath package, but it is defined here for convenience.
 jmath :: LaTeXC l => l
 jmath = comm0 "jmath"
+
+-- | Bottom symbol ⟂. For the infix version see 'perp'.
+bot :: LaTeXC l => l
+bot = comm0 "bot"
 
 -------------------------------------
 ------------ Math Fonts -------------

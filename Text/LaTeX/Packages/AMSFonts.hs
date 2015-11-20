@@ -4,7 +4,7 @@ module Text.LaTeX.Packages.AMSFonts
  ( -- * AMSFonts package
    amsfonts
    -- * Fonts
- , mathbb
+ , mathbb, mathfrak
    -- * Number sets
  , naturals, integers, rationals, reals, complexes
    ) where
@@ -33,6 +33,10 @@ amsfonts = "amsfonts"
 -- /Note the use of overloaded strings./
 mathbb :: LaTeXC l => l -> l
 mathbb = comm1 "mathbb"
+
+-- | Fraktur font.
+mathfrak :: LaTeXC l => l -> l
+mathfrak = comm1 "mathfrak"
 
 -- | Number sets
 
