@@ -95,4 +95,4 @@ braces :: LaTeXC l => l -> l
 braces = liftL TeXBraces
 
 squareBraces :: LaTeXC l => l -> l
-squareBraces l = raw "[" <> l <> raw "]"
+squareBraces = liftL $ \l -> TeXRaw "[" <> l <> TeXRaw "]" 
