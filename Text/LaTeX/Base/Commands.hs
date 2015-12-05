@@ -122,6 +122,7 @@ module Text.LaTeX.Base.Commands
  , noindent
    -- *** Document measures
  , textwidth
+ , textheight
  , linewidth
    -- ** Formatting text
  , verbatim , verb
@@ -723,6 +724,9 @@ protect l = commS "protect" <> l
 
 textwidth :: LaTeXC l => l
 textwidth = comm0 "textwidth"
+
+textheight :: LaTeXC l => l
+textheight = comm0 "textheight"
 
 linewidth :: LaTeXC l => l
 linewidth = comm0 "linewidth"
