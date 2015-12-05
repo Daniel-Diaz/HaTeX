@@ -1,4 +1,3 @@
-
 {-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
 
@@ -25,6 +24,7 @@ module Text.LaTeX.Base.Class (
  , comm1
  , commS
  , braces
+ , squareBraces
  ) where
 
 import Text.LaTeX.Base.Syntax
@@ -93,3 +93,6 @@ commS = fromLaTeX . TeXCommS
 --
 braces :: LaTeXC l => l -> l
 braces = liftL TeXBraces
+
+squareBraces :: LaTeXC l => l -> l
+squareBraces l = raw "[" <> l <> raw "]"
