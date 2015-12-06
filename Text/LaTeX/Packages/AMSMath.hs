@@ -9,6 +9,7 @@ module Text.LaTeX.Packages.AMSMath
  , math, mathDisplay
  , equation , equation_
  , align , align_
+ , cases
    -- ** Referencing
  , eqref , nonumber
    -- * Symbols and utilities
@@ -268,6 +269,10 @@ align = liftL(TeXEnv "align" []) . mconcat . intersperse lnbk
 -- | The unnumbered variant of 'align'.
 align_ :: LaTeXC l => [l] -> l
 align_ = liftL(TeXEnv "align*" []) . mconcat . intersperse lnbk 
+
+-- | The cases environment allows the writing of piecewise functions
+cases :: LaTeXC l => l -> l
+cases = liftL $ TeXEnv "cases" []
 
 -------------------------------------
 ------- Symbols and utilities -------
