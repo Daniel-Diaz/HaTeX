@@ -118,6 +118,7 @@ module Text.LaTeX.Base.Commands
  , stretch
  , smallskip
  , bigskip
+ , baselineskip
  , indent
  , noindent
    -- *** Document measures
@@ -691,6 +692,9 @@ footnote = liftL $ \l -> TeXComm "footnote" [FixArg l]
 
 linespread :: LaTeXC l => Float -> l
 linespread x = fromLaTeX $ TeXComm "linespread" [FixArg $ rendertex x]
+
+baselineskip :: LaTeXC l => l
+baselineskip = comm0 "baselineskip"
 
 indent :: LaTeXC l => l
 indent = comm0 "indent"
