@@ -191,6 +191,7 @@ module Text.LaTeX.Base.Commands
  , pageref
    -- ** Tables
  , tabular
+ , array
  , (&)
  , hline
  , cline
@@ -862,6 +863,17 @@ tabular :: LaTeXC l =>
         -> l       -- ^ Resulting table syntax.
 tabular Nothing ts  = liftL $ TeXEnv "tabular" [ FixArg $ TeXRaw $ renderAppend ts ]
 tabular (Just p) ts = liftL $ TeXEnv "tabular" [ OptArg $ TeXRaw $ render p , FixArg $ TeXRaw $ renderAppend ts ]
+
+
+-- | Like 'tabular' but in math mode by default
+array :: LaTeXC l =>
+           Maybe Pos   -- ^ This optional parameter can be used to specify the vertical position of the table.
+                       --   Defaulted to 'Center'.
+        -> [TableSpec] -- ^ Table specification of columns and vertical lines.
+        -> l       -- ^ Table content. See '&', 'lnbk', 'hline' and 'cline'.
+        -> l       -- ^ Resulting table syntax.
+array Nothing ts  = liftL $ TeXEnv "array" [ FixArg $ TeXRaw $ renderAppend ts ]
+array (Just p) ts = liftL $ TeXEnv "array" [ OptArg $ TeXRaw $ render p , FixArg $ TeXRaw $ renderAppend ts ]
 
 -- | Column separator.
 (&) :: LaTeXC l => l -> l -> l
