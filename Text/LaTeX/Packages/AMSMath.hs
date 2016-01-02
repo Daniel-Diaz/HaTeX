@@ -331,11 +331,11 @@ dblPipe = comm0 "|"
 
 -- | Superscript.
 (^:) :: LaTeXC l => l -> l -> l
-x ^: y = x <> raw "^"  <> braces y
+x ^: y = braces x <> raw "^"  <> braces y
 
 -- | Subscript.
 (!:) :: LaTeXC l => l -> l -> l
-x !: y = x <> raw "_" <> braces y
+x !: y = braces x <> raw "_" <> braces y
 
 ---- Function symbols
 
