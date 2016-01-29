@@ -6,11 +6,14 @@ module Text.LaTeX.Packages.AMSFonts
    -- * Fonts
  , mathbb, mathfrak
    -- * Number sets
- , naturals, integers, rationals, reals, complexes
+ , naturals, integers, rationals, reals
+   -- ** Complex numbers
+ , complexes, trealPart, timagPart
    ) where
 
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Types
+import Data.Monoid
 
 -- | AMSFonts package.
 -- Example:
@@ -54,3 +57,9 @@ reals = mathbb "R"
 
 complexes :: LaTeXC l => l
 complexes = mathbb "C"
+
+trealPart :: LaTeXC l => l -> l
+trealPart z = comm0 "Re" <> z
+
+timagPart :: LaTeXC l => l -> l
+timagPart z = comm0 "Im" <> z
