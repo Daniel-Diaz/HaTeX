@@ -746,7 +746,7 @@ vartheta = comm0 "vartheta"
 
 -- | Θ symbol.
 thetau :: LaTeXC l => l
-thetau = comm0 "thetau"
+thetau = comm0 "Theta"
 
 -- | /ι/ symbol.
 iota :: LaTeXC l => l
