@@ -108,6 +108,7 @@ module Text.LaTeX.Packages.AMSMath
  , mathdefault
  , mathbf
  , mathrm
+ , text
  , mathcal
  , mathsf
  , mathtt
@@ -928,6 +929,12 @@ mathbf = comm1 "mathbf"
 -- | Roman, i.e. not-italic math.
 mathrm :: LaTeXC l => l -> l
 mathrm = comm1 "mathrm"
+
+-- | Escape from math mode, into a normal-text box.
+--   Unlike 'mathrm', this won't squash spaces, i.e. you can write actual sentences.
+--   You can embed 'math' again within such a box.
+text :: LaTeXC l => l -> l
+text = comm1 "text"
 
 -- | Calligraphic math symbols.
 mathcal :: LaTeXC l => l -> l
