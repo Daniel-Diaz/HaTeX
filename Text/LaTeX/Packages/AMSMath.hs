@@ -26,7 +26,7 @@ module Text.LaTeX.Packages.AMSMath
  , lceil , rceil 
  , dblPipe
    -- ** Superscript and subscript
- , (^:) , (!:)
+ , (^:) , (!:), (!^)
    -- ** Function symbols
    -- | Some symbols are preceded with /t/ to be distinguished from
    --   predefined Haskell entities (like 'sin' and 'cos').
@@ -108,6 +108,7 @@ module Text.LaTeX.Packages.AMSMath
  , mathdefault
  , mathbf
  , mathrm
+ , text
  , mathcal
  , mathsf
  , mathtt
@@ -337,6 +338,10 @@ x ^: y = braces x <> raw "^"  <> braces y
 (!:) :: LaTeXC l => l -> l -> l
 x !: y = braces x <> raw "_" <> braces y
 
+-- | Sub- and superscript, both stacked.
+(!^) :: LaTeXC l => l -> (l,l) -> l
+x !^ (y,z) = braces x <> raw "_" <> braces y <> raw "^" <> braces z
+
 ---- Function symbols
 
 -- | Sine function symbol.
@@ -431,7 +436,7 @@ sumFromTo :: LaTeXC l
           => l -- ^ Expression below the sigma.
           -> l -- ^ Expression above the sigma.
           -> l
-sumFromTo x y = commS "sum" !: x ^: y
+sumFromTo x y = commS "sum" <> raw"_" <> braces x <> raw"^" <> braces y
 
 -- | Pi product symbol. Use 'prodFromTo' if you want to specify the
 --   limits of the product.
@@ -443,7 +448,7 @@ prodFromTo :: LaTeXC l
            => l -- ^ Expression below the pi.
            -> l -- ^ Expression above the pi.
            -> l
-prodFromTo x y = commS "prod" !: x ^: y
+prodFromTo x y = commS "prod" <> raw"_" <> braces x <> raw"^" <> braces y
 
 -- | Integral symbol. Use 'integralFromTo' if you want to specify
 --   the limits of the integral.
@@ -455,7 +460,7 @@ integralFromTo :: LaTeXC l
                => l -- ^ Lower limit of integration.
                -> l -- ^ Upper limit of integration.
                -> l
-integralFromTo x y = commS "int" <> commS "limits" !: x ^: y
+integralFromTo x y = commS "int" <> commS "limits" <> raw"_" <> braces x <> raw"^" <> braces y
 
 -- | Partial-differentiation symbol ∂
 partial :: LaTeXC l => l
@@ -924,6 +929,12 @@ mathbf = comm1 "mathbf"
 -- | Roman, i.e. not-italic math.
 mathrm :: LaTeXC l => l -> l
 mathrm = comm1 "mathrm"
+
+-- | Escape from math mode, into a normal-text box.
+--   Unlike 'mathrm', this won't squash spaces, i.e. you can write actual sentences.
+--   You can embed 'math' again within such a box.
+text :: LaTeXC l => l -> l
+text = comm1 "text"
 
 -- | Calligraphic math symbols.
 mathcal :: LaTeXC l => l -> l
