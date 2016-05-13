@@ -14,7 +14,7 @@ testFile i = do
     Left err -> do putStrLn "Failed."
                    putStrLn $ "The error was: " ++ show err
                    return False
-    Right tex -> putStrLn "Succeed." >> return True
+    Right _ -> putStrLn "Succeed." >> return True
 
 main :: IO ()
 main = do
