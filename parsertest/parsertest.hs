@@ -4,7 +4,7 @@ import qualified Data.Text.IO as T
 import System.Exit (exitSuccess, exitFailure)
 
 testNumbers :: [Int]
-testNumbers = [1 .. 5]
+testNumbers = [1 .. 6]
 
 testFile :: Int -> IO Bool
 testFile i = do
@@ -14,7 +14,7 @@ testFile i = do
     Left err -> do putStrLn "Failed."
                    putStrLn $ "The error was: " ++ show err
                    return False
-    Right _  -> putStrLn "Succeed." >> return True
+    Right tex -> putStrLn "Succeed." >> return True
 
 main :: IO ()
 main = do
