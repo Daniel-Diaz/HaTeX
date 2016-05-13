@@ -25,8 +25,6 @@ module Text.LaTeX.Base.Parser (
     -- * The parser
     parseLaTeX
   , parseLaTeXFile
-  , latexParser
-  , latexBlockParser
     -- * Parsing errors
   , ParseError
   , errorPos
@@ -39,10 +37,18 @@ module Text.LaTeX.Base.Parser (
   , sourceLine
   , sourceColumn
   , sourceName
+    -- * Configuring your parser
+  , ParserConf (..)
+  , defaultParserConf
+  , parseLaTeXWith
+  , parseLaTeXFileWith
+    -- * Parser combinators
+  , Parser
+  , latexParser
+  , latexBlockParser
     ) where
 
 import           Text.Parsec hiding ((<|>),many)
-import           Text.Parsec.Text
 import           Text.Parsec.Error
 import           Data.Char (toLower,digitToInt)
 import           Data.Monoid
@@ -55,15 +61,41 @@ import           Control.Monad (unless)
 import           Text.LaTeX.Base.Syntax
 import           Text.LaTeX.Base.Render
 
+------------------------------------------------------------------------
+-- Parser configuration
+------------------------------------------------------------------------
+
+data ParserConf = ParserConf
+  { verbatimEnvironments :: [String]
+    }
+
+defaultParserConf :: ParserConf
+defaultParserConf = ParserConf
+  { verbatimEnvironments = ["verbatim"]
+    }
+
+type Parser = Parsec Text ParserConf
+
+------------------------------------------------------------------------
+-- Parser
+------------------------------------------------------------------------
+
 -- | Parse a 'Text' sequence as a 'LaTeX' block. If it fails, it returns
 --   an error string.
 parseLaTeX :: Text -> Either ParseError LaTeX
-parseLaTeX t | T.null t  = return TeXEmpty
-             | otherwise = parse latexParser "parseLaTeX input" t
+parseLaTeX = parseLaTeXWith defaultParserConf
+
+parseLaTeXWith :: ParserConf -> Text -> Either ParseError LaTeX
+parseLaTeXWith conf t
+  | T.null t  = return TeXEmpty
+  | otherwise = runParser latexParser conf "parseLaTeX input" t
 
 -- | Read a file and parse it as 'LaTeX'.
 parseLaTeXFile :: FilePath -> IO (Either ParseError LaTeX)
-parseLaTeXFile fp = parse latexParser fp <$> readFileTex fp
+parseLaTeXFile = parseLaTeXFileWith defaultParserConf
+
+parseLaTeXFileWith :: ParserConf -> FilePath -> IO (Either ParseError LaTeX)
+parseLaTeXFileWith conf fp = runParser latexParser conf fp <$> readFileTex fp
 
 -- | The 'LaTeX' parser.
 latexParser :: Parser LaTeX
@@ -123,12 +155,16 @@ env = do
   sps <- many $ char ' '
   let lsps = if null sps then mempty else TeXRaw $ T.pack sps
   as <- cmdArgs
-  b  <- envBody n 
-  return $ TeXEnv n (fromMaybe [] as) $
-    case as of
-     Just [] -> lsps <> TeXBraces mempty <> b
-     Nothing -> lsps <> b
-     _ -> b
+  verbatims <- verbatimEnvironments <$> getState
+  if n `elem` verbatims
+     then let endenv = try $ string "\\end" >> spaces >> string ("{" <> n <> "}")
+          in  TeXEnv n (fromMaybe [] as) . TeXRaw . T.pack <$> manyTill anyChar endenv
+     else do b <- envBody n 
+             return $ TeXEnv n (fromMaybe [] as) $
+               case as of
+                Just [] -> lsps <> TeXBraces mempty <> b
+                Nothing -> lsps <> b
+                _ -> b
 
 envName :: String -> Parser String
 envName k = do
@@ -139,8 +175,8 @@ envName k = do
   return $ T.unpack n
 
 envBody :: String -> Parser LaTeX
-envBody n = mconcat <$> (bodyBlock n) `manyTill` endenv
-  where endenv = try $ string ("\\end") >> spaces >> string ("{" <> n <> "}")
+envBody n = mconcat <$> bodyBlock n `manyTill` endenv
+  where endenv = try $ string "\\end" >> spaces >> string ("{" <> n <> "}")
 
 bodyBlock :: String -> Parser LaTeX
 bodyBlock n = do
