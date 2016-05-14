@@ -65,15 +65,25 @@ import           Text.LaTeX.Base.Render
 -- Parser configuration
 ------------------------------------------------------------------------
 
+-- | Configuration for the LaTeX parser.
 data ParserConf = ParserConf
-  { verbatimEnvironments :: [String]
+  { -- | This is the list of names of the environments such that
+    --   their content will be parsed verbatim.
+    verbatimEnvironments :: [String]
     }
 
+-- | Default parser configuration, used by 'parseLaTeX' and 'parseLaTeXFile'.
+--
+--   Defaults:
+--
+-- > verbatimEnvironments = ["verbatim"]
+--
 defaultParserConf :: ParserConf
 defaultParserConf = ParserConf
   { verbatimEnvironments = ["verbatim"]
     }
 
+-- | Parser with 'Text' input and 'ParserConf' environment.
 type Parser = Parsec Text ParserConf
 
 ------------------------------------------------------------------------
