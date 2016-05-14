@@ -1,13 +1,27 @@
 
 # HaTeX Changelog
 
-This is the logchange of HaTeX. It might not be exhaustive.
+This is the logchange of HaTeX. It is not exhaustive.
 For a full list of changes, see the commit history of the
 git repository:
 
 https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
+
+## From 3.16.2.0 to 3.17.0.0
+
+* New 'array' command (NorfairKing).
+* Added package options for the hyperref package related to PDF metadata (dmcclean).
+* QRCode module (dmcclean).
+* New math symbols (leftaroundabout).
+* Added 'cases' environment (NorfairKing).
+* Changed the way subscripts and superscripts work.
+  See [#67](https://github.com/Daniel-Diaz/HaTeX/pull/67).
+  Also [#78](https://github.com/Daniel-Diaz/HaTeX/pull/78).
+* LaTeX parser is now configurable.
+  Currently, only configurable option is verbatim
+  environments.
 
 ## From 3.16.1.1 to 3.16.2.0
 
