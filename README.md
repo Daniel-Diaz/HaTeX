@@ -34,7 +34,9 @@ you are using the version in Hackage).
 ## Current HaTeX versions
 
 [![HaTeX on Hackage](https://img.shields.io/hackage/v/HaTeX.svg)](https://hackage.haskell.org/package/HaTeX)
+
 [![HaTeX on Stackage](http://stackage.org/package/HaTeX/badge/lts)](http://stackage.org/lts/package/HaTeX)
+
 [![HaTeX on Stackage Nightly](http://stackage.org/package/HaTeX/badge/nightly)](http://stackage.org/nightly/package/HaTeX)
 
 ## HaTeX User's Guide
