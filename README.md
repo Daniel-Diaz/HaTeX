@@ -10,7 +10,10 @@ Run any example script executing the ``main`` function.
 
 ## Installation notes
 
-To install `HaTeX`, use [cabal-install](http://hackage.haskell.org/package/cabal-install).
+To install `HaTeX`, use [cabal-install](http://hackage.haskell.org/package/cabal-install)
+or [stack](http://docs.haskellstack.org/en/stable/README).
+
+To install with cabal, run:
 
     $ cabal update
     $ cabal install HaTeX
