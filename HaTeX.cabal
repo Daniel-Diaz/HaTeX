@@ -68,7 +68,7 @@ Library
                  -- Testing
                , QuickCheck
                  -- Parsing
-               , parsec >= 3.1
+               , parsec >= 3.1.6
                  -- Pretty-printing
                , wl-pprint-extras >= 3.5
   Exposed-modules:
