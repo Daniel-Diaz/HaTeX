@@ -31,9 +31,11 @@ Note that this package follows the [_Package Versioning Policy_](http://www.hask
 so it is unlikely to suffer from API breakages if you follow it too when importing the library (assuming
 you are using the version in Hackage).
 
-## HaTeX in Hackage
+## Current HaTeX versions
 
-[![HaTeX in Hackage](https://img.shields.io/hackage/v/HaTeX.svg)](https://hackage.haskell.org/package/HaTeX)
+[![HaTeX on Hackage](https://img.shields.io/hackage/v/HaTeX.svg)](https://hackage.haskell.org/package/HaTeX)
+[![HaTeX on Stackage](http://stackage.org/package/HaTeX/badge/lts)](http://stackage.org/lts/package/HaTeX)
+[![HaTeX on Stackage Nightly](http://stackage.org/package/HaTeX/badge/nightly)](http://stackage.org/nightly/package/HaTeX)
 
 ## HaTeX User's Guide
 
