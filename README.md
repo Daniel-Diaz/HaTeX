@@ -73,7 +73,7 @@ of mathematical expressions using HaTeX (_no longer maintained?_).
 
 ## Travis automatic build
 
-Every time code changes in the GitHub repository, an automatic build checks that the library compiles with several
+For every code push to the GitHub repository, an automatic build checks that the library compiles with several
 versions of GHC (7.4, 7.6, and 7.8) and that all tests pass. This label indicates the result of the last automatic
 build.
 
