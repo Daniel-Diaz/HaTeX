@@ -54,7 +54,7 @@ module Text.LaTeX.Base.Writer
    ) where
 
 -- base
-import Control.Monad (liftM)
+import Control.Monad (liftM, liftM2)
 import Control.Arrow
 import Data.String
 #if !MIN_VERSION_base(4,8,0)
@@ -204,7 +204,6 @@ instance (Monad m, a ~ ()) => IsString (LaTeXT m a) where
 
 -- Monoids
 
-instance (Monad m, a ~ ()) => Monoid (LaTeXT m a) where
- mempty = return ()
- mappend = (>>)
-
+instance (Monad m, Monoid a) => Monoid (LaTeXT m a) where
+ mempty = return mempty
+ mappend = liftM2 mappend
