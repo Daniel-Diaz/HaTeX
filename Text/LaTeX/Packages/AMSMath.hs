@@ -1017,7 +1017,11 @@ v2matrix = toMatrix "Vmatrix"
 ---------- Texy instances -----------
 
 -- | Instance defined in "Text.LaTeX.Packages.AMSMath".
+#if MIN_VERSION_base(4,9,0)
+instance Texy a => Texy (Ratio a) where
+#else
 instance (Integral a, Texy a) => Texy (Ratio a) where
+#endif
  texy x = frac (texy $ numerator x) (texy $ denominator x)
 
 -- | Instance defined in "Text.LaTeX.Packages.AMSMath".
