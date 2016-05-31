@@ -121,7 +121,7 @@ instance (Monad m, a ~ ()) => LaTeXC (LaTeXT m a) where
  liftListL f xs = mapM extractLaTeX_ xs >>= textell . f
 
 -- | Running a 'LaTeXT' computation returns the final 'LaTeX' value.
-runLaTeXT :: Monad m => LaTeXT m a -> m (a,LaTeX)
+runLaTeXT :: LaTeXT m a -> m (a,LaTeX)
 runLaTeXT = runWriterT . unwrapLaTeXT
 
 -- | This is the usual way to run the 'LaTeXT' monad
