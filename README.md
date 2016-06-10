@@ -55,12 +55,11 @@ Please note that the user's guide needs to be updated (contributions are more th
 
 There are many ways to get involved in the HaTeX project. Use the most comfortable way for you.
 
-* Fork the [GitHub repository](https://github.com/Daniel-Diaz/HaTeX).
+* Fork the [GitHub repository](https://github.com/Daniel-Diaz/HaTeX) and make your own contributions.
 * Report bugs or make suggestions opening a ticket in the [Issue Tracker](https://github.com/Daniel-Diaz/HaTeX/issues).
 * Help us to improve and extend our [hatex-guide](https://github.com/Daniel-Diaz/hatex-guide).
 * Join the [Mailing List](http://projects.haskell.org/cgi-bin/mailman/listinfo/hatex) for help or announcements of the
 latest developments.
-* Drop by the IRC channel at `#hatex`.
 
 ## TODO list
 
@@ -73,7 +72,9 @@ latest developments.
 * [haskintex](http://daniel-diaz.github.io/projects/haskintex): Tool to use Haskell (and, additionaly, the HaTeX library)
 within a LaTeX file.
 * [TeX-my-math](https://github.com/leftaroundabout/Symbolic-math-HaTeX): Experimental library to ease the production
-of mathematical expressions using HaTeX (_no longer maintained?_).
+of mathematical expressions using HaTeX.
+* [blatex](http://hackage.haskell.org/package/blatex): Static site generator for blogs where posts are written
+in LaTeX.
 
 ## Travis automatic build
 
