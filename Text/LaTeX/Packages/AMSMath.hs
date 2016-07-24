@@ -119,6 +119,7 @@ module Text.LaTeX.Packages.AMSMath
  , v2matrix
    -- * Math spacing
  , quad, qquad
+ , thinspace, medspace, thickspace, negspace, space
    ) where
 
 import Text.LaTeX.Base
@@ -1055,14 +1056,22 @@ quad = comm0 "quad"
 qquad :: LaTeXC l => l
 qquad = comm0 "qquad"
 
-{-
-  The following commands are pending. Someone needs to find suitable
-  names for them.
+-- | \, space equal to 3/18 of \quad (= 3 mu)
+thinspace :: LaTeXC l => l
+thinspace = comm0 ","
 
-  \, 				3/18 of \quad (= 3 mu)
-  \: 				4/18 of \quad (= 4 mu)
-  \; 				5/18 of \quad (= 5 mu)
-  \! 				-3/18 of \quad (= -3 mu)
-  \ (space after backslash!) 	equivalent of space in normal text
+-- | \: space equal to 4/18 of \quad (= 4 mu)
+medspace :: LaTeXC l => l
+medspace = comm0 ":"
 
--}
+-- | \: space equal to 5/18 of \quad (= 5 mu)
+thickspace :: LaTeXC l => l
+thickspace = comm0 ";"
+
+-- | \! space equal to -3/18 of \quad (= -3 mu)
+negspace :: LaTeXC l => l
+negspace = comm0 "!"
+
+-- | \ (space after backslash) equivalent of space in normal text
+space :: LaTeXC l => l
+space = comm0 " "
