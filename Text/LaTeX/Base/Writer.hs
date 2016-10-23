@@ -48,6 +48,7 @@ module Text.LaTeX.Base.Writer
  , rendertexM
  , liftFun
  , liftOp
+ , mapLaTeXT
    -- * Re-exports
  , lift
  , liftIO
@@ -189,6 +190,17 @@ liftOp op (LaTeXT c) (LaTeXT c') = LaTeXT $ do
  (p,l') <- lift $ runWriterT c'
  tell $ l `op` l'
  return p
+
+-- | A helper function for building monad transformers, e.g.
+-- @@
+--       instance MonadReader r m => MonadReader r (LaTeXT m) where
+--         ask = lift ask
+--         local = mapLaTeXT . local
+-- @@
+-- This declaration could be included here, but it would add a
+-- dependency on mtl.
+mapLaTeXT :: (m (a, LaTeX) -> m (a, LaTeX)) -> LaTeXT m a -> LaTeXT m a
+mapLaTeXT f = LaTeXT . mapWriterT f . unwrapLaTeXT
 
 -- | Just like 'rendertex', but with 'LaTeXT' output.
 --
