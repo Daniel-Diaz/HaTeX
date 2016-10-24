@@ -22,6 +22,7 @@ module Text.LaTeX.Base.Render
  , showFloat
    ) where
 
+import Data.Maybe (fromMaybe)
 import Data.Text (Text,lines,unlines)
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
@@ -127,7 +128,11 @@ instance Render LaTeX where
   render (TeXMath Square l) = "\\[" <> render l <> "\\]"
   render (TeXMath Parentheses l) = "\\(" <> render l <> "\\)"
 
-  render (TeXLineBreak m b) = "\\\\" <> maybe mempty (\x -> "[" <> render x <> "]") m <> ( if b then "*" else mempty )
+  -- It is not safe to simply say \\, if the text following it starts
+  -- with a left square bracket or a star you will get an error or
+  -- something unexpected.  I think this is why you see "\\%\n" so
+  -- often.  Here I supply a zero "extra vertical space" argument.
+  render (TeXLineBreak m b) = "\\\\" <> (if b then "*" else mempty) <> "[" <> render (fromMaybe (Em 0.0) m) <> "]"
 
   render (TeXBraces l) = "{" <> render l <> "}"
 
