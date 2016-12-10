@@ -21,7 +21,6 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Texy
 import qualified Data.Text as T
-import Data.Char (toLower)
 
 -- | qrcode package. Use it to import it like this:
 --
@@ -66,9 +65,9 @@ final = "draft"
 qr :: LaTeXC l => CodeOptions -> Text -> l
 qr opt payload = fromLaTeX $ TeXComm "qrcode" [opts, FixArg . raw . escape $ payload]
   where
-    opts = MOptArg [ if includePadding opt then "padding" else "tight" 
-                   , if link opt then "link" else "nolink" 
-                   , texy . ("level=" <>) . T.singleton . toLower . head . show . errorLevel $ opt 
+    opts = MOptArg [ if includePadding opt then "padding" else "tight"
+                   , if link opt then "link" else "nolink"
+                   , texy . ("level=" <>) . T.singleton . head . show . errorLevel $ opt
                    ]
 
 -- Helper functions for escaping code contents.
