@@ -56,7 +56,7 @@ draft = "draft"
 
 -- | This package option (which is the default) sets the qrcode package to generate print-quality QR codes.
 final :: LaTeXC l => l
-final = "draft"
+final = "final"
 
 -- | Generates a QR code with specified options and content.
 --
