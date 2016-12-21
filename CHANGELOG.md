@@ -9,6 +9,12 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.17.0.0 to 3.17.1.0
+
+* New math space commands (romildo).
+* New function: mapLaTeXT (ddssff).
+* Some fixes for qrcode package (L3n41c).
+
 ## From 3.16.2.0 to 3.17.0.0
 
 * New 'array' command (NorfairKing).
