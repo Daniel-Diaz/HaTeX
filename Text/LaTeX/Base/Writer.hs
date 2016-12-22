@@ -192,11 +192,11 @@ liftOp op (LaTeXT c) (LaTeXT c') = LaTeXT $ do
  return p
 
 -- | A helper function for building monad transformers, e.g.
--- @@
---       instance MonadReader r m => MonadReader r (LaTeXT m) where
---         ask = lift ask
---         local = mapLaTeXT . local
--- @@
+--
+-- > instance MonadReader r m => MonadReader r (LaTeXT m) where
+-- >   ask = lift ask
+-- >   local = mapLaTeXT . local
+--
 -- This declaration could be included here, but it would add a
 -- dependency on mtl.
 mapLaTeXT :: (m (a, LaTeX) -> m (a, LaTeX)) -> LaTeXT m a -> LaTeXT m a
