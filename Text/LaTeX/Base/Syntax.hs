@@ -1,5 +1,5 @@
 
-{-# LANGUAGE CPP, DeriveDataTypeable #-}
+{-# LANGUAGE CPP, DeriveDataTypeable, DeriveGeneric #-}
 
 -- | LaTeX syntax description in the definition of the 'LaTeX' datatype.
 --   If you want to add new commands or environments not defined in
@@ -36,7 +36,9 @@ import Data.String
 import Control.Applicative
 import Control.Monad (replicateM)
 import Data.Functor.Identity (runIdentity)
+import Data.Data (Data)
 import Data.Typeable
+import GHC.Generics (Generic)
 import Test.QuickCheck
 
 -- | Measure units defined in LaTeX. Use 'CustomMeasure' to use commands like 'textwidth'.
@@ -54,11 +56,11 @@ data Measure =
  | Ex Double -- ^ The height of an \"x\" in the current font.
  | Em Double -- ^ The width of an \"M\" in the current font.
  | CustomMeasure LaTeX -- ^ You can introduce a 'LaTeX' expression as a measure.
-   deriving (Eq, Show)
+   deriving (Data, Eq, Generic, Show, Typeable)
 
 -- | Different types of syntax for mathematical expressions.
 data MathType = Parentheses | Square | Dollar
-  deriving (Eq,Show)
+  deriving (Data, Eq, Generic, Show, Typeable)
 
 -- | Type of @LaTeX@ blocks.
 data LaTeX =
@@ -81,7 +83,7 @@ data LaTeX =
                       -- Use '<>' preferably.
  | TeXEmpty -- ^ An empty block.
             -- /Neutral element/ of '<>'.
-   deriving (Eq,Show,Typeable)
+   deriving (Data, Eq, Generic, Show, Typeable)
 
 -- | An argument for a 'LaTeX' command or environment.
 data TeXArg =
@@ -92,7 +94,7 @@ data TeXArg =
  | MSymArg [LaTeX] -- ^ Version of 'SymArg' with multiple options.
  | ParArg LaTeX    -- ^ An argument enclosed between @(@ and @)@.
  | MParArg [LaTeX] -- ^ Version of 'ParArg' with multiple options.
-   deriving (Eq,Show)
+   deriving (Data, Eq, Generic, Show, Typeable)
 
 -- Monoid instance for 'LaTeX'.
 
