@@ -98,6 +98,7 @@ Library
         Text.LaTeX.Packages.Geometry
         Text.LaTeX.Packages.Graphicx
         Text.LaTeX.Packages.Hyperref
+        Text.LaTeX.Packages.LongTable
         Text.LaTeX.Packages.Inputenc
         Text.LaTeX.Packages.QRCode
         Text.LaTeX.Packages.Relsize
