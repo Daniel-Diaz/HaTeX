@@ -66,6 +66,9 @@ data TableSpec =
  | ParColumnTop LaTeX -- ^ Paragraph column with text vertically aligned at the top.
  | ParColumnMid LaTeX -- ^ Paragraph column with text vertically aligned at the middle. Requires 'array' package.
  | ParColumnBot LaTeX -- ^ Paragraph column with text vertically aligned at the bottom. Requires 'array' package.
+ | NameColumn String  -- ^ User defined column. Requires 'array' package.
+ | BeforeColumn LaTeX -- ^ Can be used before a 'LeftColumn', 'CenterColumn', 'RightColumn', 'ParColumnTop', 'ParColumnMid' or a 'ParColumnBot' specification. Inserts the code directly in front of the entry of the column. Requires 'array' package.
+ | AfterColumn LaTeX  -- ^ Can be used after a 'LeftColumn', 'CenterColumn', 'RightColumn', 'ParColumnTop', 'ParColumnMid' or a 'ParColumnBot' specification. Inserts the code directly in front of the entry of the column. Requires 'array' package.
  | VerticalLine       -- ^ Vertical line between two columns.
  | DVerticalLine      -- ^ Double vertical line between two columns.
  | Separator LaTeX    -- ^ Column separator. Requires 'array' package.
@@ -78,6 +81,9 @@ instance Render TableSpec where
  render (ParColumnTop l) = "p" <> render (FixArg l)
  render (ParColumnMid l) = "m" <> render (FixArg l)
  render (ParColumnBot l) = "b" <> render (FixArg l)
+ render (NameColumn n)   = fromString n
+ render (BeforeColumn l) = ">{" <> render l <> "}"
+ render (AfterColumn l)  = "<{" <> render l <> "}"
  render VerticalLine     = "|"
  render DVerticalLine    = "||"
  render (Separator l)    = "@" <> render (FixArg l)
