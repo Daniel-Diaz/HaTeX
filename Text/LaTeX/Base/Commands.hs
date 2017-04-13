@@ -202,6 +202,9 @@ module Text.LaTeX.Base.Commands
    -- *** Special tables
  , matrixTabular
    -- ** Others
+ , centering
+ , raggedleft
+ , raggedright
  , footnote
  , protect
  , hyphenation
@@ -691,6 +694,15 @@ ddots = comm0 "ddots"
 -- | Quotation marks.
 qts :: LaTeXC l => l -> l
 qts l = between l (raw "``") (raw "''")
+
+centering :: LaTeXC l => l
+centering = comm0 "centering"
+
+raggedleft :: LaTeXC l => l
+raggedleft = comm0 "raggedleft"
+
+raggedright :: LaTeXC l => l
+raggedright = comm0 "raggedright"
 
 footnote :: LaTeXC l => l -> l
 footnote = liftL $ \l -> TeXComm "footnote" [FixArg l]
