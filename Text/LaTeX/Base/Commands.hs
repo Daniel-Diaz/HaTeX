@@ -191,6 +191,9 @@ module Text.LaTeX.Base.Commands
  , pageref
    -- ** Tables
  , tabular
+ , tabularnewline
+ , tabularnewlineSpc
+ , arraybackslash
  , array
  , (&)
  , hline
@@ -882,6 +885,21 @@ array (Just p) ts = liftL $ TeXEnv "array" [ OptArg $ TeXRaw $ render p , FixArg
 -- | Horizontal line.
 hline :: LaTeXC l => l
 hline = commS "hline "
+
+-- | 'tabularnewline' ends a row in array or tabular environments. The
+-- '\' command has different meanings in different contexts. It can
+-- end a line in normal text, or it can end an array or tabular
+-- line. It may be preferrable to use 'newline' and in the first case,
+-- and 'tabularnewline' in the second.
+tabularnewline :: LaTeXC l => l
+tabularnewline = commS "tabularnewline "
+
+tabularnewlineSpc :: LaTeXC l => Measure -> l
+tabularnewlineSpc m = fromLaTeX $ TeXComm "tabularnewline" [OptArg $ rendertex m]
+
+-- | 'arraybackslash' resets the definition of '\' to 'tabularnewline'.
+arraybackslash :: LaTeXC l => l
+arraybackslash = commS "arraybackslash "
 
 -- | Cell taking multiple columns.
 multicolumn :: LaTeXC l => Int -> [TableSpec] -> l -> l
