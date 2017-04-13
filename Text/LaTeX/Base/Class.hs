@@ -23,6 +23,8 @@ module Text.LaTeX.Base.Class (
    -- ** Others
  , comm0
  , comm1
+ , comm2
+ , comm3
  , commS
  , braces
  ) where
@@ -78,6 +80,22 @@ comm0 str = fromLaTeX $ TeXComm str []
 --
 comm1 :: LaTeXC l => String -> l -> l
 comm1 str = liftL $ \l -> TeXComm str [FixArg l]
+
+-- | A two parameter command generator using the name of the command.
+--   The parameters will be rendered as fixed arguments.
+--
+-- > comm2 str = liftL2 $ \l1 l2 -> TeXComm str [FixArg l1, FixArg l2]
+--
+comm2 :: LaTeXC l => String -> l -> l -> l
+comm2 str = liftL2 $ \l1 l2 -> TeXComm str [FixArg l1, FixArg l2]
+
+-- | A three parameter command generator using the name of the command.
+--   The parameters will be rendered as fixed arguments.
+--
+-- > comm3 str = liftL2 $ \l1 l2 -> TeXComm str [FixArg l1, FixArg l2]
+--
+comm3 :: LaTeXC l => String -> l -> l -> l -> l
+comm3 str = liftL3 $ \l1 l2 l3 -> TeXComm str [FixArg l1, FixArg l2, FixArg l3]
 
 -- | Like 'comm0' but using 'TeXCommS', i.e. no \"{}\" will be inserted to protect
 -- the command's end.
