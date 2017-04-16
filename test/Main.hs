@@ -21,7 +21,7 @@ main = defaultMain $ testGroup "HaTeX"
          \l1 l2 l3 -> l1 <> (l2 <> l3) == (l1 <> l2) <> (l3 :: LaTeX)
     ]
   , testGroup "Parser"
-    [ QC.testProperty "render . parse = id" $
+    [ QC.testProperty "render . parse . render = render" $
          \l -> let t = render (l :: LaTeX)
                in  fmap render (parseLaTeX t) == Right t
     ]
