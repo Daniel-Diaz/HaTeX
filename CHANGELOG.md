@@ -9,6 +9,12 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.17.1.0 to 3.17.2.0
+
+* Semigroup instance for LaTeX.
+* Data, Generic, and Typeable instances for LaTeX
+* and related types.
+
 ## From 3.17.0.0 to 3.17.1.0
 
 * New math space commands (romildo).
