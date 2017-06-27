@@ -24,3 +24,4 @@ theBody = do
   flushleft "ÀàÈèÌìÒòÙù"
   flushleft "ÄäËëÏïÖöÜü"
   flushleft "ÂâÊêÎîÔôÛû"
+  flushleft "ß"
