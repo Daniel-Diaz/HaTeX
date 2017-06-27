@@ -98,9 +98,12 @@ Library
         Text.LaTeX.Packages.Geometry
         Text.LaTeX.Packages.Graphicx
         Text.LaTeX.Packages.Hyperref
+        Text.LaTeX.Packages.LongTable
+        Text.LaTeX.Packages.LTableX
         Text.LaTeX.Packages.Inputenc
         Text.LaTeX.Packages.QRCode
         Text.LaTeX.Packages.Relsize
+        Text.LaTeX.Packages.TabularX
         -- Trees
         Text.LaTeX.Packages.Trees
           Text.LaTeX.Packages.Trees.Qtree
