@@ -59,7 +59,7 @@ data Measure =
    deriving (Data, Eq, Generic, Show, Typeable)
 
 -- | Different types of syntax for mathematical expressions.
-data MathType = Parentheses | Square | Dollar
+data MathType = Parentheses | Square | Dollar | DoubleDollar
   deriving (Data, Eq, Generic, Show, Typeable)
 
 -- | Type of @LaTeX@ blocks.
@@ -277,7 +277,7 @@ arbitraryChar :: Gen Char
 arbitraryChar = elements $
      ['A'..'Z']
   ++ ['a'..'z']
-  ++ "\n-+*/!\"$%&(){}^_.,:;'#@<>?\\ "
+  ++ "\n-+*/!\"$%&(){}^_.,:;'#@<>? "
 
 -- | Utility for the instance of 'LaTeX' to 'Arbitrary'.
 --   We generate a short sequence of characters and
@@ -301,26 +301,31 @@ instance Arbitrary Measure where
      f <$> arbitrary
 
 instance Arbitrary LaTeX where
-  arbitrary = do
-     -- We give more chances to 'TeXRaw'.
-     -- This results in arbitrary 'LaTeX' values
-     -- not getting too large.
-     n <- choose (0,16 :: Int)
-     case n of
-       0 -> pure TeXEmpty
-       1 -> do m <- choose (0,5)
-               TeXComm <$> arbitraryName <*> vectorOf m arbitrary
-       2 -> TeXCommS <$> arbitraryName
-       3 -> do m <- choose (0,5)
-               TeXEnv <$> arbitraryName <*> vectorOf m arbitrary <*> arbitrary
-       4 -> do m <- choose (0,2)
-               let t = [Parentheses,Square,Dollar] !! m
-               TeXMath <$> pure t <*> arbitrary
-       5 -> TeXLineBreak <$> arbitrary <*> arbitrary
-       6 -> TeXBraces <$> arbitrary
-       7 -> TeXComment <$> arbitraryRaw
-       8 -> TeXSeq <$> arbitrary <*> arbitrary
-       _ -> TeXRaw <$> arbitraryRaw
+  arbitrary = arbitraryLaTeX False
+
+arbitraryLaTeX :: Bool -> Gen LaTeX
+arbitraryLaTeX inDollar = do
+  -- We give more chances to 'TeXRaw'.
+  -- This results in arbitrary 'LaTeX' values
+  -- not getting too large.
+  n <- choose (0,16 :: Int)
+  case n of
+    0 -> if inDollar then arbitraryLaTeX True else pure TeXEmpty
+    1 -> do m <- choose (0,5)
+            TeXComm <$> arbitraryName <*> vectorOf m arbitrary
+    2 -> TeXCommS <$> arbitraryName
+    3 -> do m <- choose (0,5)
+            TeXEnv <$> arbitraryName <*> vectorOf m arbitrary <*> arbitrary
+    4 -> if inDollar
+            then arbitraryLaTeX True
+            else do do m <- choose (0,3)
+                       let t = [Parentheses,Square,Dollar,DoubleDollar] !! m
+                       TeXMath <$> pure t <*> arbitraryLaTeX (t == Dollar || t == DoubleDollar)
+    5 -> TeXLineBreak <$> arbitrary <*> arbitrary
+    6 -> TeXBraces <$> arbitrary
+    7 -> TeXComment <$> arbitraryRaw
+    8 -> TeXSeq <$> (if inDollar then arbitraryLaTeX True else arbitrary) <*> arbitrary
+    _ -> TeXRaw <$> arbitraryRaw
 
 instance Arbitrary TeXArg where
   arbitrary = do

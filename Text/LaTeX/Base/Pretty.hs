@@ -48,6 +48,7 @@ docLaTeX (TeXMath t b) =
           Parentheses -> ("\\(","\\)")
           Square -> ("\\[","\\]")
           Dollar -> ("$","$")
+          DoubleDollar -> ("$$","$$")
   in  text l <> docLaTeX b <> text r
 docLaTeX (TeXLineBreak m b) =
   text "\\\\" <> maybe mempty (brackets . text . unpack . render) m <> ( if b then text "*" else mempty )

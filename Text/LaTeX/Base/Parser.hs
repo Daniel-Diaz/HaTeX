@@ -303,8 +303,13 @@ commS = return . TeXCommS
 dolMath :: Parser LaTeX
 dolMath = do
   _ <- char '$' 
-  b <- mconcat <$> latexBlockParser `manyTill` char '$'
-  return $ TeXMath Dollar b
+  choice
+    [ do _ <- char '$'
+         b <- mconcat <$> latexBlockParser `manyTill` try (string "$$")
+         return $ TeXMath DoubleDollar b
+    , do b <- mconcat <$> latexBlockParser `manyTill` char '$'
+         return $ TeXMath Dollar b
+      ]
 
 math :: MathType -> String -> Parser LaTeX
 math t eMath = do

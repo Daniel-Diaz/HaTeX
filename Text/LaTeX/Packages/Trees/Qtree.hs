@@ -1,5 +1,10 @@
 
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, CPP #-}
+#if __GLASGOW_HASKELL__ >= 801
+{-# OPTIONS_GHC -Wno-orphans #-}
+#else
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+#endif
 
 -- | Tree interface using the @qtree@ package.
 --   An example of usage is provided in the /examples/ directory of

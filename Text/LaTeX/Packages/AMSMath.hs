@@ -1,5 +1,10 @@
 
 {-# LANGUAGE CPP, OverloadedStrings, TypeFamilies #-}
+#if __GLASGOW_HASKELL__ >= 801
+{-# OPTIONS_GHC -Wno-orphans #-}
+#else
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+#endif
 
 -- | \AMSMath\ support. Also numeric instances ('Num', 'Fractional' and 'Floating') for 'LaTeX' and 'LaTeXT'.
 module Text.LaTeX.Packages.AMSMath

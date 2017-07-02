@@ -124,6 +124,7 @@ instance Render LaTeX where
    <> "}"
 
   render (TeXMath Dollar l) = "$" <> render l <> "$"
+  render (TeXMath DoubleDollar l) = "$$" <> render l <> "$$"
   render (TeXMath Square l) = "\\[" <> render l <> "\\]"
   render (TeXMath Parentheses l) = "\\(" <> render l <> "\\)"
 
