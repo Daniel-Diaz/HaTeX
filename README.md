@@ -73,8 +73,6 @@ latest developments.
 within a LaTeX file.
 * [TeX-my-math](https://github.com/leftaroundabout/Symbolic-math-HaTeX): Experimental library to ease the production
 of mathematical expressions using HaTeX.
-* [blatex](http://hackage.haskell.org/package/blatex): Static site generator for blogs where posts are written
-in LaTeX.
 
 ## Travis automatic build
 
