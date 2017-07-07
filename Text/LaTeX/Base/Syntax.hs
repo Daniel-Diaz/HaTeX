@@ -40,6 +40,7 @@ import Data.Data (Data)
 import Data.Typeable
 import GHC.Generics (Generic)
 import Test.QuickCheck
+import Data.Hashable
 
 -- | Measure units defined in LaTeX. Use 'CustomMeasure' to use commands like 'textwidth'.
 --   For instance:
@@ -341,3 +342,9 @@ instance Arbitrary TeXArg where
        5 -> do m <- choose (1,5)
                MParArg <$> vectorOf m arbitrary
        _ -> FixArg <$> arbitrary
+
+
+instance Hashable Measure
+instance Hashable MathType
+instance Hashable TeXArg
+instance Hashable LaTeX
