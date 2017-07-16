@@ -38,9 +38,9 @@ import Control.Monad (replicateM)
 import Data.Functor.Identity (runIdentity)
 import Data.Data (Data)
 import Data.Typeable
-import GHC.Generics (Generic)
 import Test.QuickCheck
 import Data.Hashable
+import GHC.Generics (Generic)
 
 -- | Measure units defined in LaTeX. Use 'CustomMeasure' to use commands like 'textwidth'.
 --   For instance:
