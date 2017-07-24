@@ -92,7 +92,7 @@ comm2 str = liftL2 $ \l1 l2 -> TeXComm str [FixArg l1, FixArg l2]
 -- | A three parameter command generator using the name of the command.
 --   The parameters will be rendered as fixed arguments.
 --
--- > comm3 str = liftL2 $ \l1 l2 -> TeXComm str [FixArg l1, FixArg l2]
+-- > comm3 str = liftL2 $ \l1 l2 l3 -> TeXComm str [FixArg l1, FixArg l2, FixArg l3]
 --
 comm3 :: LaTeXC l => String -> l -> l -> l -> l
 comm3 str = liftL3 $ \l1 l2 l3 -> TeXComm str [FixArg l1, FixArg l2, FixArg l3]
