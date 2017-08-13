@@ -35,7 +35,7 @@ Description: This library implements the LaTeX syntax and provides some useful a
              or if you already have the LaTeX document written and you just want to add some automatically
              generated LaTeX code somewhere, check haskintex: <http://daniel-diaz.github.io/projects/haskintex>.
              It allows you to embed Haskell in LaTeX. It also makes you easy to use HaTeX within a LaTeX document.
-Cabal-version: >= 1.10
+Cabal-version: >= 1.18
 Extra-source-files:
   ReleaseNotes
   README.md
