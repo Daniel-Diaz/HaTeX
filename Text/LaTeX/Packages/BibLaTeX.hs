@@ -123,18 +123,18 @@ instance Monad m => Monad (ReferenceQueryT r m) where
                            , \resolve -> mappend <$> refrex resolve <*> refrefx resolve ))
                      <$> refsfx
 
-instance (Functor m, Monoid (m a), IsString (m ()))
+instance (Functor m, Monoid (m a), IsString (m ()), a ~ ())
            => IsString (ReferenceQueryT r m a) where
   fromString s = ReferenceQueryT $ (\a -> (id, a, const $ fromString s)) <$> mempty
 
 
-citeDOI :: (Functor m, Monoid (m a), IsString (m ()))
+citeDOI :: (Functor m, Monoid (m ()), IsString (m ()))
         => PlainDOI  -- ^ The unambiguous document identifier.
         -> String    -- ^ Synopsis of the cited work, in the form
                      --   @"J Doe et al 1950: Investigation of a Foo"@;
                      --   this is strictly speaking optional, the synopsis will /not/
                      --   be included in the final document (provided the DOI
                      --   can be properly resolved).
-        -> ReferenceQueryT DOIReference m a
+        -> ReferenceQueryT DOIReference m ()
 citeDOI doi synops = ReferenceQueryT $ (\a -> ( (r :), a, ($ r) )) <$> mempty
  where r = DOIReference doi $ fromString synops

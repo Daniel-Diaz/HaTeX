@@ -18,5 +18,5 @@ bibLaTeXExample = do
    documentclass [] article
    usepackage [] biblatex
    documentWithDOIReferences (const $ pure Nothing) $ do
-     () <- "We can cite documents by simply giving a DOI, such as "
+     "We can cite documents by simply giving a DOI, such as "
      citeDOI "123456789" "J Doe et al 1950: Investigation of Foo"
