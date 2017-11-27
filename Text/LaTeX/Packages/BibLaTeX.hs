@@ -28,12 +28,15 @@ import GHC.Generics (Generic)
 
 import qualified Data.Map as Map
 import Data.Maybe (catMaybes)
+import Data.Hashable (hash)
+import Numeric (showHex)
 
 import Control.Applicative
 import Control.Monad (forM)
 import Control.Monad.IO.Class
 
 import qualified Text.BibTeX.Entry as BibTeX
+import qualified Text.BibTeX.Format as BibTeX
 
 -- | BibLaTeX package. Use it to import it like this:
 --
@@ -69,14 +72,16 @@ documentWithDOIReferences resolver (ReferenceQueryT refq) = do
          Just entry -> Just (r, entry)
          Nothing -> Nothing
     let refsMap = Map.fromList resolved
-    generateAutomaticBibFile
+        bibfileConts = unlines $ BibTeX.entry . snd <$> Map.toList refsMap
+        bibfileName = showHex (hash bibfileConts) $ ".bib"
+    liftIO $ writeFile bibfileName bibfileConts
+    () <- addbibresource bibfileName
     document . useRefs $ \r -> case Map.lookup r refsMap of
         Just a -> cite . fromString $ BibTeX.identifier a
         Nothing -> makeshift r
  where makeshift :: LaTeXC l => DOIReference -> l
        makeshift (DOIReference doi synops) = footnote $
            fromLaTeX synops <> quad <> "DOI:" <> fromString doi
-       generateAutomaticBibFile = undefined
     
 
 data DOIReference = DOIReference {
