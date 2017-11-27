@@ -15,6 +15,7 @@ module Text.LaTeX.Packages.BibLaTeX
  , citeDOI
  , DOIReference
  , ReferenceQueryT
+ , masterBibFile
  ) where
 
 import Text.LaTeX.Base.Syntax
@@ -152,3 +153,15 @@ citeDOI :: (Functor m, Monoid (m ()), IsString (m ()))
         -> ReferenceQueryT DOIReference m ()
 citeDOI doi synops = ReferenceQueryT $ (\a -> ( (r :), a, ($ r) )) <$> mempty
  where r = DOIReference doi $ fromString synops
+
+
+masterBibFile :: MonadIO m
+      => FilePath    -- ^ A @.bib@ file containing entries for all relevant literature.
+      -> (DOIReference -> m (Maybe BibTeX.T))
+                     -- ^ Lookup-function, suitable for 'documentWithDOIReferences'.
+masterBibFile master (DOIReference doi _) = do
+   entries <- liftIO $ BibTeX.file `Parsec.parseFromFile` master
+   return $ case entries of
+     Right bibs -> List.find hasThisDOI bibs
+     Left err   -> error $ show err
+ where hasThisDOI bib = List.lookup "doi" (BibTeX.fields bib) == Just doi
