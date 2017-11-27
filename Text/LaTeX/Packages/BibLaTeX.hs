@@ -21,7 +21,7 @@ import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
-import Text.LaTeX.Base.Commands (cite, footnote, document)
+import Text.LaTeX.Base.Commands (cite, footnote, document, raw)
 
 import Data.String (IsString)
 import GHC.Generics (Generic)
@@ -31,12 +31,16 @@ import Data.Maybe (catMaybes)
 import Data.Hashable (hash)
 import Numeric (showHex)
 
+import qualified Data.List as List
+
 import Control.Applicative
 import Control.Monad (forM)
 import Control.Monad.IO.Class
 
 import qualified Text.BibTeX.Entry as BibTeX
 import qualified Text.BibTeX.Format as BibTeX
+import qualified Text.BibTeX.Parse as BibTeX (file)
+import qualified Text.Parsec.String as Parsec
 
 -- | BibLaTeX package. Use it to import it like this:
 --
@@ -73,11 +77,11 @@ documentWithDOIReferences resolver (ReferenceQueryT refq) = do
          Nothing -> Nothing
     let refsMap = Map.fromList resolved
         bibfileConts = unlines $ BibTeX.entry . snd <$> Map.toList refsMap
-        bibfileName = showHex (hash bibfileConts) $ ".bib"
+        bibfileName = showHex (abs $ hash bibfileConts) $ ".bib"
     liftIO $ writeFile bibfileName bibfileConts
     () <- addbibresource bibfileName
     document . useRefs $ \r -> case Map.lookup r refsMap of
-        Just a -> cite . fromString $ BibTeX.identifier a
+        Just a -> cite . raw . fromString $ BibTeX.identifier a
         Nothing -> makeshift r
  where makeshift :: LaTeXC l => DOIReference -> l
        makeshift (DOIReference doi synops) = footnote $
@@ -127,6 +131,16 @@ instance (Functor m, Monoid (m a), IsString (m ()), a ~ ())
            => IsString (ReferenceQueryT r m a) where
   fromString s = ReferenceQueryT $ (\a -> (id, a, const $ fromString s)) <$> mempty
 
+instance (Functor m, Monoid (m a), a ~ ()) => Monoid (ReferenceQueryT r m a) where
+  mempty = ReferenceQueryT $ (\a -> (id, a, mempty)) <$> mempty
+
+instance (Applicative m, LaTeXC (m a), a ~ ()) => LaTeXC (ReferenceQueryT r m a) where
+  liftListL f xs = ReferenceQueryT $
+    (\components -> case List.unzip3 components of
+          (refs, _, rebuilds) -> ( foldr (.) id refs
+                                 , ()
+                                 , \resolve -> liftListL f $ ($ resolve)<$>rebuilds )
+       ) <$> traverse runReferenceQueryT xs
 
 citeDOI :: (Functor m, Monoid (m ()), IsString (m ()))
         => PlainDOI  -- ^ The unambiguous document identifier.
