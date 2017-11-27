@@ -12,6 +12,7 @@ module Text.LaTeX.Packages.BibLaTeX
  , printbibliography
  -- * Automatic bibliography retrieval
  , documentWithDOIReferences
+ , citeDOI
  , DOIReference
  , ReferenceQueryT
  ) where
@@ -21,7 +22,6 @@ import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands (cite, footnote, document)
-import Text.LaTeX.Packages.AMSMath (quad)
 
 import Data.String (IsString)
 import GHC.Generics (Generic)
@@ -81,11 +81,13 @@ documentWithDOIReferences resolver (ReferenceQueryT refq) = do
         Nothing -> makeshift r
  where makeshift :: LaTeXC l => DOIReference -> l
        makeshift (DOIReference doi synops) = footnote $
-           fromLaTeX synops <> quad <> "DOI:" <> fromString doi
+           fromLaTeX synops <> ". DOI:" <> fromString doi
     
 
+type PlainDOI = String
+
 data DOIReference = DOIReference {
-       referenceDOI :: String
+       referenceDOI :: PlainDOI
      , referenceSynopsis :: LaTeX
      } deriving (Generic)
 instance Eq DOIReference where
@@ -124,3 +126,15 @@ instance Monad m => Monad (ReferenceQueryT r m) where
 instance (Functor m, Monoid (m a), IsString (m ()))
            => IsString (ReferenceQueryT r m a) where
   fromString s = ReferenceQueryT $ (\a -> (id, a, const $ fromString s)) <$> mempty
+
+
+citeDOI :: (Functor m, Monoid (m a), IsString (m ()))
+        => PlainDOI  -- ^ The unambiguous document identifier.
+        -> String    -- ^ Synopsis of the cited work, in the form
+                     --   @"J Doe et al 1950: Investigation of a Foo"@;
+                     --   this is strictly speaking optional, the synopsis will /not/
+                     --   be included in the final document (provided the DOI
+                     --   can be properly resolved).
+        -> ReferenceQueryT DOIReference m a
+citeDOI doi synops = ReferenceQueryT $ (\a -> ( (r :), a, ($ r) )) <$> mempty
+ where r = DOIReference doi $ fromString synops
