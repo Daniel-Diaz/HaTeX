@@ -11,6 +11,7 @@ module Text.LaTeX.Packages.BibLaTeX
  , cite
  , printbibliography
  -- * Automatic bibliography retrieval
+ , documentWithDOIReferences
  , DOIReference
  , ReferenceQueryT
  ) where
@@ -19,12 +20,20 @@ import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
-import Text.LaTeX.Base.Commands (cite)
+import Text.LaTeX.Base.Commands (cite, footnote, document)
+import Text.LaTeX.Packages.AMSMath (quad)
 
 import Data.String (IsString)
 import GHC.Generics (Generic)
 
+import qualified Data.Map as Map
+import Data.Maybe (catMaybes)
+
 import Control.Applicative
+import Control.Monad (forM)
+import Control.Monad.IO.Class
+
+import qualified Text.BibTeX.Entry as BibTeX
 
 -- | BibLaTeX package. Use it to import it like this:
 --
@@ -40,8 +49,44 @@ printbibliography :: LaTeXC l => l
 printbibliography = comm0 "printbibliography"
 
 
-newtype DOIReference = DOIReference { getDOI :: String }
-instance IsString DOIReference where fromString = DOIReference
+documentWithDOIReferences :: (MonadIO m, LaTeXC (m ()), r ~ DOIReference)
+  => (r -> m (Maybe BibTeX.T)) -- ^ Reference-resolver function, for looking up BibTeX
+                               --   entries for a given DOI.
+                               --   If the DOI cannot be looked up (@Nothing@), we just
+                               --   include a footnote with a synopsis and the DOI in
+                               --   literal form. (Mostly intended to ease offline editing.)
+  -> ReferenceQueryT r m ()    -- ^ The document content, possibly containing citations
+                               --   in DOI-only form.
+  -> m ()                      -- ^ LaTeX rendition. The content will already be wrapped
+                               --   in @\\begin…end{document}@ here and an
+                               --   automatically-generated @.bib@ file included, but
+                               --   you still need to 'usepackage' 'biblatex' yourself.
+documentWithDOIReferences resolver (ReferenceQueryT refq) = do
+    (allRefs, (), useRefs) <- refq
+    resolved <- fmap catMaybes . forM (allRefs[]) $ \r -> do
+       r' <- resolver r
+       return $ case r' of
+         Just entry -> Just (r, entry)
+         Nothing -> Nothing
+    let refsMap = Map.fromList resolved
+    generateAutomaticBibFile
+    document . useRefs $ \r -> case Map.lookup r refsMap of
+        Just a -> cite . fromString $ BibTeX.identifier a
+        Nothing -> makeshift r
+ where makeshift :: LaTeXC l => DOIReference -> l
+       makeshift (DOIReference doi synops) = footnote $
+           fromLaTeX synops <> quad <> "DOI:" <> fromString doi
+       generateAutomaticBibFile = undefined
+    
+
+data DOIReference = DOIReference {
+       referenceDOI :: String
+     , referenceSynopsis :: LaTeX
+     } deriving (Generic)
+instance Eq DOIReference where
+  DOIReference doi₀ _ == DOIReference doi₁ _ = doi₀ == doi₁
+instance Ord DOIReference where
+  compare (DOIReference doi₀ _) (DOIReference doi₁ _) = compare doi₀ doi₁
 
 type DList r = [r] -> [r]
 
