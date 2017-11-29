@@ -25,6 +25,7 @@ import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands (cite, footnote, document, raw)
 
 import Data.String (IsString)
+import Data.Char (toLower)
 import Data.Semigroup
 import GHC.Generics (Generic)
 
@@ -173,4 +174,5 @@ masterBibFile master (DOIReference doi _) = do
    return $ case entries of
      Right bibs -> List.find hasThisDOI bibs
      Left err   -> error $ show err
- where hasThisDOI bib = List.lookup "doi" (BibTeX.fields bib) == Just doi
+ where hasThisDOI bib = (map toLower <$> List.lookup "doi" (BibTeX.fields bib))
+                          == Just (toLower<$>doi)
