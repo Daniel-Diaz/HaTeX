@@ -169,6 +169,7 @@ module Text.LaTeX.Base.Commands
  , description
  , minipage
  , figure
+ , table
    -- ** Page numbering
  , pagenumbering
  , arabic
@@ -391,13 +392,27 @@ minipage :: LaTeXC l =>
 minipage Nothing  = liftL2 $ \ts -> TeXEnv "minipage" [ FixArg ts ]
 minipage (Just p) = liftL2 $ \ts -> TeXEnv "minipage" [ OptArg $ rendertex p , FixArg ts ]
 
--- | Figure environment.
+-- | Figure environment. Use this for floating "Text.LaTeX.Packages.Graphicx"
+--   content out of the text block and giving it a 'caption'. The figure can be
+--   referred to with 'ref' from elsewhere in the document.
 figure :: LaTeXC l =>
-          Maybe Pos -- ^ Optional position
-       -> l         -- ^ Figure content
+          Maybe Pos -- ^ Optional position.
+       -> l         -- ^ Figure content (should usually contain
+                    --   'Text.LaTeX.Packages.Graphicx.includegraphics',
+                    --   'caption' and 'label').
        -> l
 figure Nothing  = liftL $ TeXEnv "figure" []
 figure (Just p) = liftL $ TeXEnv "figure" [ OptArg $ TeXRaw $ render p ]
+
+-- | Table environment. Use this for floating a 'tabular' out of the text block and
+--   giving it a 'caption'. The table can be referred to with 'ref'.
+table :: LaTeXC l =>
+          Maybe Pos -- ^ Optional position.
+       -> l         -- ^ Table content (assemble with 'tabular'/'matrixTabular',
+                    --   'caption' and 'label').
+       -> l
+table Nothing  = liftL $ TeXEnv "table" []
+table (Just p) = liftL $ TeXEnv "table" [ OptArg $ TeXRaw $ render p ]
 
 -- | Abstract section.
 abstract :: LaTeXC l => l -> l
