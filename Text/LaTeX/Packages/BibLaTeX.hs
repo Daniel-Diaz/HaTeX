@@ -13,6 +13,8 @@ module Text.LaTeX.Packages.BibLaTeX
  -- * Automatic bibliography retrieval
  , documentWithDOIReferences
  , citeDOI
+ , textc
+ , textC
  , DOIReference
  , ReferenceQueryT
  , masterBibFile
@@ -83,8 +85,19 @@ documentWithDOIReferences resolver (ReferenceQueryT refq) = do
         bibfileName = showHex (abs $ hash bibfileConts) $ ".bib"
     liftIO $ writeFile bibfileName bibfileConts
     () <- addbibresource bibfileName
-    document . useRefs $ \r -> case Map.lookup r refsMap of
-        Just a -> cite . raw . fromString $ BibTeX.identifier a
+    document . useRefs $ \r flavour -> case Map.lookup r refsMap of
+        Just a -> let citeC = liftL $ \l -> (`TeXComm`[FixArg l]) $ case flavour of
+                        Flavour_cite      -> "cite" 
+                        Flavour_Cite      -> "Cite"
+                        Flavour_parencite -> "parencite"
+                        Flavour_Parencite -> "Parencite"
+                        Flavour_footcite  -> "footcite"
+                        Flavour_Footcite  -> "Footcite"
+                        Flavour_textcite  -> "textcite"
+                        Flavour_Textcite  -> "Textcite"
+                        Flavour_smartcite -> "smartcite"
+                        Flavour_Smartcite -> "Smartcite"
+                  in citeC . raw . fromString $ BibTeX.identifier a
         Nothing -> makeshift r
  where makeshift :: (LaTeXC l, Semigroup l) => DOIReference -> l
        makeshift (DOIReference doi synops) = footnote $
@@ -104,8 +117,21 @@ instance Ord DOIReference where
 
 type DList r = [r] -> [r]
 
+data CitationFlavour
+       = Flavour_cite
+       | Flavour_Cite
+       | Flavour_parencite
+       | Flavour_Parencite
+       | Flavour_footcite
+       | Flavour_Footcite
+       | Flavour_textcite
+       | Flavour_Textcite
+       | Flavour_smartcite
+       | Flavour_Smartcite
+     deriving (Eq, Ord, Show)
+
 newtype ReferenceQueryT r m a = ReferenceQueryT {
-       runReferenceQueryT :: m (DList r, a, (r -> m ()) -> m ())
+       runReferenceQueryT :: m (DList r, a, (r -> CitationFlavour -> m ()) -> m ())
      }
   deriving (Generic, Functor)
 
@@ -161,9 +187,19 @@ citeDOI :: (Functor m, Monoid (m ()), IsString (m ()))
                      --   be included in the final document (provided the DOI
                      --   can be properly resolved).
         -> ReferenceQueryT DOIReference m ()
-citeDOI doi synops = ReferenceQueryT $ (\a -> ( (r :), a, ($ r) )) <$> mempty
+citeDOI doi synops = ReferenceQueryT $ (\a -> ( (r :), a, \f -> f r Flavour_cite ))
+                       <$> mempty
  where r = DOIReference doi $ fromString synops
 
+-- | Transform a citation into @\\textcite@, i.e. so that it can be used as a noun in a sentence.
+textc :: Functor m => ReferenceQueryT DOIReference m () -> ReferenceQueryT DOIReference m ()
+textc (ReferenceQueryT y) = ReferenceQueryT
+        $ (\(r,m,a) -> (r, m, \f -> a (\x _ -> f x Flavour_textcite))) <$> y
+
+-- | Transform a citation into @\\Textcite@, i.e. so that it can be used as the first word in a sentence.
+textC :: Functor m => ReferenceQueryT DOIReference m () -> ReferenceQueryT DOIReference m ()
+textC (ReferenceQueryT y) = ReferenceQueryT
+        $ (\(r,m,a) -> (r, m, \f -> a (\x _ -> f x Flavour_Textcite))) <$> y
 
 masterBibFile :: MonadIO m
       => FilePath    -- ^ A @.bib@ file containing entries for all relevant literature.
