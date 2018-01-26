@@ -74,6 +74,8 @@ Library
                , wl-pprint-extras >= 3.5
   if impl(ghc < 7.6)
     build-depends: ghc-prim
+  if impl(ghc < 8.0)
+    build-depends: semigroups
   Exposed-modules:
     Text.LaTeX
       -- Base (Core of the library)

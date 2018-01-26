@@ -60,8 +60,9 @@ import Control.Arrow
 import Data.String
 #if !MIN_VERSION_base(4,8,0)
 import Data.Monoid
-import Control.Applicative
 #endif
+import Control.Applicative
+import qualified Data.Semigroup as Semigroup
 -- transformers
 import Control.Monad.Trans.Writer
 import Control.Monad.IO.Class
@@ -219,3 +220,6 @@ instance (Monad m, a ~ ()) => IsString (LaTeXT m a) where
 instance (Monad m, Monoid a) => Monoid (LaTeXT m a) where
  mempty = return mempty
  mappend = liftM2 mappend
+
+instance (Applicative m, Semigroup.Semigroup a) => Semigroup.Semigroup (LaTeXT m a) where
+  (<>) = liftA2 (Semigroup.<>)

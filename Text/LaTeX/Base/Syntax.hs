@@ -29,9 +29,7 @@ module Text.LaTeX.Base.Syntax
 import Data.Text (Text,pack)
 import qualified Data.Text
 import Data.Monoid
-#if MIN_VERSION_base(4,9,0)
 import qualified Data.Semigroup as Semigroup
-#endif
 import Data.String
 import Control.Applicative
 import Control.Monad (replicateM)
@@ -117,10 +115,8 @@ instance Monoid LaTeX where
 (<>) = mappend
 #endif
 
-#if MIN_VERSION_base(4,9,0)
 instance Semigroup.Semigroup LaTeX where
   (<>) = mappend
-#endif
 
 -- | Method 'fromString' escapes LaTeX reserved characters using 'protectString'.
 instance IsString LaTeX where
