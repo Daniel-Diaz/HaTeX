@@ -12,7 +12,8 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 ## From 3.17.3.1 to 3.18.0.0
 
 * New bibtex module (leftaroundabout).
-* New function squareBraces (NorfairKing).
+* New function 'squareBraces' (NorfairKing).
+* New function 'table' (leftaroundabout).
 
 ## From 3.17.1.0 to 3.17.2.0
 
