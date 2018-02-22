@@ -740,7 +740,7 @@ hspace m = fromLaTeX $ TeXComm "hspace" [FixArg $ rendertex m]
 hspace_ :: LaTeXC l => Measure -> l
 hspace_ m = fromLaTeX $ TeXComm "hspace*" [FixArg $ rendertex m]
 
-stretch :: LaTeXC l => Int -> l
+stretch :: LaTeXC l => Double -> l
 stretch n = fromLaTeX $ TeXComm "stretch" [FixArg $ rendertex n]
 
 vspace :: LaTeXC l => Measure -> l
