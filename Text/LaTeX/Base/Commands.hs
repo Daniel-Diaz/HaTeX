@@ -113,10 +113,15 @@ module Text.LaTeX.Base.Commands
  , hspace
  , hspace_
  , vspace
+ , vspace_
+ , addvspace
  , hfill
  , vfill
+ , dotfill
+ , hrulefill
  , stretch
  , smallskip
+ , medskip
  , bigskip
  , baselineskip
  , indent
@@ -743,8 +748,19 @@ hspace_ m = fromLaTeX $ TeXComm "hspace*" [FixArg $ rendertex m]
 stretch :: LaTeXC l => Double -> l
 stretch n = fromLaTeX $ TeXComm "stretch" [FixArg $ rendertex n]
 
+-- | Add vertical white space, except at the end of a page.
 vspace :: LaTeXC l => Measure -> l
 vspace m = fromLaTeX $ TeXComm "vspace" [FixArg $ rendertex m]
+
+-- | Add vertical white space, even at the end of a page.
+vspace_ :: LaTeXC l => Measure -> l
+vspace_ m = fromLaTeX $ TeXComm "vspace*" [FixArg $ rendertex m]
+
+-- | Add extra vertical white space. In a sequence of 'addvspace' the
+-- length of the final white space is given by the maximum of the
+-- individual lengths.
+addvspace :: LaTeXC l => Measure -> l
+addvspace m = fromLaTeX $ TeXComm "addvspace" [FixArg $ rendertex m]
 
 -- | Fill out all available horizontal space.
 hfill :: LaTeXC l => l
@@ -753,6 +769,14 @@ hfill = comm0 "hfill"
 -- | Fill out all available vertical space.
 vfill :: LaTeXC l => l
 vfill = comm0 "vfill"
+
+-- | Fill out all available horizontal space with dots.
+dotfill :: LaTeXC l => l
+dotfill = comm0 "dotfill"
+
+-- | Fill out all available horizontal space with a line.
+hrulefill :: LaTeXC l => l
+hrulefill = comm0 "hrulefill"
 
 protect :: LaTeXC l => l -> l
 protect l = commS "protect" <> l
@@ -880,6 +904,9 @@ huge2 = sizecomm "Huge"
 
 smallskip :: LaTeXC l => l
 smallskip = comm0 "smallskip"
+
+medskip :: LaTeXC l => l
+medskip = comm0 "medskip"
 
 bigskip :: LaTeXC l => l
 bigskip = comm0 "bigskip"
