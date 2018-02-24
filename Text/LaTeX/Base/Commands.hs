@@ -7,7 +7,7 @@
 --   import additional LaTeX packages.
 module Text.LaTeX.Base.Commands
  ( -- * Basic functions
-   raw , between , comment , (%:)
+   raw , between , comment , (%:) , eol
    -- * Preamble commands
  , title
  , author
@@ -103,6 +103,8 @@ module Text.LaTeX.Base.Commands
  , newline
  , lnbk
  , lnbk_
+ , lnbkspc
+ , lnbkspc_
  , newpage
  , cleardoublepage
  , clearpage
@@ -272,6 +274,10 @@ comment = fromLaTeX . TeXComment
 (%:) :: LaTeXC l => l -> Text -> l
 (%:) l = (l <>) . comment
 
+-- | Append a blank comment.
+eol :: LaTeXC l => l
+eol = comment ""
+
 -- | Generate the title. It normally contains the 'title' name
 -- of your document, the 'author'(s) and 'date'.
 maketitle :: LaTeXC l => l
@@ -312,7 +318,7 @@ latex = comm0 "LaTeX"
 par :: LaTeXC l => l
 par = comm0 "par"
 
--- | Start a new line.
+-- | Start a new line. It can be used only in paragraph mode.
 newline :: LaTeXC l => l
 newline = comm0 "newline"
 
@@ -640,12 +646,33 @@ markboth = liftL2 $ \l1 l2 -> TeXComm "markboth" [FixArg l1 , FixArg l2]
 markright :: LaTeXC l => l -> l
 markright = liftL $ \l -> TeXComm "markright" [FixArg l]
 
--- | Start a new line. In a 'tabular', it starts a new row, so use 'newline' instead.
+-- | Start a new line. The exactly meaning depends on the context
+-- where it is used. In normal running text when it forces a line
+-- break it is essentially a shorthand for '\\newline' (does not end
+-- horizontal mode or end the paragraph, it just inserts some glue and
+-- penalties at that point into the horizontal material so that when
+-- the paragraph does end a line break will occur at that point with
+-- the short line padded with white space). In alignment environments
+-- (like 'tabular'), it starts a new row, so use 'newline' instead to
+-- start a new line.
 lnbk  :: LaTeXC l => l
 lnbk = fromLaTeX $ TeXLineBreak Nothing False
 
+-- | Like 'lnbk', 'lnbk_' introduces a line break, but preventing a
+-- page break.
 lnbk_ :: LaTeXC l => l
 lnbk_ = fromLaTeX $ TeXLineBreak Nothing True
+
+-- | Like 'lnbk', introduces a line break. But it has an argument that
+-- specifies how much extra vertical space is to be inserted before
+-- the next line. This can be a negative amount.
+lnbkspc :: LaTeXC l => Measure -> l
+lnbkspc extraSpace = fromLaTeX $ TeXLineBreak (Just extraSpace) False
+
+-- | Like 'lnbkspc', 'lnbkspc_' introduces a line break with an extra
+-- vertical space, but preventing a page break.
+lnbkspc_ :: LaTeXC l => Measure -> l
+lnbkspc_ extraSpace = fromLaTeX $ TeXLineBreak (Just extraSpace) True
 
 hyp :: LaTeXC l => l
 hyp = fromLaTeX $ TeXCommS "-"
@@ -659,9 +686,17 @@ clearpage = comm0 "clearpage"
 newpage :: LaTeXC l => l
 newpage = comm0 "newpage"
 
+-- | Request to break the current line at the point of the command
+-- stretching the line so that it extends to the right margin. The
+-- number must be a number from 0 to 4. The higher the number, the
+-- more insistent the request is (0 means it will be easily ignored
+-- and 4 means do it anyway). When this line break option is used,
+-- LaTeX will try to produce the best line breaks possible.
 linebreak :: LaTeXC l => l -> l
 linebreak = liftL $ \l -> TeXComm "linebreak" [OptArg l]
 
+-- | Like 'linebreak', but prevents a like break instead of requesting
+-- one.
 nolinebreak :: LaTeXC l => l -> l
 nolinebreak = liftL $ \l -> TeXComm "nolinebreak" [OptArg l]
 
