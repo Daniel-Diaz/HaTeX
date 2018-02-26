@@ -13,7 +13,7 @@ module Text.LaTeX.Packages.Multirow
 import Data.Monoid ((<>))
 import Data.Maybe (catMaybes)
 import Text.LaTeX.Base.Syntax (LaTeX(TeXComm), TeXArg(FixArg, OptArg))
-import Text.LaTeX.Base.Class (LaTeXC, liftL2)
+import Text.LaTeX.Base.Class (LaTeXC, liftL)
 import Text.LaTeX.Base.Types (PackageName, Pos, Measure)
 import Text.LaTeX.Base.Render (Render, render, rendertex)
 
@@ -46,19 +46,17 @@ multirow :: LaTeXC l =>
             Maybe Pos            -- ^ Optional vertical positioning of the text in the multirow block
          -> Double               -- ^ Number of rows to span
          -> Maybe BigStrutsCount -- ^ Optinal total number of uses of bigstrut within the rows being spanned
-         -> l                    -- ^ Width to which the text is to be set
+         -> Measure              -- ^ Width to which the text is to be set
          -> Maybe Measure        -- ^ Optinal length used to raise or lower the text
          -> l                    -- ^ Actual text of the construct
          -> l
 multirow mVPos nrows mBigstruts width mVMove text =
-  liftL2 (\l1 l2 ->
-            TeXComm "multirow" $ catMaybes  [ fmap (OptArg . rendertex) mVPos
-                                            , Just (FixArg . rendertex $ nrows)
-                                            , fmap (OptArg . rendertex) mBigstruts
-                                            , Just (FixArg l1)
-                                            , fmap (OptArg . rendertex) mVMove
-                                            , Just (FixArg l2)
-                                            ]
-         ) width text
-
--- | 
+  liftL (\l ->
+           TeXComm "multirow" $ catMaybes  [ fmap (OptArg . rendertex) mVPos
+                                           , Just (FixArg . rendertex $ nrows)
+                                           , fmap (OptArg . rendertex) mBigstruts
+                                           , Just (FixArg . rendertex $ width)
+                                           , fmap (OptArg . rendertex) mVMove
+                                           , Just (FixArg l)
+                                           ]
+        ) text
