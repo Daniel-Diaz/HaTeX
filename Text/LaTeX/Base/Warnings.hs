@@ -27,6 +27,7 @@ import Control.Arrow
 #if !MIN_VERSION_base(4,8,0)
 import Data.Monoid
 #endif
+import qualified Data.Semigroup as SG
 
 -- | List of possible warnings.
 data Warning =
@@ -47,6 +48,8 @@ newtype TeXCheck = TC { check :: LaTeX -> [Warning] -- ^ Apply a checking.
 checkFromFunction :: (LaTeX -> [Warning]) -> TeXCheck
 checkFromFunction = TC
 
+instance SG.Semigroup TeXCheck where
+ (<>) = mappend
 instance Monoid TeXCheck where
  mempty = TC $ const []
  mappend (TC tc1) (TC tc2) = TC $ uncurry mappend . (tc1 &&& tc2)
