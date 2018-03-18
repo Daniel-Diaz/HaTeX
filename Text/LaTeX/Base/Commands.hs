@@ -7,7 +7,7 @@
 --   import additional LaTeX packages.
 module Text.LaTeX.Base.Commands
  ( -- * Basic functions
-   raw , between , comment , (%:) , eol
+   raw , between , comment , (%:)
    -- * Preamble commands
  , title
  , author
@@ -274,9 +274,14 @@ comment = fromLaTeX . TeXComment
 (%:) :: LaTeXC l => l -> Text -> l
 (%:) l = (l <>) . comment
 
+-- I am not sure this is a worth addition to the namespace. If added, maybe
+-- it should be with a different name? Although any name that is slightly
+-- longer will make 'eol' not cheaper to type than just @comment ""@, which
+-- is already really cheap.
+
 -- | Append a blank comment.
-eol :: LaTeXC l => l
-eol = comment ""
+-- eol :: LaTeXC l => l
+-- eol = comment ""
 
 -- | Generate the title. It normally contains the 'title' name
 -- of your document, the 'author'(s) and 'date'.
