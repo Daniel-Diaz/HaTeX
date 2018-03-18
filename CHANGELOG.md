@@ -9,7 +9,16 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.18.0.0 to 3.19.0.0
+
+* Fix build with GHC 8.4.1 (#113) (leftaroundabout).
+* Added Multirow, Bigstrut, and Lscape modules (#107, #111) (romildo).
+* More spacing and line breaking commands (#108, #110) (romildo).
+
 ## From 3.17.3.1 to 3.18.0.0
+
+* _Warning:_ Using 3.18.0.0 is not recommended, since it fails to build with GHC 8.4.1.
+  Please, upgrade to 3.19.0.0.
 
 * New bibtex module (leftaroundabout).
 * New function 'squareBraces' (NorfairKing).
