@@ -155,6 +155,8 @@ instance Monad m => Monad (ReferenceQueryT r m) where
                            , fx
                            , \resolve -> mappend <$> refrex resolve <*> refrefx resolve ))
                      <$> refsfx
+instance MonadIO m => MonadIO (ReferenceQueryT r m) where
+  liftIO a = ReferenceQueryT $ (\r -> (id, r, const $ pure ())) <$> liftIO a
 
 instance (Functor m, Monoid (m a), IsString (m ()), a ~ ())
            => IsString (ReferenceQueryT r m a) where
