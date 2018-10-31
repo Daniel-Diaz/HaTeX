@@ -297,42 +297,42 @@ autoSquareBrackets x = commS "left[" <> x <> commS "right]"
 autoBraces :: LaTeXC l => l -> l
 autoBraces x = commS "left"<>"{" <> x <> commS "right"<>"}"
 
--- | Like 'autoParens', but with angle brackets 〈 ... 〉. Equivalent to @'autoBrackets' 'langle' 'rangle'@.
+-- | Like 'autoParens', but with angle brackets \(\langle\) ... \(\rangle\). Equivalent to @'autoBrackets' 'langle' 'rangle'@.
 autoAngleBrackets :: LaTeXC l => l -> l
 autoAngleBrackets x = commS "left"<>langle <> x <> commS "right"<>rangle
 
 -- | Use custom LaTeX expressions as auto-scaled delimiters to surround math.
--- Suitable delimiters include |...| (absolute value), ‖...‖ (norm,
--- 'dblPipe'), ⌊...⌋ (round-off Gauss brackets, 'lfloor' / 'rfloor') etc..
+-- Suitable delimiters include \(|\ldots|\) (absolute value), \(\|\ldots\|\) (norm,
+-- 'dblPipe'), \(\lfloor\ldots\rfloor\) (round-off Gauss brackets, 'lfloor' / 'rfloor') etc..
 autoBrackets :: LaTeXC l => LaTeX -> LaTeX -> l -> l
 autoBrackets lBrack rBrack x
   = commS "left" <> fromLaTeX lBrack <> x <> commS "right" <> fromLaTeX rBrack
 
--- | Left angle bracket, 〈.
+-- | Left angle bracket, \(\langle\).
 langle :: LaTeXC l => l
 langle = comm0 "langle"
 
--- | Right angle bracket, 〉.
+-- | Right angle bracket, \(\rangle\).
 rangle :: LaTeXC l => l
 rangle = comm0 "rangle"
 
--- | Left floor, ⌊.
+-- | Left floor, \(\lfloor\).
 lfloor :: LaTeXC l => l
 lfloor = comm0 "lfloor"
 
--- | Right floor, ⌋.
+-- | Right floor, \(\rfloor\).
 rfloor :: LaTeXC l => l
 rfloor = comm0 "rfloor"
 
--- | Left ceiling, ⌈.
+-- | Left ceiling, \(\lceil\).
 lceil :: LaTeXC l => l
 lceil = comm0 "lceil"
 
--- | Right ceiling, ⌉.
+-- | Right ceiling, \(\rceil\).
 rceil :: LaTeXC l => l
 rceil = comm0 "rceil"
 
--- | Double vertical line, used as delimiter for norms (‖ ... ‖).
+-- | Double vertical line, used as delimiter for norms \(\| \ldots \|\).
 dblPipe :: LaTeXC l => l
 dblPipe = comm0 "|"
 
@@ -432,24 +432,24 @@ operatorname = comm1 "operatorname"
 
 ---- Sum/Integral symbols
 
--- | Sigma sumation symbol. Use 'sumFromTo' instead if you want to
+-- | Sigma sumation symbol \(\sum\). Use 'sumFromTo' instead if you want to
 --   specify the limits of the sum.
 tsum :: LaTeXC l => l
 tsum = comm0 "sum"
 
--- | Sigma sumation symbol with limits.
+-- | Sigma sumation symbol with limits, like \[\sum_0^n\].
 sumFromTo :: LaTeXC l
           => l -- ^ Expression below the sigma.
           -> l -- ^ Expression above the sigma.
           -> l
 sumFromTo x y = commS "sum" <> raw"_" <> braces x <> raw"^" <> braces y
 
--- | Pi product symbol. Use 'prodFromTo' if you want to specify the
+-- | Pi product symbol \(\prod\). Use 'prodFromTo' if you want to specify the
 --   limits of the product.
 prod :: LaTeXC l => l
 prod = comm0 "prod"
 
--- | Pi product symbol with limits.
+-- | Pi product symbol with limits, like \[\prod_0^n\].
 prodFromTo :: LaTeXC l
            => l -- ^ Expression below the pi.
            -> l -- ^ Expression above the pi.
@@ -461,26 +461,36 @@ prodFromTo x y = commS "prod" <> raw"_" <> braces x <> raw"^" <> braces y
 integral :: LaTeXC l => l
 integral = comm0 "int"
 
--- | Integral symbol with limits of integration.
+-- | Integral symbol with limits of integration. \(\int\limits_{-1}^1\)
 integralFromTo :: LaTeXC l
                => l -- ^ Lower limit of integration.
                -> l -- ^ Upper limit of integration.
                -> l
 integralFromTo x y = commS "int" <> commS "limits" <> raw"_" <> braces x <> raw"^" <> braces y
 
--- | Partial-differentiation symbol ∂
+-- | Partial-differentiation symbol \(\partial\)
 partial :: LaTeXC l => l
 partial = comm0 "partial"
 
 -- | Total-differentiation (or integration-variable) symbol d (non-italic!)
+--   To be used as @frac (totald) (totald<>"x")@ → \(\frac{\mathrm{d}}{\mathrm{d}x}\).
 totald :: LaTeXC l => l
 totald = mathrm "d"
 
--- | Partial-differentiation of variable, e.g. /∂x/.
+-- | Partial-differentiation of variable, e.g.
+--   @frac (partialOf h) (partialOf t)@ → \(\frac{\partial h}{\partial t}\).
 partialOf :: LaTeXC l => l -> l
 partialOf v = comm0 "partial" <> v
 
--- | Total-differentiation of variable, or integration over variable, e.g. d/x/.
+-- | Total-differentiation of variable, or integration over variable.
+--   To be used as
+-- 
+-- @
+-- integralFromTo 0 infty $ totaldOf "x" <> "f(x)"
+-- @
+-- 
+--   \[\int\limits_0^\infty\mathrm{d}x f(x),\] or
+--   @frac (totaldOf"f") (totaldOf"x")@ → \(\frac{\mathrm{d}f}{\mathrm{d}x}\).
 totaldOf :: LaTeXC l => l -> l
 totaldOf v = mathrm "d" <> v
 
@@ -496,27 +506,27 @@ notop op =
 
 infixl 6 +-, -+
 
--- | Plus-or-minus operator (±). Also available as symbol 'pm'.
+-- | Plus-or-minus operator \(\pm\). Also available as symbol 'pm'.
 (+-) :: LaTeXC l => l -> l -> l
 (+-)  = between $ comm0 "pm"
 
--- | Minus-or-plus operator (∓). Also available as symbol 'mp'.
+-- | Minus-or-plus operator \(\mp\). Also available as symbol 'mp'.
 (-+) :: LaTeXC l => l -> l -> l
 (-+)  = between $ comm0 "mp"
 
--- | Centered-dot operator (⋅).
+-- | Centered-dot operator \(\cdot\).
 cdot :: LaTeXC l => l -> l -> l
 cdot  = between $ comm0 "cdot"
 
--- | \"x-cross\" multiplication operator (×).
+-- | \"x-cross\" multiplication operator \(\times\).
 times :: LaTeXC l => l -> l -> l
 times = between $ comm0 "times"
 
--- | Division operator.
+-- | Division operator \(\div\).
 div_ :: LaTeXC l => l -> l -> l
 div_  = between $ comm0 "div"
 
--- | Fraction operator.
+-- | Fraction operator, like @frac 1 2@ → \(\frac12\).
 frac :: LaTeXC l => l -> l -> l
 frac = liftL2 $ \p q -> TeXComm "frac" [FixArg p, FixArg q]
 
@@ -526,135 +536,135 @@ tfrac = liftL2 $ \p q -> TeXComm "tfrac" [FixArg p, FixArg q]
 
 infixl 7 *:
 
--- | Asterisk operator (*).
+-- | Asterisk operator \(\ast\).
 --
 -- > infixl 7 *:
 (*:) :: LaTeXC l => l -> l -> l
 (*:) = between $ comm0 "ast"
 
--- | Star operator (★).
+-- | Star operator \(\star\).
 star :: LaTeXC l => l -> l -> l
 star  = between $ comm0 "star"
 
--- | Ring operator (∘).
+-- | Ring operator \(\circ\).
 circ :: LaTeXC l => l -> l -> l
 circ  = between $ comm0 "circ"
 
--- | Bullet operator (∙).
+-- | Bullet operator \(\bullet\).
 bullet :: LaTeXC l => l -> l -> l
 bullet  = between $ comm0 "bullet"
 
 infixr 4 =: , /=:
 
--- | Equal.
+-- | Simple equals sign \(=\).
 --
 -- > infixr 4 =:
 (=:) :: LaTeXC l => l -> l -> l
 (=:)  = between "="
 
--- | Not equal (≠).
+-- | Not equal \(\neq\).
 --
 -- > infixr 4 /=:
 (/=:) :: LaTeXC l => l -> l -> l
 (/=:) = notop (=:)
 
--- | Greater.
+-- | Greater \(>\).
 (>:) :: LaTeXC l => l -> l -> l
 (>:) = between ">"
 
--- | Greater or equal (≥).
+-- | Greater or equal \(\geq\).
 (>=:) :: LaTeXC l => l -> l -> l
 (>=:) = between $ comm0 "geq"
 
--- | Lesser.
+-- | Lesser \(<\).
 (<:) :: LaTeXC l => l -> l -> l
 (<:) = between "<"
 
--- | Lesser or equal (≤).
+-- | Lesser or equal \(\leq\).
 (<=:) :: LaTeXC l => l -> l -> l
 (<=:) = between $ comm0 "leq"
 
--- | Much less (≪).
+-- | Much less \(\ll\).
 ll :: LaTeXC l => l -> l -> l
 ll = between $ comm0 "ll"
 
--- | Much greater (≫).
+-- | Much greater \(\gg\).
 gg :: LaTeXC l => l -> l -> l
 gg = between $ comm0 "gg"
 
--- | Proportional-to (∝).
+-- | Proportional-to \(\propto\).
 propto :: LaTeXC l => l -> l -> l
 propto  = between $ comm0 "propto"
 
--- | Perpendicular (⟂). This is the infix version of 'bot'.
+-- | Perpendicular \(\perp\). This is the infix version of 'bot'.
 perp :: LaTeXC l => l -> l -> l
 perp = between $ comm0 "perp"
 
--- | Parallel (‖).
+-- | Parallel \(\parallel\).
 parallel :: LaTeXC l => l -> l -> l
 parallel = between $ comm0 "parallel"
 
--- | Identical \/ defined-as \/ equivalent (≡).
+-- | Identical \/ defined-as \/ equivalent \(\equiv\).
 equiv :: LaTeXC l => l -> l -> l
 equiv  = between $ comm0 "equiv"
 
--- | Element-of (∈).
+-- | Element-of \(\in\).
 in_ :: LaTeXC l => l -> l -> l
 in_ = between $ comm0 "in"
 
--- | Mirrored element-of (∋).
+-- | Mirrored element-of \(\ni\).
 ni :: LaTeXC l => l -> l -> l
 ni  = between $ comm0 "ni"
 
--- | Not element of (∉).
+-- | Not element of \(\notin\).
 notin :: LaTeXC l => l -> l -> l
 notin = between $ comm0 "notin"
 
--- | Subset-of (⊂).
+-- | Subset-of \(\subset\).
 subset :: LaTeXC l => l -> l -> l
 subset  = between $ comm0 "subset"
 
--- | Superset-of (⊃).
+-- | Superset-of \(supset\).
 supset :: LaTeXC l => l -> l -> l
 supset  = between $ comm0 "supset"
 
--- | Set intersection (∩).
+-- | Set intersection \(\cap\).
 cap :: LaTeXC l => l -> l -> l
 cap  = between $ comm0 "cap"
 
--- | Set union (∪).
+-- | Set union \(\cup\).
 cup :: LaTeXC l => l -> l -> l
 cup  = between $ comm0 "cup"
 
--- | Set minus (∖).
+-- | Set minus \(\setminus\).
 setminus :: LaTeXC l => l -> l -> l
 setminus  = between $ comm0 "setminus"
 
--- | Angle pointing downwards (∨).
+-- | Angle pointing downwards \(\vee\).
 vee :: LaTeXC l => l -> l -> l
 vee  = between $ comm0 "vee"
 
--- | Angle pointing upwards (∧).
+-- | Angle pointing upwards \(\wedge\).
 wedge :: LaTeXC l => l -> l -> l
 wedge  = between $ comm0 "wedge"
 
--- | Circled plus operator (⊕).
+-- | Circled plus operator \(\oplus\).
 oplus :: LaTeXC l => l -> l -> l
 oplus  = between $ comm0 "oplus"
 
--- | Circled minus operator (⊖).
+-- | Circled minus operator \(\ominus\).
 ominus :: LaTeXC l => l -> l -> l
 ominus  = between $ comm0 "ominus"
 
--- | Circled multiplication cross (⊗).
+-- | Circled multiplication cross \(\otimes\).
 otimes :: LaTeXC l => l -> l -> l
 otimes  = between $ comm0 "otimes"
 
--- | Circled slash (⊘).
+-- | Circled slash \(\oslash\).
 oslash :: LaTeXC l => l -> l -> l
 oslash  = between $ comm0 "oslash"
 
--- | Circled dot operator (⊙).
+-- | Circled dot operator \(\odot\).
 odot :: LaTeXC l => l -> l -> l
 odot  = between $ comm0 "odot"
 
@@ -665,259 +675,262 @@ odot  = between $ comm0 "odot"
  , overline, underline
  -}
 
--- | Add a hat accent above a symbol. 
+-- | Add a hat accent above a symbol, like \(\hat{x}\).
 hat :: LaTeXC l => l -> l
 hat = comm1 "hat"
 
--- | Add a tilde accent above a symbol.
+-- | Add a tilde accent above a symbol, like \(\tilde{y}\).
 tilde :: LaTeXC l => l -> l
 tilde = comm1 "tilde"
 
--- | Add a bar accent above a symbol.
+-- | Add a bar accent above a symbol, like \(\bar{z}\).
 bar :: LaTeXC l => l -> l
 bar = comm1 "bar"
 
--- | Add a vector arrow accent above a symbol.
+-- | Add a vector arrow accent above a symbol, like \(\vec{v}\).
 vec :: LaTeXC l => l -> l
 vec = comm1 "vec"
 
--- | Add a wide hat accent above a symbol.
+-- | Add a wide hat accent above a symbol, like \(\widehat{w}\).
 widehat :: LaTeXC l => l -> l
 widehat = comm1 "widehat"
 
--- | Add a wide tilde accent above a symbol.
+-- | Add a wide tilde accent above a symbol, like \(\widetilde{u}\).
 widetilde :: LaTeXC l => l -> l
 widetilde = comm1 "widetilde"
 
--- | Add a dot accent above a symbol, as used to denote a derivative.
+-- | Add a dot accent above a symbol, as used to denote a derivative,
+--   like \(\dot{x}\).
 dot :: LaTeXC l => l -> l
 dot = comm1 "dot"
 
--- | Add a dot accent above a symbol, as used to denote a second derivative.
+-- | Add a dot accent above a symbol, as used to denote a second derivative,
+--   like \(\ddot{y}\)
 ddot :: LaTeXC l => l -> l
 ddot = comm1 "ddot"
 
--- | Add a triple dot accent above a symbol, as used to denote a third derivative.
+-- | Add a triple dot accent above a symbol, as used to denote a third derivative,
+--   like \(\dddot{z}\)
 dddot :: LaTeXC l => l -> l
 dddot = comm1 "dddot"
 
--- | Add a wide line accent above a symbol.
+-- | Add a wide line accent above a symbol, like \(\overline{abc}\).
 overline :: LaTeXC l => l -> l
 overline = comm1 "overline"
 
 ---- Greek alphabet
 
--- | /α/ symbol.
+-- | \(\alpha\) symbol.
 alpha :: LaTeXC l => l
 alpha = comm0 "alpha"
 
--- | /β/ symbol.
+-- | \(\beta\) symbol.
 beta :: LaTeXC l => l
 beta = comm0 "beta"
 
--- | /γ/ symbol.
+-- | \(\gamma\) symbol.
 gamma :: LaTeXC l => l
 gamma = comm0 "gamma"
 
--- | Γ symbol.
+-- | \(\Gamma\) symbol.
 gammau :: LaTeXC l => l
 gammau = comm0 "Gamma"
 
--- | /δ/ symbol.
+-- | \(\delta\) symbol.
 delta :: LaTeXC l => l
 delta = comm0 "delta"
 
--- | Δ symbol.
+-- | \(\Delta\) symbol.
 deltau :: LaTeXC l => l
 deltau = comm0 "Delta"
 
--- | /ϵ/ symbol.
+-- | \(\epsilon\) symbol.
 epsilon :: LaTeXC l => l
 epsilon = comm0 "epsilon"
 
--- | /ε/ symbol.
+-- | \(\varepsilon\) symbol.
 varepsilon :: LaTeXC l => l
 varepsilon = comm0 "varepsilon"
 
--- | /ζ/ symbol.
+-- | \(\zeta\) symbol.
 zeta :: LaTeXC l => l
 zeta = comm0 "zeta"
 
--- | /η/ symbol.
+-- | \(\eta\) symbol.
 eta :: LaTeXC l => l
 eta = comm0 "eta"
 
--- | /θ/ symbol.
+-- | \(\theta\) symbol.
 theta :: LaTeXC l => l
 theta = comm0 "theta"
 
--- | /ϑ/ symbol.
+-- | \(\vartheta\) symbol.
 vartheta :: LaTeXC l => l
 vartheta = comm0 "vartheta"
 
--- | Θ symbol.
+-- | \(\Theta\) symbol.
 thetau :: LaTeXC l => l
 thetau = comm0 "Theta"
 
--- | /ι/ symbol.
+-- | \(\iota\) symbol.
 iota :: LaTeXC l => l
 iota = comm0 "iota"
 
--- | /κ/ symbol.
+-- | \(\kappa\) symbol.
 kappa :: LaTeXC l => l
 kappa = comm0 "kappa"
 
--- | /λ/ symbol.
+-- | \(\lambda\) symbol.
 lambda :: LaTeXC l => l
 lambda = comm0 "lambda"
 
--- | Λ symbol.
+-- | \(\Lambda\) symbol.
 lambdau :: LaTeXC l => l
 lambdau = comm0 "Lambda"
 
--- | /μ/ symbol.
+-- | \(\mu\) symbol.
 mu :: LaTeXC l => l
 mu = comm0 "mu"
 
--- | /ν/ symbol.
+-- | \(\nu\) symbol.
 nu :: LaTeXC l => l
 nu = comm0 "nu"
 
--- | /ξ/ symbol.
+-- | \(\xi\) symbol.
 xi :: LaTeXC l => l
 xi = comm0 "xi"
 
--- | Ξ symbol.
+-- | \(\Xi\) symbol.
 xiu :: LaTeXC l => l
 xiu = comm0 "Xi"
 
--- | /π/ symbol.
+-- | \(\pi\) symbol.
 pi_ :: LaTeXC l => l
 pi_ = comm0 "pi"
 
--- | /ϖ/ symbol.
+-- | \(\varpi\) symbol.
 varpi :: LaTeXC l => l
 varpi = comm0 "varpi"
 
--- | Π symbol.
+-- | \(\Pi\) symbol.
 piu :: LaTeXC l => l
 piu = comm0 "Pi"
 
--- | /ρ/ symbol.
+-- | \(\rho\) symbol.
 rho :: LaTeXC l => l
 rho = comm0 "rho"
 
--- | /ϱ/ symbol.
+-- | \(\varrho\) symbol.
 varrho :: LaTeXC l => l
 varrho = comm0 "varrho"
 
--- | /σ/ symbol.
+-- | \(\sigma\) symbol.
 sigma :: LaTeXC l => l
 sigma = comm0 "sigma"
 
--- | /ς/ symbol.
+-- | \(\varsigma\) symbol.
 varsigma :: LaTeXC l => l
 varsigma = comm0 "varsigma"
 
--- | Σ symbol.
+-- | \(\Sigma\) symbol.
 sigmau :: LaTeXC l => l
 sigmau = comm0 "Sigma"
 
--- | /τ/ symbol.
+-- | \(\tau\) symbol.
 tau :: LaTeXC l => l
 tau = comm0 "tau"
 
--- | /υ/ symbol.
+-- | \(\upsilon\) symbol.
 upsilon :: LaTeXC l => l
 upsilon = comm0 "upsilon"
 
--- | Υ symbol.
+-- | \(\Upsilon\) symbol.
 upsilonu :: LaTeXC l => l
 upsilonu = comm0 "Upsilon"
 
--- | /ϕ/ symbol.
+-- | \(\phi\) symbol.
 phi :: LaTeXC l => l
 phi = comm0 "phi"
 
--- | /φ/ symbol.
+-- | \(\varphi\) symbol.
 varphi :: LaTeXC l => l
 varphi = comm0 "varphi"
 
--- | Φ symbol.
+-- | \(\Phi\) symbol.
 phiu :: LaTeXC l => l
 phiu = comm0 "Phi"
 
--- | /χ/ symbol.
+-- | \(\chi\) symbol.
 chi :: LaTeXC l => l
 chi = comm0 "chi"
 
--- | /ψ/ symbol.
+-- | \(\psi\) symbol.
 psi :: LaTeXC l => l
 psi = comm0 "psi"
 
--- | Ψ symbol.
+-- | \(\Psi\) symbol.
 psiu :: LaTeXC l => l
 psiu = comm0 "Psi"
 
--- | /ω/ symbol.
+-- | \(\omega\) symbol.
 omega :: LaTeXC l => l
 omega = comm0 "omega"
 
--- | Ω symbol.
+-- | \(\Omega\) symbol.
 omegau :: LaTeXC l => l
 omegau = comm0 "Omega"
 
 ---- Other symbols
 
--- | Plus-or-minus symbol (±). Also available as infix '+-'.
+-- | Plus-or-minus symbol \(\pm\). Also available as infix '+-'.
 pm :: LaTeXC l => l
 pm  = comm0 "pm"
 
--- | Minus-or-plus symbol (∓).
+-- | Minus-or-plus symbol \(\mp\).
 mp :: LaTeXC l => l
 mp  = comm0 "mp"
 
--- | A right-arrow, →.
+-- | A right-arrow, \(\to\).
 to :: LaTeXC l => l
 to = comm0 "to"
 
--- | A right-arrow for function definitions, ↦.
+-- | A right-arrow for function definitions, \(\mapsto\).
 mapsto :: LaTeXC l => l
 mapsto = comm0 "mapsto"
 
--- | An implication arrow, =⇒.
+-- | An implication arrow, \(\implies\).
 implies :: LaTeXC l => l
 implies = comm0 "implies"
 
--- | /For all/ symbol, ∀.
+-- | /For all/ symbol, \(\forall\).
 forall :: LaTeXC l => l
 forall = comm0 "forall"
 
--- | /Exists/ symbol, ∃.
+-- | /Exists/ symbol, \(\exists\).
 exists :: LaTeXC l => l
 exists = comm0 "exists"
 
--- | Dagger symbol, †.
+-- | Dagger symbol, \(\dagger\).
 dagger :: LaTeXC l => l
 dagger = comm0 "dagger"
 
--- | Double dagger symbol, ‡.
+-- | Double dagger symbol, \(\ddagger\).
 ddagger :: LaTeXC l => l
 ddagger = comm0 "ddagger"
 
--- | Infinity symbol.
+-- | Infinity symbol, \(\infty\).
 infty :: LaTeXC l => l
 infty = comm0 "infty"
 
--- | Dotless letter i. Strictly speaking this is not a part of the AMSMath package, but it is defined here for convenience.
+-- | Dotless letter i, \(\imath\). Strictly speaking this is not a part of the AMSMath package, but it is defined here for convenience.
 imath :: LaTeXC l => l
 imath = comm0 "imath"
 
--- | Dotless letter j. Strictly speaking this is not a part of the AMSMath package, but it is defined here for convenience.
+-- | Dotless letter j, \(\jmath\). Strictly speaking this is not a part of the AMSMath package, but it is defined here for convenience.
 jmath :: LaTeXC l => l
 jmath = comm0 "jmath"
 
--- | Bottom symbol ⟂. For the infix version see 'perp'.
+-- | Bottom symbol, \(\bot\). For the infix version see 'perp'.
 bot :: LaTeXC l => l
 bot = comm0 "bot"
 
@@ -928,11 +941,11 @@ bot = comm0 "bot"
 mathdefault :: LaTeXC l => l -> l
 mathdefault = comm1 "mathdefault"
 
--- | Bold face.
+-- | Bold face, like \(\mathbf{Abc}\).
 mathbf :: LaTeXC l => l -> l
 mathbf = comm1 "mathbf"
 
--- | Roman, i.e. not-italic math.
+-- | Roman, i.e. not-italic math, \(\mathrm{deF}\)
 mathrm :: LaTeXC l => l -> l
 mathrm = comm1 "mathrm"
 
@@ -942,15 +955,15 @@ mathrm = comm1 "mathrm"
 text :: LaTeXC l => l -> l
 text = comm1 "text"
 
--- | Calligraphic math symbols.
+-- | Calligraphic math symbols. Only works (reliably) with uppercase letters, like \(\mathcal{LMN}\).
 mathcal :: LaTeXC l => l -> l
 mathcal = comm1 "mathcal"
 
--- | Sans-serif math.
+-- | Sans-serif math, \(\mathsf{xyz}\).
 mathsf :: LaTeXC l => l -> l
 mathsf = comm1 "mathsf"
 
--- | Typewriter font.
+-- | Typewriter font, \(\mathtt{ijk}\).
 mathtt :: LaTeXC l => l -> l
 mathtt = comm1 "mathtt"
 
@@ -978,7 +991,7 @@ toMatrix str (Just p) = liftL (TeXEnv (str ++ "*") [OptArg $ rendertex p]) . mat
 --   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
 --   is centered.
 --
--- > ( M )
+-- \[ \begin{pmatrix} 0 & 1 \\ 2 & 3 \end{pmatrix} \]
 --
 pmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 pmatrix = toMatrix "pmatrix"
@@ -987,7 +1000,7 @@ pmatrix = toMatrix "pmatrix"
 --   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
 --   is centered.
 --
--- > [ M ]
+-- \[ \begin{bmatrix} 0 & 1 \\ 2 & 3 \end{bmatrix} \]
 --
 bmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 bmatrix = toMatrix "bmatrix"
@@ -996,7 +1009,7 @@ bmatrix = toMatrix "bmatrix"
 --   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
 --   is centered.
 --
--- > { M }
+-- \[ \begin{Bmatrix} 0 & 1 \\ 2 & 3 \end{Bmatrix} \]
 --
 b2matrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 b2matrix = toMatrix "Bmatrix"
@@ -1005,7 +1018,7 @@ b2matrix = toMatrix "Bmatrix"
 --   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
 --   is centered.
 --
--- > | M |
+-- \[ \begin{vmatrix} 0 & 1 \\ 2 & 3 \end{vmatrix} \]
 --
 vmatrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 vmatrix = toMatrix "vmatrix"
@@ -1014,7 +1027,7 @@ vmatrix = toMatrix "vmatrix"
 --   Optional argument sets the alignment of the cells. Default (providing 'Nothing') 
 --   is centered.
 --
--- > || M ||
+-- \[ \begin{Vmatrix} 0 & 1 \\ 2 & 3 \end{Vmatrix} \]
 --
 v2matrix :: (Texy a, LaTeXC l) => Maybe HPos -> Matrix a -> l
 v2matrix = toMatrix "Vmatrix"
@@ -1053,30 +1066,30 @@ instance Texy a => Texy [a] where
 -------------------------------------
 ----------- Math Spacing-------------
 
--- | \quad space equal to the current font size (= 18 mu)
+-- | Space equal to the current font size (= 18 mu). \(a\quad b\)
 quad :: LaTeXC l => l
 quad = comm0 "quad"
 
--- | \qquad twice of \quad (= 36 mu) 
+-- | Twice of @\quad@ (= 36 mu).  \(a\qquad b\)
 qquad :: LaTeXC l => l
 qquad = comm0 "qquad"
 
--- | \, space equal to 3/18 of \quad (= 3 mu)
+-- | @\,@ space equal to 3/18 of \quad (= 3 mu). \(a\,b\)
 thinspace :: LaTeXC l => l
 thinspace = comm0 ","
 
--- | \: space equal to 4/18 of \quad (= 4 mu)
+-- | @\:@ space equal to 4/18 of \quad (= 4 mu). \(a\:b\)
 medspace :: LaTeXC l => l
 medspace = comm0 ":"
 
--- | \: space equal to 5/18 of \quad (= 5 mu)
+-- | @\:@ space equal to 5/18 of \quad (= 5 mu). \(a\;b\)
 thickspace :: LaTeXC l => l
 thickspace = comm0 ";"
 
--- | \! space equal to -3/18 of \quad (= -3 mu)
+-- | @\!@ space equal to -3/18 of \quad (= -3 mu). \(a\!b\)
 negspace :: LaTeXC l => l
 negspace = comm0 "!"
 
--- | \ (space after backslash) equivalent of space in normal text
+-- | @\ @ (space after backslash) equivalent of space in normal text. \(a\ b\)
 space :: LaTeXC l => l
 space = comm0 " "
