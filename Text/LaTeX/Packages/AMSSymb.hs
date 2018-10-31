@@ -19,7 +19,7 @@ amssymb = "amssymb"
 
 --
 
--- | /✔/ symbol.
+-- | \(\checkmark\) symbol.
 checkmark :: LaTeXC l => l
 checkmark = comm0 "checkmark"
 
