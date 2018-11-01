@@ -25,7 +25,7 @@ amsfonts = "amsfonts"
 --
 
 -- | This font is useful for representing sets like
---   R (real numbers) or Z (integers). For instance:
+--   \(\mathbb{R}\) (real numbers) or \(\mathbb{Z}\) (integers). For instance:
 --
 -- > "The set of real numbers are represented by " <> mathbb "R" <> "."
 --
@@ -37,29 +37,34 @@ amsfonts = "amsfonts"
 mathbb :: LaTeXC l => l -> l
 mathbb = comm1 "mathbb"
 
--- | Fraktur font.
+-- | Fraktur font, like \(\mathfrak{abcXYZ}\).
 mathfrak :: LaTeXC l => l -> l
 mathfrak = comm1 "mathfrak"
 
--- | Number sets
-
+-- | \(\mathbb{N}\)
 naturals :: LaTeXC l => l
 naturals = mathbb "N"
 
+-- | \(\mathbb{Z}\)
 integers :: LaTeXC l => l
 integers = mathbb "Z"
 
+-- | \(\mathbb{Q}\)
 rationals :: LaTeXC l => l
 rationals = mathbb "Q"
 
+-- | \(\mathbb{R}\)
 reals :: LaTeXC l => l
 reals = mathbb "R"
 
+-- | \(\mathbb{C}\)
 complexes :: LaTeXC l => l
 complexes = mathbb "C"
 
+-- | \(\Re\)
 trealPart :: LaTeXC l => l -> l
 trealPart z = comm0 "Re" <> z
 
+-- | \(\Im\)
 timagPart :: LaTeXC l => l -> l
 timagPart z = comm0 "Im" <> z
