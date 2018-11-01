@@ -106,9 +106,25 @@ module Text.LaTeX.Base.Math
  , upsilonu , phi        , varphi
  , phiu     , chi        , psi
  , psiu     , omega      , omegau
+   -- ** Arrows
+ , uparrow, downarrow
+ , uparrow2, downarrow2
+ , updownarrow, updownarrow2
+ , leftarrow, rightarrow
+ , leftrightarrow, leftrightarrow2
+ , leftarrow2, rightarrow2
+ , longleftarrow, longrightarrow
+ , longleftarrow2, longrightarrow2
+ , longleftrightarrow, longleftrightarrow2
+ , nwarrow, nearrow
+ , swarrow, searrow
+ , to, mapsto, longmapsto
+ , hookleftarrow, hookrightarrow
+ , leftharpoonup, rightharpoonup
+ , leftharpoondown, rightharpoondown
    -- ** Other symbols
  , pm , mp
- , to , mapsto, implies
+ , implies
  , forall , exists
  , dagger, ddagger
  , infty
@@ -925,6 +941,98 @@ jmath = comm0 "jmath"
 -- | Bottom symbol, \(\bot\). For the infix version see 'perp'.
 bot :: LaTeXC l => l
 bot = comm0 "bot"
+
+
+
+------------------------------------
+------------- Arrows ---------------
+-- | \(\uparrow\) symbol
+uparrow :: LaTeXC l => l
+uparrow = comm0 "uparrow"
+-- | \(\downarrow\) symbol
+downarrow :: LaTeXC l => l
+downarrow = comm0 "downarrow"
+-- | \(\Uparrow\) symbol
+uparrow2 :: LaTeXC l => l
+uparrow2 = comm0 "Uparrow"
+-- | \(\Downarrow\) symbol
+downarrow2 :: LaTeXC l => l
+downarrow2 = comm0 "Downarrow"
+-- | \(\updownarrow\) symbol
+updownarrow :: LaTeXC l => l
+updownarrow = comm0 "updownarrow"
+-- | \(\Updownarrow\) symbol
+updownarrow2 :: LaTeXC l => l
+updownarrow2 = comm0 "Updownarrow"
+-- | \(\leftarrow\) symbol
+leftarrow :: LaTeXC l => l
+leftarrow = comm0 "leftarrow"
+-- | \(\rightarrow\) symbol
+rightarrow :: LaTeXC l => l
+rightarrow = comm0 "rightarrow"
+-- | \(\leftrightarrow\) symbol
+leftrightarrow :: LaTeXC l => l
+leftrightarrow = comm0 "leftrightarrow"
+-- | \(\Leftrightarrow\) symbol
+leftrightarrow2 :: LaTeXC l => l
+leftrightarrow2 = comm0 "Leftrightarrow"
+-- | \(\Leftarrow\) symbol
+leftarrow2 :: LaTeXC l => l
+leftarrow2 = comm0 "Leftarrow"
+-- | \(\Rightarrow\) symbol
+rightarrow2 :: LaTeXC l => l
+rightarrow2 = comm0 "Rightarrow"
+-- | \(\longleftarrow\) symbol
+longleftarrow :: LaTeXC l => l
+longleftarrow = comm0 "longleftarrow"
+-- | \(\longrightarrow\) symbol
+longrightarrow :: LaTeXC l => l
+longrightarrow = comm0 "longrightarrow"
+-- | \(\Longleftarrow\) symbol
+longleftarrow2 :: LaTeXC l => l
+longleftarrow2 = comm0 "Longleftarrow"
+-- | \(\Longrightarrow\) symbol
+longrightarrow2 :: LaTeXC l => l
+longrightarrow2 = comm0 "Longrightarrow"
+-- | \(\longleftrightarrow\) symbol
+longleftrightarrow :: LaTeXC l => l
+longleftrightarrow = comm0 "longleftrightarrow"
+-- | \(\Longleftrightarrow\) symbol
+longleftrightarrow2 :: LaTeXC l => l
+longleftrightarrow2 = comm0 "Longleftrightarrow"
+-- | \(\nwarrow\) symbol
+nwarrow :: LaTeXC l => l
+nwarrow = comm0 "nwarrow"
+-- | \(\nearrow\) symbol
+nearrow :: LaTeXC l => l
+nearrow = comm0 "nearrow"
+-- | \(\swarrow\) symbol
+swarrow :: LaTeXC l => l
+swarrow = comm0 "swarrow"
+-- | \(\searrow\) symbol
+searrow :: LaTeXC l => l
+searrow = comm0 "searrow"
+-- | \(\longmapsto\) symbol
+longmapsto :: LaTeXC l => l
+longmapsto = comm0 "longmapsto"
+-- | \(\hookleftarrow\) symbol
+hookleftarrow :: LaTeXC l => l
+hookleftarrow = comm0 "hookleftarrow"
+-- | \(\hookrightarrow\) symbol
+hookrightarrow :: LaTeXC l => l
+hookrightarrow = comm0 "hookrightarrow"
+-- | \(\leftharpoonup\) symbol
+leftharpoonup :: LaTeXC l => l
+leftharpoonup = comm0 "leftharpoonup"
+-- | \(\rightharpoonup\) symbol
+rightharpoonup :: LaTeXC l => l
+rightharpoonup = comm0 "rightharpoonup"
+-- | \(\leftharpoondown\) symbol
+leftharpoondown :: LaTeXC l => l
+leftharpoondown = comm0 "leftharpoondown"
+-- | \(\rightharpoondown\) symbol
+rightharpoondown :: LaTeXC l => l
+rightharpoondown = comm0 "rightharpoondown"
 
 -------------------------------------
 ------------ Math Fonts -------------
