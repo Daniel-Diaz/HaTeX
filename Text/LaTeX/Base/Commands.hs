@@ -218,6 +218,8 @@ module Text.LaTeX.Base.Commands
  , hyphenation
  , hyp
  , qts
+   -- * Maths commands
+ , module Text.LaTeX.Base.Math
    -- * External files
  , input
  , include
@@ -232,6 +234,7 @@ import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Texy
+import Text.LaTeX.Base.Math
 import Data.Version
 import Data.List (find, intercalate,intersperse)
 import Data.Matrix (Matrix,nrows,ncols,(!))
