@@ -246,6 +246,9 @@ special = do
     '\\' -> lbreak
     _    -> commS [x]
 
+isSpecial :: Char -> Bool
+isSpecial = (`elem` specials)
+
 ------------------------------------------------------------------------
 -- Line break
 ------------------------------------------------------------------------
@@ -331,15 +334,11 @@ comment = do
 -- Helpers
 ------------------------------------------------------------------------
 
-isSpecial :: Char -> Bool
-isSpecial = (`elem` specials)
-
 endCmd :: Char -> Bool
 endCmd c = notLowercaseAlph && notUppercaseAlph
  where c' = fromEnum c
        notLowercaseAlph = c' < fromEnum 'a' || c' > fromEnum 'z'
        notUppercaseAlph = c' < fromEnum 'A' || c' > fromEnum 'Z'
-
 
 specials :: String
 specials = "'(),.-\"!^$&#{}%~|/:;=[]\\` "
