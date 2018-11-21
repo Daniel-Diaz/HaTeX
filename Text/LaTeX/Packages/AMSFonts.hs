@@ -6,7 +6,7 @@ module Text.LaTeX.Packages.AMSFonts
    -- * Fonts
  , mathbb, mathfrak
    -- * Number sets
- , naturals, integers, rationals, reals
+ , naturals, integers, rationals, reals, quaternions
    -- ** Complex numbers
  , complexes, trealPart, timagPart
    ) where
@@ -60,6 +60,10 @@ reals = mathbb "R"
 -- | \(\mathbb{C}\)
 complexes :: LaTeXC l => l
 complexes = mathbb "C"
+
+-- | \(\mathbb{H}\)
+quaternions :: LaTeXC l => l
+quaternions = mathbb "H"
 
 -- | \(\Re\)
 trealPart :: LaTeXC l => l -> l
