@@ -48,11 +48,14 @@ module Text.LaTeX.Base.Math
  , tsqrt
    -- ** Custom function symbols
  , operatorname
-   -- ** Summation \/ integration \/ differentiation
+   -- ** Summation \/ integration \/ differentiation \/ relations
  , tsum , sumFromTo
  , prod , prodFromTo
+ , coprod, coprodFromTo
  , integral , integralFromTo
  , partial, totald, partialOf, totaldOf
+ , bigcup, bigcupFromTo
+ , bigcap, bigcapFromTo 
    -- ** Operator symbols
    -- *** Arithmetic
  , (+-), (-+)
@@ -421,6 +424,43 @@ prodFromTo :: LaTeXC l
            -> l -- ^ Expression above the pi.
            -> l
 prodFromTo x y = commS "prod" <> raw"_" <> braces x <> raw"^" <> braces y
+
+-- | Coproduct symbol \(\coprod\). Use 'coprodFromTo' if you want to specify the
+--   limits of the coproduct.
+coprod :: LaTeXC l => l
+coprod = comm0 "coprod"
+
+-- | Coproduct symbol with limits, like \[\coprod_0^n\].
+coprodFromTo :: LaTeXC l
+           => l -- ^ Expression below.
+           -> l -- ^ Expression above.
+           -> l
+coprodFromTo x y = commS "coprod" <> raw"_" <> braces x <> raw"^" <> braces y
+
+-- | Big union symbol \(\bigcup\). Use 'bigcupFromTo' if you want to specify the
+--   limits of the union.
+bigcup :: LaTeXC l => l
+bigcup = comm0 "bigcup"
+
+-- | Big union symbol with limits, like \[\bigcup_0^n\].
+bigcupFromTo :: LaTeXC l
+           => l -- ^ Expression below.
+           -> l -- ^ Expression above.
+           -> l
+bigcupFromTo x y = commS "bigcup" <> raw"_" <> braces x <> raw"^" <> braces y
+
+-- | Big intersection symbol \(\bigcap\). Use 'bigcapFromTo' if you want to specify the
+--   limits of the intersection.
+bigcap :: LaTeXC l => l
+bigcap = comm0 "bigcap"
+
+-- | Big intersection symbol with limits, like \[\bigcap_0^n\].
+bigcapFromTo :: LaTeXC l
+           => l -- ^ Expression below.
+           -> l -- ^ Expression above.
+           -> l
+bigcapFromTo x y = commS "bigcap" <> raw"_" <> braces x <> raw"^" <> braces y
+
 
 -- | Integral symbol. Use 'integralFromTo' if you want to specify
 --   the limits of the integral.

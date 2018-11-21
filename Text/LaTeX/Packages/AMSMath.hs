@@ -52,11 +52,14 @@ module Text.LaTeX.Packages.AMSMath
  , tsqrt
    -- ** Custom function symbols
  , operatorname
-   -- ** Summation \/ integration \/ differentiation
+   -- ** Summation \/ integration \/ differentiation \/ relations
  , tsum , sumFromTo
  , prod , prodFromTo
+ , coprod, coprodFromTo
  , integral , integralFromTo
  , partial, totald, partialOf, totaldOf
+ , bigcup, bigcupFromTo
+ , bigcap, bigcapFromTo 
    -- ** Operator symbols
    -- *** Arithmetic
  , (+-), (-+)
