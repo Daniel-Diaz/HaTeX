@@ -117,6 +117,7 @@ module Text.LaTeX.Base.Commands
  , vspace
  , vspace_
  , addvspace
+ , quad, qquad
  , hfill
  , vfill
  , dotfill
@@ -770,6 +771,15 @@ hspace m = fromLaTeX $ TeXComm "hspace" [FixArg $ rendertex m]
 
 hspace_ :: LaTeXC l => Measure -> l
 hspace_ m = fromLaTeX $ TeXComm "hspace*" [FixArg $ rendertex m]
+
+-- | Space equal to the current font size (= 18 mu). \(a\quad b\)
+quad :: LaTeXC l => l
+quad = comm0 "quad"
+
+-- | Twice of @\quad@ (= 36 mu).  \(a\qquad b\)
+qquad :: LaTeXC l => l
+qquad = comm0 "qquad"
+
 
 stretch :: LaTeXC l => Double -> l
 stretch n = fromLaTeX $ TeXComm "stretch" [FixArg $ rendertex n]
