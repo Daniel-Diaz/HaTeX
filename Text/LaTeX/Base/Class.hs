@@ -27,6 +27,7 @@ module Text.LaTeX.Base.Class (
  , commS
  , braces
  , squareBraces
+ , raw
  ) where
 
 import Text.LaTeX.Base.Syntax
@@ -34,6 +35,7 @@ import Data.String
 #if !MIN_VERSION_base(4,8,0)
 import Data.Monoid
 #endif
+import Data.Text (Text)
 
 -- | This is the class of 'LaTeX' code generators. It has 'Monoid' and 'IsString' as
 --   superclasses.
@@ -114,3 +116,13 @@ braces = liftL TeXBraces
 
 squareBraces :: LaTeXC l => l -> l
 squareBraces = liftL $ \l -> TeXRaw "[" <> l <> TeXRaw "]" 
+
+-- | Insert a raw piece of 'Text'.
+-- This functions doesn't escape @LaTeX@ reserved characters,
+-- it insert the text just as it is received.
+--
+-- /Warning:/ This function is /unsafe/, in the sense that it does
+-- not check that the input text is a valid LaTeX /block/.
+-- Make sure any braces, commands or environments are properly closed.
+raw :: LaTeXC l => Text -> l
+raw = fromLaTeX . TeXRaw
