@@ -251,13 +251,6 @@ import Paths_HaTeX
 raw :: LaTeXC l => Text -> l
 raw = fromLaTeX . TeXRaw
 
--- | Calling 'between' @c l1 l2@ puts @c@ between @l1@ and @l2@ and
---   appends them.
---
--- > between c l1 l2 = l1 <> c <> l2
-between :: Monoid m => m -> m -> m -> m
-between c l1 l2 = l1 <> c <> l2
-
 -- | Create a comment.
 comment :: LaTeXC l => Text -> l
 comment = fromLaTeX . TeXComment
