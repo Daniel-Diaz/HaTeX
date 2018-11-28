@@ -77,7 +77,7 @@ instance Texy Language where
 --  If you are using more than one language, consider to use
 --  'uselanguageconf'.
 uselanguage :: LaTeXC l => Language -> l
-uselanguage ln = usepackage [texy ln] babel
+uselanguage lang = usepackage [texy lang] babel
 
 -- | Language configuration. You may use one with 'uselanguageconf'.
 data LangConf = LangConf { mainLang :: Language , otherLangs :: [Language] }
@@ -99,14 +99,15 @@ uselanguageconf lc = usepackage xs babel
 
 -- | Switch to a given 'Language'.
 selectlanguage :: LaTeXC l => Language -> l
-selectlanguage ln = fromLaTeX $ TeXComm "selectlanguage" [FixArg $ texy ln]
+selectlanguage lang = fromLaTeX $ TeXComm "selectlanguage" [FixArg $ texy lang]
 
 -- | Use a 'Language' locally.
 otherlanguage :: LaTeXC l => Language -> l -> l
-otherlanguage ln = liftL $ TeXEnv "otherlanguage" [FixArg $ texy ln]
+otherlanguage lang = liftL $ TeXEnv "otherlanguage" [FixArg $ texy lang]
 
 -- | The function 'foreignlanguage' takes two arguments; the second argument is a
 --   phrase to be typeset according to the rules of the language named in its first
 --   argument.
 foreignlanguage :: LaTeXC l => Language -> l -> l
-foreignlanguage ln = liftL $ \l -> TeXComm "foreignlanguage" [OptArg $ texy ln, FixArg l]
+foreignlanguage lang = liftL
+          $ \l -> TeXComm "foreignlanguage" [OptArg $ texy lang, FixArg l]

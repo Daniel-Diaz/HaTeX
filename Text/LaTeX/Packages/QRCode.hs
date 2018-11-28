@@ -14,7 +14,6 @@ module Text.LaTeX.Packages.QRCode
  , final
    ) where
 
-import Text.LaTeX.Base (raw)
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
