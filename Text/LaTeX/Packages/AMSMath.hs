@@ -6,7 +6,13 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 #endif
 
--- | \AMSMath\ support. Also numeric instances ('Num', 'Fractional' and 'Floating') for 'LaTeX' and 'LaTeXT'.
+-- | <https://ctan.org/pkg/amsmath?lang=en amsmath> is a de-facto standard
+--  package for maths in LaTeX. It is used in most scientific documents
+--  and also available by default in MathJax.
+-- 
+-- Note that many of the maths commands this module exports are actually defined
+--  in LaTeX itself, and do not really require the @amsmath@ package.
+--  See the "Text.LaTeX.Base.Math" module for this minimal command-set.
 module Text.LaTeX.Packages.AMSMath
  ( -- * AMSMath package
    amsmath

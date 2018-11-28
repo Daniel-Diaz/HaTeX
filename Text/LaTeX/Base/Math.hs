@@ -3,8 +3,16 @@
 {-# LANGUAGE CPP               #-}
 
 -- | This module contains the maths-specific part of "Text.LaTeX.Base.Commands",
---   i.e. of the commands that are available in LaTeX out of the box without
---   any imports.
+--  i.e. of the commands that are available in LaTeX out of the box without
+--  any imports.
+-- 
+-- Note however that most maths-related documents use the
+--  <https://ctan.org/pkg/amsmath?lang=en amsmath package>, which not only adds
+--  some more environments but also improves on rendering details such as symbol
+--  spacing.
+--  So even if you only need the vanilla-LaTeX commands that this module provides, 
+--  consider importing "Text.LaTeX.Packages.AMSMath" instead; it re-exports the
+--  entire "Text.LaTeX.Base.Math" module.
 module Text.LaTeX.Base.Math
  ( -- * Math Environments
    math, mathDisplay
