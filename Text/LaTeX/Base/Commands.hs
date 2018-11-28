@@ -117,6 +117,7 @@ module Text.LaTeX.Base.Commands
  , vspace
  , vspace_
  , addvspace
+ , quad, qquad
  , hfill
  , vfill
  , dotfill
@@ -218,6 +219,8 @@ module Text.LaTeX.Base.Commands
  , hyphenation
  , hyp
  , qts
+   -- * Maths commands
+ , module Text.LaTeX.Base.Math
    -- * External files
  , input
  , include
@@ -232,28 +235,12 @@ import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Texy
+import Text.LaTeX.Base.Math
 import Data.Version
 import Data.List (find, intercalate,intersperse)
 import Data.Matrix (Matrix,nrows,ncols,(!))
 --
 import Paths_HaTeX
-
--- | Insert a raw piece of 'Text'.
--- This functions doesn't escape @LaTeX@ reserved characters,
--- it insert the text just as it is received.
---
--- /Warning:/ This function is /unsafe/, in the sense that it does
--- not check that the input text is a valid LaTeX /block/.
--- Make sure any braces, commands or environments are properly closed.
-raw :: LaTeXC l => Text -> l
-raw = fromLaTeX . TeXRaw
-
--- | Calling 'between' @c l1 l2@ puts @c@ between @l1@ and @l2@ and
---   appends them.
---
--- > between c l1 l2 = l1 <> c <> l2
-between :: Monoid m => m -> m -> m -> m
-between c l1 l2 = l1 <> c <> l2
 
 -- | Create a comment.
 comment :: LaTeXC l => Text -> l
@@ -784,6 +771,15 @@ hspace m = fromLaTeX $ TeXComm "hspace" [FixArg $ rendertex m]
 
 hspace_ :: LaTeXC l => Measure -> l
 hspace_ m = fromLaTeX $ TeXComm "hspace*" [FixArg $ rendertex m]
+
+-- | Space equal to the current font size (= 18 mu). \(a\quad b\)
+quad :: LaTeXC l => l
+quad = comm0 "quad"
+
+-- | Twice of @\quad@ (= 36 mu).  \(a\qquad b\)
+qquad :: LaTeXC l => l
+qquad = comm0 "qquad"
+
 
 stretch :: LaTeXC l => Double -> l
 stretch n = fromLaTeX $ TeXComm "stretch" [FixArg $ rendertex n]

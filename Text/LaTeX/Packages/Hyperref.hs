@@ -31,7 +31,6 @@ module Text.LaTeX.Packages.Hyperref
 
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Commands
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Data.Text (pack)

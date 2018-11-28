@@ -10,7 +10,7 @@ module Text.LaTeX.Base.Syntax
  , MathType (..)
  , LaTeX (..)
  , TeXArg (..)
- , (<>)
+ , (<>), between
    -- * Escaping reserved characters
  , protectString
  , protectText
@@ -117,6 +117,13 @@ instance Monoid LaTeX where
 
 instance Semigroup.Semigroup LaTeX where
   (<>) = mappend
+
+-- | Calling 'between' @c l1 l2@ puts @c@ between @l1@ and @l2@ and
+--   appends them.
+--
+-- > between c l1 l2 = l1 <> c <> l2
+between :: Monoid m => m -> m -> m -> m
+between c l1 l2 = l1 <> c <> l2
 
 -- | Method 'fromString' escapes LaTeX reserved characters using 'protectString'.
 instance IsString LaTeX where
