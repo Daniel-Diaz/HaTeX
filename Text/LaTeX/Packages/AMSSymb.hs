@@ -12,9 +12,20 @@ module Text.LaTeX.Packages.AMSSymb
   , leftarrowtail, rightarrowtail
   , curvearrowleft, curvearrowright
   , twoheadleftarrow, twoheadrightarrow
-  , lll, ggg
+  , rightleftharpoons
+  , lsh2, rsh2
+  , leftarrow3, rightarrow3
+  , rightsquigarrow, leftrightsquigarrow
+  , looparrowleft, looparrowright
+  , circlearrowleft, circlearrowright
+  , upharpoonleft, upharpoonright
+  , downharpoonleft, downharpoonright
+  , nleftarrow, nrightarrow
+  , nleftarrow2, nrightarrow2
+  , nleftrightarrow, nleftrightarrow2
 
    -- * Other
+  , lll, ggg
   , gtrdot, lessdot
   , square, blacksquare  
   , lozenge, blacklozenge
@@ -128,3 +139,67 @@ square = comm0 "square"
 -- | \(\blacksquare\) symbol - a filled square
 blacksquare :: LaTeXC l => l
 blacksquare = comm0 "blacksquare"
+
+-- | \(\rightleftharpoons\) symbol
+rightleftharpoons :: LaTeXC l => l
+rightleftharpoons = comm0 "rightleftharpoons"
+-- | \(\Lsh\) symbol
+lsh2 :: LaTeXC l => l
+lsh2 = comm0 "Lsh"
+-- | \(\Rsh\) symbol
+rsh2 :: LaTeXC l => l
+rsh2 = comm0 "Rsh"
+-- | \(\Lleftarrow\) symbol
+leftarrow3 :: LaTeXC l => l
+leftarrow3 = comm0 "Lleftarrow"
+-- | \(\Rrightarrow\) symbol
+rightarrow3 :: LaTeXC l => l
+rightarrow3 = comm0 "Rrightarrow"
+-- | \(\rightsquigarrow\) symbol
+rightsquigarrow :: LaTeXC l => l
+rightsquigarrow = comm0 "rightsquigarrow"
+-- | \(\leftrightsquigarrow\) symbol
+leftrightsquigarrow :: LaTeXC l => l
+leftrightsquigarrow = comm0 "leftrightsquigarrow"
+-- | \(\looparrowleft\) symbol
+looparrowleft :: LaTeXC l => l
+looparrowleft = comm0 "looparrowleft"
+-- | \(\looparrowright\) symbol
+looparrowright :: LaTeXC l => l
+looparrowright = comm0 "looparrowright"
+-- | \(\circlearrowleft\) symbol
+circlearrowleft :: LaTeXC l => l
+circlearrowleft = comm0 "circlearrowleft"
+-- | \(\circlearrowright\) symbol
+circlearrowright :: LaTeXC l => l
+circlearrowright = comm0 "circlearrowright"
+-- | \(\upharpoonleft\) symbol
+upharpoonleft :: LaTeXC l => l
+upharpoonleft = comm0 "upharpoonleft"
+-- | \(\upharpoonright\) symbol
+upharpoonright :: LaTeXC l => l
+upharpoonright = comm0 "upharpoonright"
+-- | \(\downharpoonleft\) symbol
+downharpoonleft :: LaTeXC l => l
+downharpoonleft = comm0 "downharpoonleft"
+-- | \(\downharpoonright\) symbol
+downharpoonright :: LaTeXC l => l
+downharpoonright = comm0 "downharpoonright"
+-- | \(\nleftarrow\) symbol
+nleftarrow :: LaTeXC l => l
+nleftarrow = comm0 "nleftarrow"
+-- | \(\nrightarrow\) symbol
+nrightarrow :: LaTeXC l => l
+nrightarrow = comm0 "nrightarrow"
+-- | \(\nLeftarrow\) symbol
+nleftarrow2 :: LaTeXC l => l
+nleftarrow2 = comm0 "nLeftarrow"
+-- | \(\nRightarrow\) symbol
+nrightarrow2 :: LaTeXC l => l
+nrightarrow2 = comm0 "nRightarrow"
+-- | \(\nleftrightarrow\) symbol
+nleftrightarrow :: LaTeXC l => l
+nleftrightarrow = comm0 "nleftrightarrow"
+-- | \(\nLeftrightarrow\) symbol
+nleftrightarrow2 :: LaTeXC l => l
+nleftrightarrow2 = comm0 "nLeftrightarrow"
