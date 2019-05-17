@@ -42,7 +42,7 @@ instance Render Label where
 instance IsString Label where
  fromString = createLabel
 
--- | Vertical position.
+-- | Vertical position. 'Here' and 'ForcePos' are used with @table@ environments.
 data Pos = Bottom | Center | Top | Here | ForcePos deriving Show
 
 instance Render Pos where
