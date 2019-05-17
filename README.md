@@ -58,8 +58,6 @@ There are many ways to get involved in the HaTeX project. Use the most comfortab
 * Fork the [GitHub repository](https://github.com/Daniel-Diaz/HaTeX) and make your own contributions.
 * Report bugs or make suggestions opening a ticket in the [Issue Tracker](https://github.com/Daniel-Diaz/HaTeX/issues).
 * Help us to improve and extend our [hatex-guide](https://github.com/Daniel-Diaz/hatex-guide).
-* Join the [Mailing List](http://projects.haskell.org/cgi-bin/mailman/listinfo/hatex) for help or announcements of the
-latest developments.
 
 ## TODO list
 
