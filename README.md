@@ -77,9 +77,9 @@ of mathematical expressions using HaTeX.
 ## Travis automatic build
 
 For every code push to the GitHub repository, an automatic build checks that the library compiles with several
-versions of GHC (7.4, 7.6, and 7.8) and that all tests pass. This label indicates the result of the last automatic
-build.
+versions of GHC (check [.travis.yml](https://github.com/Daniel-Diaz/HaTeX/blob/master/.travis.yml) for the complete list of versions)
+and that all tests pass. This label indicates the result of the last automatic build.
 
 [![Build Status](https://travis-ci.org/Daniel-Diaz/HaTeX.png?branch=master)](https://travis-ci.org/Daniel-Diaz/HaTeX)
 
-Currently, automatic builds are only running under Linux. We hope Travis will support other systems in the future.
+Currently, automatic builds are only running under Linux.
