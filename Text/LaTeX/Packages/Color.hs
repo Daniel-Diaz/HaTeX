@@ -1,5 +1,5 @@
 
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | Make your documents colorful using this module.
 --
@@ -30,7 +30,9 @@ module Text.LaTeX.Packages.Color
  , normalcolor
    ) where
 
--- import Text.LaTeX.Base.Syntax
+#if !MIN_VERSION_base(4,11,0)
+import Text.LaTeX.Base.Syntax ((<>))
+#endif
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
