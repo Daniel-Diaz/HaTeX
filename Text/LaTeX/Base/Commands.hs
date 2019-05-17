@@ -711,11 +711,12 @@ linebreak = liftL $ \l -> TeXComm "linebreak" [OptArg l]
 nolinebreak :: LaTeXC l => l -> l
 nolinebreak = liftL $ \l -> TeXComm "nolinebreak" [OptArg l]
 
-nopagebreak :: LaTeXC l => l -> l
-nopagebreak = liftL $ \l -> TeXComm "nopagebreak" [OptArg l]
-
 pagebreak :: LaTeXC l => l -> l
 pagebreak = liftL $ \l -> TeXComm "pagebreak" [OptArg l]
+
+nopagebreak :: LaTeXC l => Maybe l -> l
+nopagebreak = maybe (comm0 "nopagebreak")
+            $ liftL $ \l -> TeXComm "nopagebreak" [OptArg l]
 
 hyphenation :: LaTeXC l => l -> l
 hyphenation = liftL $ \l -> TeXComm "hyphenation" [FixArg l]
