@@ -30,7 +30,7 @@ module Text.LaTeX.Packages.Color
  , normalcolor
    ) where
 
-import Text.LaTeX.Base.Syntax
+-- import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
