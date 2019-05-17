@@ -7,7 +7,6 @@ ghc:
   - "8.4"
 os:
   - linux
-  - osx
 before_script:
   - cabal sdist
   - mkdir travisbuild
