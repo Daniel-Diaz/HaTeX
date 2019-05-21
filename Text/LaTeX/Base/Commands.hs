@@ -711,8 +711,9 @@ linebreak = liftL $ \l -> TeXComm "linebreak" [OptArg l]
 nolinebreak :: LaTeXC l => l -> l
 nolinebreak = liftL $ \l -> TeXComm "nolinebreak" [OptArg l]
 
-pagebreak :: LaTeXC l => l -> l
-pagebreak = liftL $ \l -> TeXComm "pagebreak" [OptArg l]
+pagebreak :: LaTeXC l => Maybe l -> l
+pagebreak = maybe (comm0 "pagebreak")
+            $ liftL $ \l -> TeXComm "pagebreak" [OptArg l]
 
 nopagebreak :: LaTeXC l => Maybe l -> l
 nopagebreak = maybe (comm0 "nopagebreak")

@@ -9,6 +9,13 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.20.0.1 to 3.21.0.0
+
+* Replace wl-pprint-extras with prettyprinter in the latex pretty-printer.
+* Now 'table' takes a list of positions. (breaking change)
+* Added constructors Here and ForcePos to the Pos type.
+* Make argument of 'nopagebreak' optional.
+
 ## From 3.18.0.0 to 3.19.0.0
 
 * Fix build with GHC 8.4.1 (#113) (leftaroundabout).
