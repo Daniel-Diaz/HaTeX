@@ -1,5 +1,5 @@
 Name: HaTeX
-Version: 3.20.0.1
+Version: 3.21.0.0
 Author: Daniel Díaz
 Category: LaTeX
 Build-type: Simple
@@ -71,7 +71,7 @@ Library
                  -- Parsing
                , parsec >= 3.1.6
                  -- Pretty-printing
-               , wl-pprint-extras >= 3.5
+               , prettyprinter
   if impl(ghc < 7.6)
     build-depends: ghc-prim
   if impl(ghc < 8.0)
