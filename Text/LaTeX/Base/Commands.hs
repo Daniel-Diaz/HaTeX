@@ -429,12 +429,12 @@ figure (Just p) = liftL $ TeXEnv "figure" [ OptArg $ TeXRaw $ render p ]
 -- | Table environment. Use this for floating a 'tabular' out of the text block and
 --   giving it a 'caption'. The table can be referred to with 'ref'.
 table :: LaTeXC l =>
-          Maybe Pos -- ^ Optional position.
+          [Pos] -- ^ Position preferences. Leave empty to use default.
        -> l         -- ^ Table content (assemble with 'tabular'/'matrixTabular',
                     --   'caption' and 'label').
        -> l
-table Nothing  = liftL $ TeXEnv "table" []
-table (Just p) = liftL $ TeXEnv "table" [ OptArg $ TeXRaw $ render p ]
+table [] = liftL $ TeXEnv "table" []
+table ps = liftL $ TeXEnv "table" [ OptArg $ TeXRaw $ renderAppend ps ]
 
 -- | Abstract section.
 abstract :: LaTeXC l => l -> l
