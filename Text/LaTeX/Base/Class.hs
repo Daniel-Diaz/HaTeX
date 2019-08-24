@@ -88,18 +88,26 @@ liftL9 :: LaTeXC l => (LaTeX -> LaTeX -> LaTeX -> LaTeX -> LaTeX -> LaTeX -> LaT
 liftL9 f x1 x2 x3 x4 x5 x6 x7 x8 x9 = liftListL (\[x1,x2,x3,x4,x5,x6,x7,x8,x9] -> f x1 x2 x3 x4 x5 x6 x7 x8 x9) [x1,x2,x3,x4,x5,x6,x7,x8,x9]
 
 
--- Map the given functor of LaTeX values to TeX arguments.
+-- | Map the given functor of LaTeX values to fixed TeX arguments.
 fixArgs :: Functor f => f LaTeX -> f TeXArg
 fixArgs = fmap FixArg
 
+-- | Map the first 'n' elements as optional arguments, and the remaining ones as
+-- fixed arguments. Most LaTeX commands are structured with first a sequence of
+-- optional arguments, followed by a sequence of fixed arguments.
 optFixArgs :: Int -> [LaTeX] -> [TeXArg]
 optFixArgs _ [] = []
 optFixArgs k xa@(x:xs) | k <= 0 = map FixArg xa
                        | otherwise = OptArg x : optFixArgs (k-1) xs
 
+-- | Call a LaTeX command where all the arguments in the list are fixed
+-- arguments.
 fixComm :: LaTeXC l => String -> [l] -> l
 fixComm str = liftListL (TeXComm str . fixArgs)
 
+-- | Call a LaTeX command with the first 'n' arguments as optional ones,
+-- followed by fixed arguments. Most LaTeX commands are structured with first a
+-- sequence of optional arguments, followed by a sequence of fixed arguments.
 optFixComm :: LaTeXC l => String -> Int -> [l] -> l
 optFixComm str k = liftListL (TeXComm str . optFixArgs k)
 
