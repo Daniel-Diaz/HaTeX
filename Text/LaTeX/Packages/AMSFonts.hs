@@ -1,4 +1,6 @@
 
+{-# LANGUAGE CPP #-}
+
 -- | Module for the package @amsfonts@.
 module Text.LaTeX.Packages.AMSFonts
  ( -- * AMSFonts package
@@ -13,7 +15,9 @@ module Text.LaTeX.Packages.AMSFonts
 
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Types
+#if !MIN_VERSION_base(4,11,0)
 import Data.Monoid
+#endif
 
 -- | AMSFonts package.
 -- Example:

@@ -1,5 +1,5 @@
 
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | The /LaTeX/ parser.
 -- 
@@ -51,7 +51,9 @@ module Text.LaTeX.Base.Parser (
 import           Text.Parsec hiding ((<|>),many)
 import           Text.Parsec.Error
 import           Data.Char (toLower,digitToInt)
+#if !MIN_VERSION_base(4,11,0)
 import           Data.Monoid
+#endif
 import           Data.Maybe (fromMaybe)
 import qualified Data.Text as T 
 

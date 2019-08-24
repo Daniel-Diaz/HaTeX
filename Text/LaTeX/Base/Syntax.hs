@@ -28,7 +28,6 @@ module Text.LaTeX.Base.Syntax
 
 import Data.Text (Text,pack)
 import qualified Data.Text
-import Data.Monoid
 import qualified Data.Semigroup as Semigroup
 import Data.String
 import Control.Applicative
@@ -39,6 +38,9 @@ import Data.Typeable
 import Test.QuickCheck
 import Data.Hashable
 import GHC.Generics (Generic)
+#if !MIN_VERSION_base(4,11,0)
+import Data.Monoid
+#endif
 
 -- | Measure units defined in LaTeX. Use 'CustomMeasure' to use commands like 'textwidth'.
 --   For instance:

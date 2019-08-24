@@ -56,4 +56,6 @@ import Text.LaTeX.Base.Commands
 import Text.LaTeX.Base.Writer
 import Text.LaTeX.Base.Texy
 -- External modules
+#if !MIN_VERSION_base(4,11,0)
 import Data.Monoid
+#endif

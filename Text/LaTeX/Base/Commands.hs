@@ -79,8 +79,11 @@ module Text.LaTeX.Base.Commands
  , part
  , chapter
  , section
+ , section'
  , subsection
+ , subsection'
  , subsubsection
+ , subsubsection'
  , paragraph
  , subparagraph
    -- ** Logos & symbols
@@ -215,6 +218,10 @@ module Text.LaTeX.Base.Commands
  , raggedleft
  , raggedright
  , footnote
+ , footnotemark
+ , footnotetext
+ , stepcounter
+ , addtocounter
  , protect
  , hyphenation
  , hyp
@@ -325,13 +332,25 @@ chapter = comm1 "chapter"
 section :: LaTeXC l => l -> l
 section = comm1 "section"
 
+-- | Start a new unnumbered section with a given title.
+section' :: LaTeXC l => l -> l
+section' = comm1 "section*"
+
 -- | Start a new subsection.
 subsection :: LaTeXC l => l -> l
 subsection = comm1 "subsection"
 
+-- | Start a new unnumbered subsection.
+subsection' :: LaTeXC l => l -> l
+subsection' = comm1 "subsection*"
+
 -- | Start a new sub/sub/section.
 subsubsection :: LaTeXC l => l -> l
 subsubsection = comm1 "subsubsection"
+
+-- | Start a new unnumbered sub/sub/section.
+subsubsection' :: LaTeXC l => l -> l
+subsubsection' = comm1 "subsubsection*"
 
 -- | Start a paragraph.
 paragraph :: LaTeXC l => l -> l
@@ -410,12 +429,12 @@ figure (Just p) = liftL $ TeXEnv "figure" [ OptArg $ TeXRaw $ render p ]
 -- | Table environment. Use this for floating a 'tabular' out of the text block and
 --   giving it a 'caption'. The table can be referred to with 'ref'.
 table :: LaTeXC l =>
-          Maybe Pos -- ^ Optional position.
+          [Pos] -- ^ Position preferences. Leave empty to use default.
        -> l         -- ^ Table content (assemble with 'tabular'/'matrixTabular',
                     --   'caption' and 'label').
        -> l
-table Nothing  = liftL $ TeXEnv "table" []
-table (Just p) = liftL $ TeXEnv "table" [ OptArg $ TeXRaw $ render p ]
+table [] = liftL $ TeXEnv "table" []
+table ps = liftL $ TeXEnv "table" [ OptArg $ TeXRaw $ renderAppend ps ]
 
 -- | Abstract section.
 abstract :: LaTeXC l => l -> l
@@ -692,11 +711,13 @@ linebreak = liftL $ \l -> TeXComm "linebreak" [OptArg l]
 nolinebreak :: LaTeXC l => l -> l
 nolinebreak = liftL $ \l -> TeXComm "nolinebreak" [OptArg l]
 
-nopagebreak :: LaTeXC l => l -> l
-nopagebreak = liftL $ \l -> TeXComm "nopagebreak" [OptArg l]
+pagebreak :: LaTeXC l => Maybe l -> l
+pagebreak = maybe (comm0 "pagebreak")
+            $ liftL $ \l -> TeXComm "pagebreak" [OptArg l]
 
-pagebreak :: LaTeXC l => l -> l
-pagebreak = liftL $ \l -> TeXComm "pagebreak" [OptArg l]
+nopagebreak :: LaTeXC l => Maybe l -> l
+nopagebreak = maybe (comm0 "nopagebreak")
+            $ liftL $ \l -> TeXComm "nopagebreak" [OptArg l]
 
 hyphenation :: LaTeXC l => l -> l
 hyphenation = liftL $ \l -> TeXComm "hyphenation" [FixArg l]
@@ -753,6 +774,23 @@ raggedright = comm0 "raggedright"
 
 footnote :: LaTeXC l => l -> l
 footnote = liftL $ \l -> TeXComm "footnote" [FixArg l]
+
+-- | Prints a foot note mark but without the actual footnote.
+footnotemark :: LaTeXC l => l
+footnotemark = comm0 "footnotemark"
+
+-- | Prints the footnote corresponding to the previous footnotemark.
+-- Useful when dealing with footnotes in tabular environment.
+footnotetext :: LaTeXC l => l -> l
+footnotetext = comm1 "footnotetext"
+
+-- | Increases by 1 the value of given counter
+stepcounter :: LaTeXC l => String -> l
+stepcounter = comm1 "stepcounter" . fromString
+
+-- | Increases by `n` the value of given counter `t`
+addtocounter :: LaTeXC l => String -> Int -> l
+addtocounter t n = comm2 "addtocounter" (fromString t) (fromString . show $ n)
 
 linespread :: LaTeXC l => Float -> l
 linespread x = fromLaTeX $ TeXComm "linespread" [FixArg $ rendertex x]
