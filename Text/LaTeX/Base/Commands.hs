@@ -1084,7 +1084,7 @@ matrixTabular :: (LaTeXC l, Texy a)
               -> Matrix a -- ^ Matrix of data
               -> l -- ^ Data organized in a tabular environment
 matrixTabular ts m =
-  let spec = VerticalLine : (intersperse VerticalLine $ replicate (ncols m) CenterColumn) ++ [VerticalLine]
+  let spec = VerticalLine : intersperse VerticalLine (replicate (ncols m) CenterColumn) ++ [VerticalLine]
   in  tabular Nothing spec $ mconcat
         [ hline
         , foldl1 (&) ts

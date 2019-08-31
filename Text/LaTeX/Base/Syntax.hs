@@ -180,7 +180,7 @@ matchCommand :: (String -> Bool) -> LaTeX -> [(String,[TeXArg])]
 matchCommand f (TeXComm str as) =
   let xs = concatMap (matchCommandArg f) as
   in  if f str then (str,as) : xs else xs
-matchCommand f (TeXCommS str) = if f str then [(str,[])] else []
+matchCommand f (TeXCommS str) = [(str, []) | f str]
 matchCommand f (TeXEnv _ as l) =
   let xs = concatMap (matchCommandArg f) as
   in  xs ++ matchCommand f l
@@ -324,9 +324,9 @@ arbitraryLaTeX inDollar = do
             TeXEnv <$> arbitraryName <*> vectorOf m arbitrary <*> arbitrary
     4 -> if inDollar
             then arbitraryLaTeX True
-            else do do m <- choose (0,3)
-                       let t = [Parentheses,Square,Dollar,DoubleDollar] !! m
-                       TeXMath <$> pure t <*> arbitraryLaTeX (t == Dollar || t == DoubleDollar)
+            else do m <- choose (0,3)
+                    let t = [Parentheses,Square,Dollar,DoubleDollar] !! m
+                    TeXMath <$> pure t <*> arbitraryLaTeX (t == Dollar || t == DoubleDollar)
     5 -> TeXLineBreak <$> arbitrary <*> arbitrary
     6 -> TeXBraces <$> arbitrary
     7 -> TeXComment <$> arbitraryRaw

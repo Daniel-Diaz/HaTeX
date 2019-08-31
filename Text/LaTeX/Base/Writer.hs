@@ -1,4 +1,3 @@
-
 {-# LANGUAGE TypeFamilies, CPP #-}
 
 -- | The writer monad applied to 'LaTeX' values. Useful to compose 'LaTeX' values
@@ -55,7 +54,7 @@ module Text.LaTeX.Base.Writer
    ) where
 
 -- base
-import Control.Monad (liftM, liftM2)
+import Control.Monad (liftM2)
 import Control.Arrow
 import Data.String
 #if !MIN_VERSION_base(4,8,0)
@@ -139,12 +138,12 @@ runLaTeXT = runWriterT . unwrapLaTeXT
 -- > myLaTeX = execLaTeXT anExample
 --
 execLaTeXT :: Monad m => LaTeXT m a -> m LaTeX
-execLaTeXT = liftM snd . runLaTeXT
+execLaTeXT = fmap snd . runLaTeXT
 
 -- | Version of 'execLaTeXT' with possible warning messages.
 --   This function applies 'checkAll' to the 'LaTeX' output.
 execLaTeXTWarn :: Monad m => LaTeXT m a -> m (LaTeX,[Warning])
-execLaTeXTWarn = liftM (id &&& check checkAll) . execLaTeXT
+execLaTeXTWarn = fmap (id &&& check checkAll) . execLaTeXT
 
 -- | This function run a 'LaTeXT' computation,
 --   lifting the result again in the monad.
@@ -161,7 +160,7 @@ extractLaTeX = LaTeXT . lift . runWriterT . unwrapLaTeXT
 -- is to implement the 'LaTeXC' instance of 'LaTeXT', which
 -- is closely related.
 extractLaTeX_ :: Monad m => LaTeXT m a -> LaTeXT m LaTeX
-extractLaTeX_ = liftM snd . extractLaTeX
+extractLaTeX_ = fmap snd . extractLaTeX
 
 -- | With 'textell' you can append 'LaTeX' values to the
 --   state of the 'LaTeXT' monad.

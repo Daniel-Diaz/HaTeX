@@ -151,7 +151,7 @@ data TPath =
                      -- point of @x@.
     deriving Show
 
-data GridOption =
+newtype GridOption =
    GridStep Step
    deriving Show
 

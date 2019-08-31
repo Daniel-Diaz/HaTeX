@@ -51,6 +51,7 @@ module Text.LaTeX.Base.Parser (
 import           Text.Parsec hiding ((<|>),many)
 import           Text.Parsec.Error
 import           Data.Char (toLower,digitToInt)
+import           Data.Functor(($>))
 #if !MIN_VERSION_base(4,11,0)
 import           Data.Monoid
 #endif
@@ -68,7 +69,7 @@ import           Text.LaTeX.Base.Render
 ------------------------------------------------------------------------
 
 -- | Configuration for the LaTeX parser.
-data ParserConf = ParserConf
+newtype ParserConf = ParserConf
   { -- | This is the list of names of the environments such that
     --   their content will be parsed verbatim.
     verbatimEnvironments :: [String]
@@ -132,7 +133,7 @@ latexBlockParser = foldr1 (<|>)
 text :: Parser LaTeX
 text = do
   mbC <- peekChar
-  let nottext :: [Char]
+  let nottext :: String
       nottext = "$%\\{]}"
   case mbC of
     Nothing -> fail "text: Empty input."
@@ -346,10 +347,10 @@ specials :: String
 specials = "'(),.-\"!^$&#{}%~|/:;=[]\\` "
 
 peekChar :: Parser (Maybe Char)
-peekChar = Just <$> (try $ lookAhead anyChar) <|> pure Nothing
+peekChar = Just <$> try (lookAhead anyChar) <|> pure Nothing
 
 atEnd :: Parser Bool
-atEnd = (eof *> pure True) <|> pure False
+atEnd = (eof $> True) <|> pure False
 
 takeTill :: (Char -> Bool) -> Parser Text
 takeTill p = T.pack <$> many (satisfy (not . p))

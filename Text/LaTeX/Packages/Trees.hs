@@ -29,4 +29,4 @@ instance Foldable Tree where
 
 instance Traversable Tree where
  sequenceA (Leaf fa) = Leaf <$> fa
- sequenceA (Node mfa ts) = liftA2 Node (sequenceA mfa) $ sequenceA $ fmap sequenceA ts
+ sequenceA (Node mfa ts) = liftA2 Node (sequenceA mfa) $ traverse sequenceA ts
