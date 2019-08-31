@@ -1,5 +1,4 @@
-
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | This module allows you to use the LaTeX /graphicx/ library in order to
 --   insert graphics in a document and perform some transformations.
