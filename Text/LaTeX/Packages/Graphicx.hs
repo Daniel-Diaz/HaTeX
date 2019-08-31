@@ -28,6 +28,7 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 --
 import Data.Char (toLower)
+import Data.Functor ((<$>))
 
 -- | The 'graphicx' package.
 --
@@ -76,7 +77,7 @@ includegraphics :: LaTeXC l =>
                 -> FilePath  -- ^ Image file
                 -> l
 includegraphics opts fp = fromLaTeX $ TeXComm "includegraphics"
- [ MOptArg $ fmap rendertex opts , FixArg $ TeXRaw $ fromString fp ]
+ [ MOptArg $ fmap rendertex opts, FixArg $ TeXRaw $ fromString fp ]
 
 -- | Rotate the content by the given angle in degrees.
 rotatebox :: LaTeXC l => Float -> l -> l

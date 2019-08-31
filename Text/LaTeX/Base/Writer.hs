@@ -54,7 +54,7 @@ module Text.LaTeX.Base.Writer
    ) where
 
 -- base
-import Control.Monad (liftM2)
+import Control.Monad (liftM, liftM2)
 import Control.Arrow
 import Data.String
 #if !MIN_VERSION_base(4,8,0)
@@ -74,15 +74,14 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Warnings (Warning,checkAll,check)
 
 -- | 'WriterT' monad transformer applied to 'LaTeX' values.
-newtype LaTeXT m a =
-  LaTeXT { unwrapLaTeXT :: WriterT LaTeX m a }
+newtype LaTeXT m a = LaTeXT { unwrapLaTeXT :: WriterT LaTeX m a }
 
 instance Functor f => Functor (LaTeXT f) where
- fmap f = LaTeXT . fmap f . unwrapLaTeXT
+    fmap f = LaTeXT . fmap f . unwrapLaTeXT
 
 instance Applicative f => Applicative (LaTeXT f) where
- pure = LaTeXT . pure
- (LaTeXT f) <*> (LaTeXT x) = LaTeXT $ f <*> x
+    pure = LaTeXT . pure
+    (LaTeXT f) <*> (LaTeXT x) = LaTeXT $ f <*> x
 
 -- | Type synonym for empty 'LaTeXT' computations.
 type LaTeXT_ m = LaTeXT m ()
@@ -138,12 +137,12 @@ runLaTeXT = runWriterT . unwrapLaTeXT
 -- > myLaTeX = execLaTeXT anExample
 --
 execLaTeXT :: Monad m => LaTeXT m a -> m LaTeX
-execLaTeXT = fmap snd . runLaTeXT
+execLaTeXT = liftM snd . runLaTeXT
 
 -- | Version of 'execLaTeXT' with possible warning messages.
 --   This function applies 'checkAll' to the 'LaTeX' output.
 execLaTeXTWarn :: Monad m => LaTeXT m a -> m (LaTeX,[Warning])
-execLaTeXTWarn = fmap (id &&& check checkAll) . execLaTeXT
+execLaTeXTWarn = liftM (id &&& check checkAll) . execLaTeXT
 
 -- | This function run a 'LaTeXT' computation,
 --   lifting the result again in the monad.
@@ -160,7 +159,7 @@ extractLaTeX = LaTeXT . lift . runWriterT . unwrapLaTeXT
 -- is to implement the 'LaTeXC' instance of 'LaTeXT', which
 -- is closely related.
 extractLaTeX_ :: Monad m => LaTeXT m a -> LaTeXT m LaTeX
-extractLaTeX_ = fmap snd . extractLaTeX
+extractLaTeX_ = liftM snd . extractLaTeX
 
 -- | With 'textell' you can append 'LaTeX' values to the
 --   state of the 'LaTeXT' monad.
