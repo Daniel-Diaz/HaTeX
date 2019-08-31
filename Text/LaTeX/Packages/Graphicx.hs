@@ -28,7 +28,9 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 --
 import Data.Char (toLower)
+#if !MIN_VERSION_base(4,8,0)
 import Data.Functor ((<$>))
+#endif
 
 -- | The 'graphicx' package.
 --
