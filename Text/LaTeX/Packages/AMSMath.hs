@@ -1,4 +1,3 @@
-
 {-# LANGUAGE CPP, OverloadedStrings, TypeFamilies #-}
 #if __GLASGOW_HASKELL__ >= 801
 {-# OPTIONS_GHC -Wno-orphans #-}

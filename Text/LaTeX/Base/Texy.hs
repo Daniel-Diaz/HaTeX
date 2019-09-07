@@ -1,4 +1,3 @@
-
 -- | 'Texy' class, as proposed in <http://deltadiaz.blogspot.com.es/2013/04/hatex-36-proposal-texy-class.html>.
 module Text.LaTeX.Base.Texy (
    -- * Texy class

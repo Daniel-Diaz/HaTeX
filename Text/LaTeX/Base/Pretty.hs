@@ -1,4 +1,3 @@
-
 {-# LANGUAGE CPP #-}
 
 -- | 'LaTeX' values pretty printer.

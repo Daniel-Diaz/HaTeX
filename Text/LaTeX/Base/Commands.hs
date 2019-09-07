@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | This module is the /Prelude/ of LaTeX functions.

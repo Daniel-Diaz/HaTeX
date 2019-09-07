@@ -1,4 +1,3 @@
-
 {-# LANGUAGE TypeFamilies, CPP #-}
 
 -- | The writer monad applied to 'LaTeX' values. Useful to compose 'LaTeX' values

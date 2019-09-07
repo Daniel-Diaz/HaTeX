@@ -1,4 +1,3 @@
-
 -- | The @relsize@ package is used to set the font size relative to the
 -- current size.
 --

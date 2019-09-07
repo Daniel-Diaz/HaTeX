@@ -1,4 +1,3 @@
-
 {-# LANGUAGE CPP #-}
 
 -- | Module for the package @amsfonts@.

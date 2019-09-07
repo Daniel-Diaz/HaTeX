@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | This module provides functionality for check a 'LaTeX' value for

@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | The geometry package provides an easy interface to page dimensions.

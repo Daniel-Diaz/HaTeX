@@ -1,4 +1,3 @@
-
 -- | A simple interface to create Ti/k/Z graphics. Just build pictures using
 --   the 'Figure' data constructors, and get the Ti/k/Z script using the function
 --   'figuretikz'. Use the function 'tikzpicture' to insert the Ti/k/Z script in

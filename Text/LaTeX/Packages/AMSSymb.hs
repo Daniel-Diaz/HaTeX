@@ -1,4 +1,3 @@
-
 -- | Module for the package @amssymb@.
 module Text.LaTeX.Packages.AMSSymb
  ( -- * AMSSymb package

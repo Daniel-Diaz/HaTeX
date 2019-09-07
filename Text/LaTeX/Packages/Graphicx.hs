@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | This module allows you to use the LaTeX /graphicx/ library in order to

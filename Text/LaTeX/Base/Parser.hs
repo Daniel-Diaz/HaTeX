@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | The /LaTeX/ parser.

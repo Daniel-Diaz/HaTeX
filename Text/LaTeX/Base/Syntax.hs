@@ -1,4 +1,3 @@
-
 {-# LANGUAGE CPP, DeriveDataTypeable, DeriveGeneric #-}
 
 -- | LaTeX syntax description in the definition of the 'LaTeX' datatype.

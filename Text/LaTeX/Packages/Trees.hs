@@ -1,4 +1,3 @@
-
 {-# LANGUAGE CPP #-}
 
 -- | Tree definition with some class instances.

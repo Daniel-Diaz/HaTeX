@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | This package is of vital importance if you use non-ASCII characters in your document.

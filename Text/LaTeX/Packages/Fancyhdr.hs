@@ -1,4 +1,3 @@
-
 -- | This package provides extensive control of page headers and footers.
 --
 -- CTAN page for fancyhdr: <http://www.ctan.org/pkg/fancyhdr>.

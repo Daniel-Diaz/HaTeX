@@ -1,4 +1,3 @@
-
 import Text.LaTeX.Base.Parser
 import qualified Data.Text.IO as T
 import System.Exit (exitSuccess, exitFailure)

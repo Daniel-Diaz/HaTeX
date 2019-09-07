@@ -1,4 +1,3 @@
-
 {- Simple example
 
 This example is intended to be as simple as possible, but containing the most significant parts.

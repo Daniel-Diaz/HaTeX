@@ -1,4 +1,3 @@
-
 -- | Ti/k/Z ist /kein/ Zeichenprogramm.
 --
 -- Ti/k/Z is a frontend for PGF (Portable Graphics Format), a package for creating graphics

@@ -1,4 +1,3 @@
-
 -- | This module is a re-export of the Base module.
 --   You may find it shorter to import. Below you can
 --   also find a short overview of HaTeX.

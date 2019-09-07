@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | Make your documents colorful using this module.

@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | This module defines the syntax of a Ti/k/Z script.

@@ -1,4 +1,3 @@
-
 import Text.LaTeX
 import Text.LaTeX.Packages.AMSMath
 
