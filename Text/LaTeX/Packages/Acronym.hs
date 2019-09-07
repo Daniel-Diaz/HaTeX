@@ -15,9 +15,18 @@ module Text.LaTeX.Packages.Acronym
  , smaller
  , dua
  , nolist
+ -- * Types
+ , Acronym(..)
+ -- functions
+ , ac, acf, acs, acl, acp, acfp, acsp, aclp, acfi, acsu, aclu
+ , iac, iac2
+ , ac', acf', acs', acl', acp', acfp', acsp', aclp', acfi', acsu', aclu'
+ , iac', iac2'
    ) where
 
-import Text.LaTeX.Base.Class(LaTeXC)
+import Data.String(IsString(fromString))
+
+import Text.LaTeX.Base.Class(LaTeXC, comm1)
 import Text.LaTeX.Base.Types(PackageName)
 
 -- | The 'pacronym' package.
@@ -62,3 +71,91 @@ dua = "dua"
 -- | The option `nolist` stands for "don't write the list of acronyms".
 nolist :: LaTeXC l => l
 nolist = "nolist"
+
+-- | An acronym type with a label, this is used to generate commands linked to
+--   this acronym.
+newtype Acronym = Acronym { acronymLabel :: String }
+
+_acronymLabel :: IsString s => Acronym -> s
+_acronymLabel = fromString . acronymLabel
+
+_acronymLabel' :: LaTeXC l => String -> Acronym -> l
+_acronymLabel' = (. _acronymLabel) . comm1
+
+ac :: LaTeXC l => Acronym -> l
+ac = _acronymLabel' "ac"
+
+acf :: LaTeXC l => Acronym -> l
+acf = _acronymLabel' "acf"
+
+acs :: LaTeXC l => Acronym -> l
+acs = _acronymLabel' "acs"
+
+acl :: LaTeXC l => Acronym -> l
+acl = _acronymLabel' "acl"
+
+acp :: LaTeXC l => Acronym -> l
+acp = _acronymLabel' "acp"
+
+acfp :: LaTeXC l => Acronym -> l
+acfp = _acronymLabel' "acfp"
+
+acsp :: LaTeXC l => Acronym -> l
+acsp = _acronymLabel' "acsp"
+
+aclp :: LaTeXC l => Acronym -> l
+aclp = _acronymLabel' "aclp"
+
+acfi :: LaTeXC l => Acronym -> l
+acfi = _acronymLabel' "acfi"
+
+acsu :: LaTeXC l => Acronym -> l
+acsu = _acronymLabel' "acsu"
+
+aclu :: LaTeXC l => Acronym -> l
+aclu = _acronymLabel' "aclu"
+
+iac :: LaTeXC l => Acronym -> l
+iac = _acronymLabel' "iac"
+
+iac2 :: LaTeXC l => Acronym -> l
+iac2 = _acronymLabel' "Iac"
+
+ac' :: LaTeXC l => Acronym -> l
+ac' = _acronymLabel' "ac*"
+
+acf' :: LaTeXC l => Acronym -> l
+acf' = _acronymLabel' "acf*"
+
+acs' :: LaTeXC l => Acronym -> l
+acs' = _acronymLabel' "acs*"
+
+acl' :: LaTeXC l => Acronym -> l
+acl' = _acronymLabel' "acl*"
+
+acp' :: LaTeXC l => Acronym -> l
+acp' = _acronymLabel' "acp*"
+
+acfp' :: LaTeXC l => Acronym -> l
+acfp' = _acronymLabel' "acfp*"
+
+acsp' :: LaTeXC l => Acronym -> l
+acsp' = _acronymLabel' "acsp*"
+
+aclp' :: LaTeXC l => Acronym -> l
+aclp' = _acronymLabel' "aclp*"
+
+acfi' :: LaTeXC l => Acronym -> l
+acfi' = _acronymLabel' "acfi*"
+
+acsu' :: LaTeXC l => Acronym -> l
+acsu' = _acronymLabel' "acsu*"
+
+aclu' :: LaTeXC l => Acronym -> l
+aclu' = _acronymLabel' "aclu*"
+
+iac' :: LaTeXC l => Acronym -> l
+iac' = _acronymLabel' "iac*"
+
+iac2' :: LaTeXC l => Acronym -> l
+iac2' = _acronymLabel' "Iac*"
