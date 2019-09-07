@@ -252,4 +252,3 @@ instance Render Theme where
 -- | Set the 'Theme' employed in your presentation (in the preamble).
 usetheme :: LaTeXC l => Theme -> l
 usetheme th = fromLaTeX $ TeXComm "usetheme" [ FixArg $ TeXRaw $ render th ]
-

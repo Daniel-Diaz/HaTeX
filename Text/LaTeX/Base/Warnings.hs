@@ -147,4 +147,3 @@ newref t = do
         LabelRef   m -> if n == m then l
                                   else ys
  put $ addRef t st
-

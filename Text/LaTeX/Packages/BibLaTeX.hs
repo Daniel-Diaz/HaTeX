@@ -28,4 +28,3 @@ addbibresource fp = fromLaTeX $ TeXComm "addbibresource" [FixArg $ TeXRaw $ from
 
 printbibliography :: LaTeXC l => l
 printbibliography = comm0 "printbibliography"
-

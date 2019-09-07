@@ -1064,5 +1064,3 @@ mathtt = comm1 "mathtt"
 --   intended for multi-character symbols rather than juxtaposition of single-character symbols.
 mathit :: LaTeXC l => l -> l
 mathit = comm1 "mathit"
-
-
