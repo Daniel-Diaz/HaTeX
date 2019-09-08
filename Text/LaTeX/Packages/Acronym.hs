@@ -14,12 +14,16 @@ module Text.LaTeX.Packages.Acronym
  -- functions
  , ac, acf, acs, acl, acp, acfp, acsp, aclp, acfi, acsu, aclu, iac, iac2
  , ac', acf', acs', acl', acp', acfp', acsp', aclp', acfi', acsu', aclu', iac', iac2'
- , acresetall, acused, 
+ , acresetall, acused
+ , acroextra
+ , acronym
+ , acro, acro'
    ) where
 
 import Data.String(IsString(fromString))
 
-import Text.LaTeX.Base.Class(LaTeXC, comm0, comm1)
+import Text.LaTeX.Base.Class(LaTeXC, comm0, comm1, comm2, liftL, liftL2)
+import Text.LaTeX.Base.Syntax(LaTeX(TeXComm, TeXEnv), TeXArg(FixArg, OptArg))
 import Text.LaTeX.Base.Types(PackageName)
 
 -- | The 'pacronym' package.
@@ -218,3 +222,18 @@ acresetall = comm0 "acresetall"
 --   be printed. `acresetall` undoes this.
 acused :: LaTeXC l => Acronym -> l
 acused = _acronymC1 "acused"
+
+-- | This can be used inside the `acro` part to add extra data to the list of
+--   acrynyms, this will *not* be included when rendering the acronym in the
+--   document itself.
+acroextra :: LaTeXC l => l -> l
+acroextra = comm1 "acroextra"
+
+acronym :: LaTeXC l => l -> l
+acronym = liftL (TeXEnv "acronym" [])
+
+acro :: LaTeXC l => String -> l -> l -> (l, Acronym)
+acro str l2 l3 = (liftL2 (\la lb -> TeXComm "acro" [FixArg (fromString str), OptArg la, FixArg lb]) l2 l3, Acronym str)
+
+acro' :: LaTeXC l => String -> l -> (l, Acronym)
+acro' str l = (comm2 "acro" (fromString str) l, Acronym str)
