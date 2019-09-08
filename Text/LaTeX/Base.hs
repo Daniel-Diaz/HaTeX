@@ -27,7 +27,7 @@ module Text.LaTeX.Base
  ( -- * @LaTeX@ datatype
    LaTeX
    -- * Escaping reserved characters
- , protectString , protectText
+ , protectString, protectText
    -- * Internal re-exports
  , module Text.LaTeX.Base.Render
  , module Text.LaTeX.Base.Types
