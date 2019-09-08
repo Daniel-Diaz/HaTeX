@@ -138,54 +138,73 @@ iac = _acronymC1 "iac"
 iac2 :: LaTeXC l => Acronym -> l
 iac2 = _acronymC1 "Iac"
 
--- | 
+-- | Enter an acronym inside the text. It will specify the full name, and
+--   between parenthesis, the short name. If you specified the `footnote`
+--   option, it will print the short name, and add a footnote with the long
+--   name. This does not mark the acronym as used.
 ac' :: LaTeXC l => Acronym -> l
 ac' = _acronymC1 "ac*"
 
--- | 
+-- | You can use this command to later in the text again print the full name of
+--   the acronym, this stands for "full acronym", it always prints the full
+--   name, and the acronym between parenthesis. This does not mark the
+--   acronym as used.
 acf' :: LaTeXC l => Acronym -> l
 acf' = _acronymC1 "acf*"
 
--- | 
+-- | This will enter the short version of the acronym inside the text.
+-- This does not mark the acronym as used.
 acs' :: LaTeXC l => Acronym -> l
 acs' = _acronymC1 "acs*"
 
--- | 
+-- | This will enter the expanded version of the acronym in the text, without
+--   mentioning the acronym between parenthesis. This does not mark the acronym
+--   as used.
 acl' :: LaTeXC l => Acronym -> l
 acl' = _acronymC1 "acl*"
 
+-- | This works the same way as `ac`, except that it will make the short and the
+--   long forms into plurals. This does not mark the acronym as used.
 acp' :: LaTeXC l => Acronym -> l
 acp' = _acronymC1 "acp*"
 
--- | 
+-- | This works the same way as `acf`, except tah it will make the short and
+--   long forms into plurals. This does not mark the acronym as used.
 acfp' :: LaTeXC l => Acronym -> l
 acfp' = _acronymC1 "acfp*"
 
--- | 
+-- | Works the same way as `acs`, but makes the short form into a plural. This
+--   does not mark the acronym as used.
 acsp' :: LaTeXC l => Acronym -> l
 acsp' = _acronymC1 "acsp*"
 
--- | 
+-- | Works the same way as `acl`, but makes the long form into a plural. This
+--   does not mark the acronym as used.
 aclp' :: LaTeXC l => Acronym -> l
 aclp' = _acronymC1 "aclp*"
 
--- | 
+-- | Prints the full name acronym in italics and the abbreviated form in an
+-- upshaped form. This does not mark the acronym as used.
 acfi' :: LaTeXC l => Acronym -> l
 acfi' = _acronymC1 "acfi*"
 
--- | 
+-- | Prints the short form of the acronym, and marks it as used. This does not
+--   mark the acronym as used.
 acsu' :: LaTeXC l => Acronym -> l
 acsu' = _acronymC1 "acsu*"
 
--- | 
+-- | Prints the long form of the acronym and marks it as used. This does not mark
+--   the acronym as used.
 aclu' :: LaTeXC l => Acronym -> l
 aclu' = _acronymC1 "aclu*"
 
--- | 
+-- | Works the same way as the `ac` command, but prefixes it with an appropriate
+-- indefinite article. This does not mark the acronym as used.
 iac' :: LaTeXC l => Acronym -> l
 iac' = _acronymC1 "iac*"
 
--- | 
+-- | Works the same way as the `ac` command, but prefixes it with an appropriate
+-- upper case indefinite article. This does not mark the acronym as used.
 iac2' :: LaTeXC l => Acronym -> l
 iac2' = _acronymC1 "Iac*"
 
