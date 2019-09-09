@@ -18,6 +18,7 @@ module Text.LaTeX.Packages.Acronym
  , acroextra
  , acronym
  , acro, acro'
+ , acroM, acroM'
    ) where
 
 import Data.String(IsString(fromString))
@@ -25,6 +26,7 @@ import Data.String(IsString(fromString))
 import Text.LaTeX.Base.Class(LaTeXC, comm0, comm1, comm2, liftL, liftL2)
 import Text.LaTeX.Base.Syntax(LaTeX(TeXComm, TeXEnv), TeXArg(FixArg, OptArg))
 import Text.LaTeX.Base.Types(PackageName)
+import Text.LaTeX.Base.Writer(LaTeXT)
 
 -- | The 'pacronym' package.
 --
@@ -229,11 +231,28 @@ acused = _acronymC1 "acused"
 acroextra :: LaTeXC l => l -> l
 acroextra = comm1 "acroextra"
 
+-- | Define an acronym environment to write the acronym definitions to.
 acronym :: LaTeXC l => l -> l
 acronym = liftL (TeXEnv "acronym" [])
 
+-- | Define an acronym with a label and both a short, and a long name. This
+--   returns the LaTeX code to define the acronym, and the `Acronym` object
+--   to use in the rest of the code.
 acro :: LaTeXC l => String -> l -> l -> (l, Acronym)
 acro str l2 l3 = (liftL2 (\la lb -> TeXComm "acro" [FixArg (fromString str), OptArg la, FixArg lb]) l2 l3, Acronym str)
 
+-- | The monadic variant of the `acro` function where the `Acronym` is returned
+--   as a result of the definition.
+acroM :: Monad m => String -> LaTeXT m () -> LaTeXT m () -> LaTeXT m Acronym
+acroM str l2 l3 = uncurry (flip (fmap . const)) (acro str l2 l3)
+
+-- | Define an acronym with a label, and only a long name. This returns the
+--   LaTeX code to define the acronym, and the `Acronym` object to use in the
+--   rest of the code.
 acro' :: LaTeXC l => String -> l -> (l, Acronym)
 acro' str l = (comm2 "acro" (fromString str) l, Acronym str)
+
+-- | The monadic variant of the `acro'` function, where the `Acronym` is
+--   returned as result of the definition.
+acroM' :: Monad m => String -> LaTeXT m () -> LaTeXT m Acronym
+acroM' str l2 = uncurry (flip (fmap . const)) (acro' str l2)
