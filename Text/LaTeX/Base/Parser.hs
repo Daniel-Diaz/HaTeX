@@ -140,7 +140,7 @@ text = do
   case mbC of
     Nothing -> fail "text: Empty input."
     Just c | c `member` nottext -> fail "not text"
-           | otherwise          -> TeXRaw <$> takeTill (`elem` nottext)
+           | otherwise          -> TeXRaw <$> takeTill (`member` nottext)
 
 ------------------------------------------------------------------------
 -- Text without stopping on ']'
