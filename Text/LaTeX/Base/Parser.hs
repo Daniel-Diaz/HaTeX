@@ -56,6 +56,7 @@ import           Data.Functor(($>))
 import           Data.Monoid
 #endif
 import           Data.Maybe (fromMaybe)
+import           Data.Set(Set, fromList, member)
 import qualified Data.Text as T 
 
 import           Control.Applicative
@@ -126,18 +127,19 @@ latexBlockParser = foldr1 (<|>)
     ]
 -- Note: text stops on ']'; if the other parsers fail on the rest
 --       text2 handles it, starting with ']' 
-  
+
 ------------------------------------------------------------------------
 -- Text
 ------------------------------------------------------------------------
+nottext :: Set Char
+nottext = fromList "$%\\{]}"
+
 text :: Parser LaTeX
 text = do
   mbC <- peekChar
-  let nottext :: String
-      nottext = "$%\\{]}"
   case mbC of
     Nothing -> fail "text: Empty input."
-    Just c | c `elem` nottext -> fail "not text"
+    Just c | c `member` nottext -> fail "not text"
            | otherwise          -> TeXRaw <$> takeTill (`elem` nottext)
 
 ------------------------------------------------------------------------
