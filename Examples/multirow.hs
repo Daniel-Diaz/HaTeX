@@ -15,8 +15,7 @@ example = do
   document exampleBody
 
 minitab :: Monad m => TableSpec -> LaTeXT_ m -> LaTeXT_ m
-minitab tableSpec text =
-  tabular Nothing [tableSpec] text
+minitab tableSpec = tabular Nothing [tableSpec]
 
 exampleBody :: Monad m => LaTeXT_ m
 exampleBody = do

@@ -143,7 +143,7 @@ pdfstartpage = packageOption "pdfstartpage"
 
 -- | This package option sets the layout of PDF pages.
 pdfpagelayout :: LaTeXC l => PdfPageLayout -> l
-pdfpagelayout l = packageOption "pdfpagelayout" . raw . pack . show $ l
+pdfpagelayout = packageOption "pdfpagelayout" . raw . pack . show
 
 -- | Specification for how pages of a PDF should be displayed.
 data PdfPageLayout = SinglePage -- ^ Displays a single page; advancing flips the page.

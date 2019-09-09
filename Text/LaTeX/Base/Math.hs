@@ -522,9 +522,7 @@ totaldOf v = mathrm "d" <> v
 notop :: LaTeXC l =>
          (l -> l -> l)
       ->  l -> l -> l
-notop op =
- \l1 l2 ->
-   (l1 <> commS "not") `op` l2
+notop op l1 l2 = (l1 <> commS "not") `op` l2
 
 infixl 6 +-, -+
 

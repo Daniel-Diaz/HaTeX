@@ -19,4 +19,4 @@ thePreamble = do
  usepackage [] amsmath
 
 theBody :: Monad m => LaTeXT_ m
-theBody = equation_ $ pmatrix Nothing $ (identity 5 :: Matrix Int)
+theBody = equation_ $ pmatrix Nothing (identity 5 :: Matrix Int)

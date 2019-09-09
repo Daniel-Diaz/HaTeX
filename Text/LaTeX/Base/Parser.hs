@@ -51,10 +51,12 @@ module Text.LaTeX.Base.Parser (
 import           Text.Parsec hiding ((<|>),many)
 import           Text.Parsec.Error
 import           Data.Char (toLower,digitToInt)
+import           Data.Functor(($>))
 #if !MIN_VERSION_base(4,11,0)
 import           Data.Monoid
 #endif
 import           Data.Maybe (fromMaybe)
+import           Data.Set(Set, fromList, member)
 import qualified Data.Text as T 
 
 import           Control.Applicative
@@ -68,7 +70,7 @@ import           Text.LaTeX.Base.Render
 ------------------------------------------------------------------------
 
 -- | Configuration for the LaTeX parser.
-data ParserConf = ParserConf
+newtype ParserConf = ParserConf
   { -- | This is the list of names of the environments such that
     --   their content will be parsed verbatim.
     verbatimEnvironments :: [String]
@@ -125,19 +127,20 @@ latexBlockParser = foldr1 (<|>)
     ]
 -- Note: text stops on ']'; if the other parsers fail on the rest
 --       text2 handles it, starting with ']' 
-  
+
 ------------------------------------------------------------------------
 -- Text
 ------------------------------------------------------------------------
+nottext :: Set Char
+nottext = fromList "$%\\{]}"
+
 text :: Parser LaTeX
 text = do
   mbC <- peekChar
-  let nottext :: [Char]
-      nottext = "$%\\{]}"
   case mbC of
     Nothing -> fail "text: Empty input."
-    Just c | c `elem` nottext -> fail "not text"
-           | otherwise          -> TeXRaw <$> takeTill (`elem` nottext)
+    Just c | c `member` nottext -> fail "not text"
+           | otherwise          -> TeXRaw <$> takeTill (`member` nottext)
 
 ------------------------------------------------------------------------
 -- Text without stopping on ']'
@@ -346,10 +349,10 @@ specials :: String
 specials = "'(),.-\"!^$&#{}%~|/:;=[]\\` "
 
 peekChar :: Parser (Maybe Char)
-peekChar = Just <$> (try $ lookAhead anyChar) <|> pure Nothing
+peekChar = Just <$> try (lookAhead anyChar) <|> pure Nothing
 
 atEnd :: Parser Bool
-atEnd = (eof *> pure True) <|> pure False
+atEnd = (eof $> True) <|> pure False
 
 takeTill :: (Char -> Bool) -> Parser Text
 takeTill p = T.pack <$> many (satisfy (not . p))

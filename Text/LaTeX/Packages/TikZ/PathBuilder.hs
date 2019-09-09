@@ -44,11 +44,11 @@ import Control.Monad.Trans.State
 import Control.Applicative
 #endif
 
-data PathState = PS { currentPath :: TPath }
+newtype PathState = PS { currentPath :: TPath }
 
 -- | Use a /path builder/ to construct a value of type 'TPath'.
 --   Use 'bpath' for this purpose.
-data PathBuilder a = PB { pathBuilder :: State PathState a }
+newtype PathBuilder a = PB { pathBuilder :: State PathState a }
 
 -- Instances
 
@@ -73,16 +73,16 @@ pcycle = applyToPath Cycle
 
 -- | Line from the current point to the given one.
 line :: TPoint -> PathBuilder ()
-line p = applyToPath $ (`Line`p)
+line p = applyToPath (`Line` p)
 
 -- | Rectangle with the current point as one cornder and the given point
 --   as the opposite corner.
 rectangle :: TPoint -> PathBuilder ()
-rectangle p = applyToPath $ (`Rectangle`p)
+rectangle p = applyToPath (`Rectangle` p)
 
 -- | Circle with the given radius centered at the current point.
 circle :: Double -> PathBuilder ()
-circle r = applyToPath $ (`Circle`r)
+circle r = applyToPath (`Circle` r)
 
 -- | Ellipse with width and height described by the arguments and centered
 --   at the current point.

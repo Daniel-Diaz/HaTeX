@@ -50,7 +50,7 @@ multirow :: LaTeXC l =>
          -> Maybe Measure        -- ^ Optinal length used to raise or lower the text
          -> l                    -- ^ Actual text of the construct
          -> l
-multirow mVPos nrows mBigstruts width mVMove text =
+multirow mVPos nrows mBigstruts width mVMove =
   liftL (\l ->
            TeXComm "multirow" $ catMaybes  [ fmap (OptArg . rendertex) mVPos
                                            , Just (FixArg . rendertex $ nrows)
@@ -59,4 +59,4 @@ multirow mVPos nrows mBigstruts width mVMove text =
                                            , fmap (OptArg . rendertex) mVMove
                                            , Just (FixArg l)
                                            ]
-        ) text
+        )

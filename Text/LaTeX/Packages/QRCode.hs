@@ -76,4 +76,4 @@ escape = T.concatMap handleChar
                      | otherwise   = T.singleton c
 
 isSpecial :: Char -> Bool
-isSpecial c = elem c ("#$&^_~% \\{}" :: String)
+isSpecial c = c `elem` ("#$&^_~% \\{}" :: String)

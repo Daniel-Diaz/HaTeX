@@ -1,5 +1,4 @@
-
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, CPP #-}
 
 -- | This module allows you to use the LaTeX /graphicx/ library in order to
 --   insert graphics in a document and perform some transformations.
@@ -28,6 +27,9 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 --
 import Data.Char (toLower)
+#if !MIN_VERSION_base(4,8,0)
+import Data.Functor ((<$>))
+#endif
 
 -- | The 'graphicx' package.
 --
@@ -63,11 +65,11 @@ data IGOption =
 instance Render IGOption where
  render (IGWidth m) = "width=" <> render m
  render (IGHeight m) = "height=" <> render m
- render (KeepAspectRatio b) = "keepaspectratio=" <> fromString (fmap toLower $ show b)
+ render (KeepAspectRatio b) = "keepaspectratio=" <> fromString (toLower <$> show b)
  render (IGScale r) = "scale=" <> render r
  render (IGAngle a) = "angle=" <> render a
  render (IGTrim l b r t) = "trim=" <> renderChars ' ' [l,b,r,t]
- render (IGClip b) = "clip=" <> fromString (fmap toLower $ show b)
+ render (IGClip b) = "clip=" <> fromString (toLower <$> show b)
  render (IGPage p) = "page=" <> render p
 
 -- | Include an image in the document.
@@ -76,7 +78,7 @@ includegraphics :: LaTeXC l =>
                 -> FilePath  -- ^ Image file
                 -> l
 includegraphics opts fp = fromLaTeX $ TeXComm "includegraphics"
- [ MOptArg $ fmap rendertex opts , FixArg $ TeXRaw $ fromString fp ]
+ [ MOptArg $ fmap rendertex opts, FixArg $ TeXRaw $ fromString fp ]
 
 -- | Rotate the content by the given angle in degrees.
 rotatebox :: LaTeXC l => Float -> l -> l

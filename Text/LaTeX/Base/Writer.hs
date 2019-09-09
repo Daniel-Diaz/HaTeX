@@ -1,4 +1,3 @@
-
 {-# LANGUAGE TypeFamilies, CPP #-}
 
 -- | The writer monad applied to 'LaTeX' values. Useful to compose 'LaTeX' values
@@ -75,15 +74,14 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Warnings (Warning,checkAll,check)
 
 -- | 'WriterT' monad transformer applied to 'LaTeX' values.
-newtype LaTeXT m a =
-  LaTeXT { unwrapLaTeXT :: WriterT LaTeX m a }
+newtype LaTeXT m a = LaTeXT { unwrapLaTeXT :: WriterT LaTeX m a }
 
 instance Functor f => Functor (LaTeXT f) where
- fmap f = LaTeXT . fmap f . unwrapLaTeXT
+    fmap f = LaTeXT . fmap f . unwrapLaTeXT
 
 instance Applicative f => Applicative (LaTeXT f) where
- pure = LaTeXT . pure
- (LaTeXT f) <*> (LaTeXT x) = LaTeXT $ f <*> x
+    pure = LaTeXT . pure
+    (LaTeXT f) <*> (LaTeXT x) = LaTeXT $ f <*> x
 
 -- | Type synonym for empty 'LaTeXT' computations.
 type LaTeXT_ m = LaTeXT m ()

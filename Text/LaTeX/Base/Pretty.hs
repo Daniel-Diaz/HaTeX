@@ -63,7 +63,7 @@ docLaTeX (TeXComment t) =
   let ls = Data.Text.lines t
   in  if null ls
          then pretty '%' <> hardline
-         else (align $ vsep $ fmap (pretty . ("% "++) . unpack) ls) <> hardline
+         else align (vsep $ fmap (pretty . ("% "++) . unpack) ls) <> hardline
 docLaTeX (TeXSeq l1 l2) = docLaTeX l1 <> docLaTeX l2
 docLaTeX TeXEmpty = mempty
 
