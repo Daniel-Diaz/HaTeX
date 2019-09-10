@@ -21,8 +21,9 @@ module Text.LaTeX.Base.Class (
  , comm0, comm1, comm2, comm3, comm4, comm5, comm6, comm7, comm8, comm9
  , commS
  , fixComm, optFixComm
- , braces
- , squareBraces
+ , env0, env1, env2, env3, env4, env5, env6, env7, env8, env9
+ , fixEnv
+ , braces, squareBraces
  , raw
  ) where
 
@@ -110,6 +111,11 @@ fixComm str = liftListL (TeXComm str . fixArgs)
 -- sequence of optional arguments, followed by a sequence of fixed arguments.
 optFixComm :: LaTeXC l => String -> Int -> [l] -> l
 optFixComm str k = liftListL (TeXComm str . optFixArgs k)
+
+-- | Create a LaTeX environment where all the arguments in the list are fixed
+--   arguments.
+fixEnv :: LaTeXC l => String -> [l] -> l -> l
+fixEnv str args inner = liftListL (\(inn:as) -> TeXEnv str (fixArgs as) inn) (inner:args)
 
 -- | A simple (without arguments) and handy command generator
 --   using the name of the command.
@@ -199,6 +205,56 @@ comm9 str l1 l2 l3 l4 l5 l6 l7 l8 l9 = fixComm str [l1, l2, l3, l4, l5, l6, l7, 
 --
 commS :: LaTeXC l => String -> l
 commS = fromLaTeX . TeXCommS
+
+-- | Define an environment, without any parameters that are passed to the
+--   environment.
+env0 :: LaTeXC l => String -> l -> l
+env0 str = fixEnv str []
+
+-- | Define an environment, with one fixed parameter that is passed to the
+--   environment.
+env1 :: LaTeXC l => String -> l -> l -> l
+env1 str l1 = fixEnv str [l1]
+
+-- | Define an environment, with two fixed parameters that is passed to the
+--   environment.
+env2 :: LaTeXC l => String -> l -> l -> l -> l
+env2 str l1 l2 = fixEnv str [l1, l2]
+
+-- | Define an environment, with three fixed parameters that is passed to the
+--   environment.
+env3 :: LaTeXC l => String -> l -> l -> l -> l -> l
+env3 str l1 l2 l3 = fixEnv str [l1, l2, l3]
+
+-- | Define an environment, with four fixed parameters that is passed to the
+--   environment.
+env4 :: LaTeXC l => String -> l -> l -> l -> l -> l -> l
+env4 str l1 l2 l3 l4 = fixEnv str [l1, l2, l3, l4]
+
+-- | Define an environment, with five fixed parameters that is passed to the
+--   environment.
+env5 :: LaTeXC l => String -> l -> l -> l -> l -> l -> l -> l
+env5 str l1 l2 l3 l4 l5 = fixEnv str [l1, l2, l3, l4, l5]
+
+-- | Define an environment, with six fixed parameters that is passed to the
+--   environment.
+env6 :: LaTeXC l => String -> l -> l -> l -> l -> l -> l -> l -> l
+env6 str l1 l2 l3 l4 l5 l6 = fixEnv str [l1, l2, l3, l4, l5, l6]
+
+-- | Define an environment, with seven fixed parameters that is passed to the
+--   environment.
+env7 :: LaTeXC l => String -> l -> l -> l -> l -> l -> l -> l -> l -> l
+env7 str l1 l2 l3 l4 l5 l6 l7 = fixEnv str [l1, l2, l3, l4, l5, l6, l7]
+
+-- | Define an environment, with eight fixed parameters that is passed to the
+--   environment.
+env8 :: LaTeXC l => String -> l -> l -> l -> l -> l -> l -> l -> l -> l -> l
+env8 str l1 l2 l3 l4 l5 l6 l7 l8 = fixEnv str [l1, l2, l3, l4, l5, l6, l7, l8]
+
+-- | Define an environment, with nine fixed parameters that is passed to the
+--   environment.
+env9 :: LaTeXC l => String -> l -> l -> l -> l -> l -> l -> l -> l -> l -> l -> l
+env9 str l1 l2 l3 l4 l5 l6 l7 l8 l9 = fixEnv str [l1, l2, l3, l4, l5, l6, l7, l8, l9]
 
 -- | A lifted version of the 'TeXBraces' constructor.
 --
