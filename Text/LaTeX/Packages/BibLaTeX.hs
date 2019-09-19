@@ -22,10 +22,10 @@ module Text.LaTeX.Packages.BibLaTeX
  ) where
 
 import Text.LaTeX.Base.Syntax hiding ((<>))
-import Text.LaTeX.Base.Class
+import Text.LaTeX.Base.Class (LaTeXC(..), liftL, fromLaTeX, comm0, raw)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
-import Text.LaTeX.Base.Commands (cite, footnote, document, raw)
+import Text.LaTeX.Base.Commands (cite, footnote, document)
 
 import Data.String (IsString)
 import Data.Char (toLower)
