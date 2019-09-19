@@ -107,8 +107,8 @@ documentWithDOIReferences resolver (ReferenceQueryT refq) = do
 type PlainDOI = String
 
 data DOIReference = DOIReference {
-       referenceDOI :: PlainDOI
-     , referenceSynopsis :: LaTeX
+       _referenceDOI :: PlainDOI
+     , _referenceSynopsis :: LaTeX
      } deriving (Generic)
 instance Eq DOIReference where
   DOIReference doi₀ _ == DOIReference doi₁ _ = doi₀ == doi₁
