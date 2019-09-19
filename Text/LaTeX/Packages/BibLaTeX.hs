@@ -27,7 +27,6 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Types
 import Text.LaTeX.Base.Commands (cite, footnote, document)
 
-import Data.String (IsString)
 import Data.Char (toLower)
 import qualified Data.Semigroup as SG
 import GHC.Generics (Generic)
