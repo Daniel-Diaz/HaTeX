@@ -10,7 +10,7 @@ module Text.LaTeX.Packages.Multirow
  , multirow
  ) where
 
-import Data.Monoid ((<>))
+import qualified Data.Semigroup as SG ((<>))
 import Data.Maybe (catMaybes)
 import Text.LaTeX.Base.Syntax (LaTeX(TeXComm), TeXArg(FixArg, OptArg))
 import Text.LaTeX.Base.Class (LaTeXC, liftL)
@@ -35,9 +35,9 @@ data BigStrutsCount
 
 instance Render BigStrutsCount where
   render (BigStruts n)          = render n
-  render (BigStrutsTop n)       = "t" <> render n
-  render (BigStrutsBottom n)    = "b" <> render n
-  render (BigStrutsTopBottom n) = "tb" <> render n
+  render (BigStrutsTop n)       = "t" SG.<> render n
+  render (BigStrutsBottom n)    = "b" SG.<> render n
+  render (BigStrutsTopBottom n) = "tb" SG.<> render n
 
 -- | 'multirow' sets a piece of text in a tabular or similar
 -- environment, spanning multiple rows.

@@ -112,7 +112,6 @@ instance Monad m => Monad (LaTeXT m) where
   a <- c
   let LaTeXT c' = f a
   c'
- fail = return . error
 
 instance MonadIO m => MonadIO (LaTeXT m) where
  liftIO = lift . liftIO
