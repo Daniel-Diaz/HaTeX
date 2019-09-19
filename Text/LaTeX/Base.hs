@@ -45,9 +45,6 @@ module Text.LaTeX.Base
 -- Internal modules
 import Text.LaTeX.Base.Syntax
   ( LaTeX
-#if __GLASGOW_HASKELL__ < 704
-  , (<>)
-#endif
   , protectString
   , protectText)
 import Text.LaTeX.Base.Render

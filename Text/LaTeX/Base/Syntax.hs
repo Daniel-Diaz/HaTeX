@@ -109,14 +109,6 @@ instance Monoid LaTeX where
  --
  mappend x y = TeXSeq x y
 
--- Since GHC starting from 7.4 provides (<>) as synonym to 'mappend' (see "Data.Monoid"),
--- we avoid an overlapping definition with a CPP conditional.
-#if __GLASGOW_HASKELL__ < 704
--- | Alias for 'mappend'.
-(<>) :: Monoid a => a -> a -> a
-(<>) = mappend
-#endif
-
 instance Semigroup.Semigroup LaTeX where
   (<>) = mappend
 
