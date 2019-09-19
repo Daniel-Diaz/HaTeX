@@ -65,6 +65,7 @@ Library
                , transformers >= 0.2.2 && < 0.6
                , containers >= 0.4.2.1 && < 0.7
                , hashable >= 1.2 && < 1.4
+               , bibtex >= 0.1 && < 0.2
                , matrix
                  -- Testing
                , QuickCheck
