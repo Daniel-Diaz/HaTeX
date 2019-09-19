@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE DeriveFunctor     #-}
+{-# LANGUAGE FlexibleContexts  #-}
 
 -- | <https://ctan.org/tex-archive/macros/latex/contrib/biblatex BibLaTeX>
 --   is a reference-citation package using @.bib@ files (BibTeX) but no extra style-files.
