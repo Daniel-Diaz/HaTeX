@@ -92,6 +92,7 @@ Library
         Text.LaTeX.Base.Writer
         Text.LaTeX.Base.Warnings
         -- Packages
+        Text.LaTeX.Packages.Acronym
         Text.LaTeX.Packages.AMSFonts
         Text.LaTeX.Packages.AMSMath
         Text.LaTeX.Packages.AMSSymb
