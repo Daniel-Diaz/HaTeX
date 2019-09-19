@@ -30,6 +30,7 @@ import Data.String (IsString)
 import Data.Char (toLower)
 import qualified Data.Semigroup as SG
 import GHC.Generics (Generic)
+import qualified Data.Traversable as Tr
 
 import qualified Data.Map as Map
 import Data.Maybe (catMaybes)
@@ -180,7 +181,7 @@ instance (Applicative m, LaTeXC (m a), SG.Semigroup (m a), a ~ ())
           (refs, _, rebuilds) -> ( foldr (.) id refs
                                  , ()
                                  , \resolve -> liftListL f $ ($ resolve)<$>rebuilds )
-       ) <$> traverse runReferenceQueryT xs
+       ) <$> Tr.traverse runReferenceQueryT xs
 
 citeDOI :: (Functor m, Monoid (m ()), IsString (m ()))
         => PlainDOI  -- ^ The unambiguous document identifier.
