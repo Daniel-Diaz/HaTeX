@@ -28,7 +28,7 @@ import Text.LaTeX.Base.Commands (cite, footnote, document, raw)
 
 import Data.String (IsString)
 import Data.Char (toLower)
-import Data.Semigroup
+import qualified Data.Semigroup as SG
 import GHC.Generics (Generic)
 
 import qualified Data.Map as Map
@@ -61,7 +61,7 @@ printbibliography :: LaTeXC l => l
 printbibliography = comm0 "printbibliography"
 
 
-documentWithDOIReferences :: (MonadIO m, LaTeXC (m ()), Semigroup (m ()), r ~ DOIReference)
+documentWithDOIReferences :: (MonadIO m, LaTeXC (m ()), SG.Semigroup (m ()), r ~ DOIReference)
   => (r -> m (Maybe BibTeX.T)) -- ^ Reference-resolver function, for looking up BibTeX
                                --   entries for a given DOI.
                                --   If the DOI cannot be looked up (@Nothing@), we just
@@ -99,9 +99,9 @@ documentWithDOIReferences resolver (ReferenceQueryT refq) = do
                         Flavour_Smartcite -> "Smartcite"
                   in citeC . raw . fromString $ BibTeX.identifier a
         Nothing -> makeshift r
- where makeshift :: (LaTeXC l, Semigroup l) => DOIReference -> l
+ where makeshift :: (LaTeXC l, SG.Semigroup l) => DOIReference -> l
        makeshift (DOIReference doi synops) = footnote $
-           fromLaTeX synops <> ". DOI:" <> fromString doi
+           fromLaTeX synops SG.<> ". DOI:" SG.<> fromString doi
     
 
 type PlainDOI = String
@@ -162,17 +162,18 @@ instance (Functor m, Monoid (m a), IsString (m ()), a ~ ())
            => IsString (ReferenceQueryT r m a) where
   fromString s = ReferenceQueryT $ (\a -> (id, a, const $ fromString s)) <$> mempty
 
-instance (Applicative m, Semigroup (m a), a ~ ()) => Semigroup (ReferenceQueryT r m a) where
+instance (Applicative m, SG.Semigroup (m a), a ~ ())
+             => SG.Semigroup (ReferenceQueryT r m a) where
   ReferenceQueryT p <> ReferenceQueryT q
       = ReferenceQueryT $ liftA2 (\(rp,(),ρp) (rq,(),ρq)
-                                     -> (rp.rq,(),liftA2(liftA2 (<>))ρp ρq)) p q
+                                     -> (rp.rq,(),liftA2(liftA2 (SG.<>))ρp ρq)) p q
 
-instance (Applicative m, Semigroup (m a), Monoid (m a), a ~ ())
+instance (Applicative m, SG.Semigroup (m a), Monoid (m a), a ~ ())
     => Monoid (ReferenceQueryT r m a) where
   mempty = ReferenceQueryT $ (\a -> (id, a, mempty)) <$> mempty
-  mappend = (<>)
+  mappend = (SG.<>)
 
-instance (Applicative m, LaTeXC (m a), Semigroup (m a), a ~ ())
+instance (Applicative m, LaTeXC (m a), SG.Semigroup (m a), a ~ ())
              => LaTeXC (ReferenceQueryT r m a) where
   liftListL f xs = ReferenceQueryT $
     (\components -> case List.unzip3 components of
