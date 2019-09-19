@@ -26,15 +26,15 @@ type PackageName = String
 type PageStyle = String
 
 -- | Type of labels.
-newtype Label =
-    Label {
-      -- | Get the name of a label.
-      labelName :: String
-    } deriving (Eq, Show)
+newtype Label = Label String deriving (Eq, Show)
 
 -- | Create a label from its name.
 createLabel :: String -> Label
 createLabel = Label
+
+-- | Get the name of a label.
+labelName :: Label -> String
+labelName (Label str) = str
 
 instance Render Label where
     render (Label str) = fromString str
