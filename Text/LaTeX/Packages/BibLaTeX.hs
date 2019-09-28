@@ -13,6 +13,7 @@ module Text.LaTeX.Packages.BibLaTeX
  , printbibliography
  -- * Automatic bibliography retrieval
  , documentWithDOIReferences
+ , PlainDOI
  , citeDOI
  , textc
  , textC
