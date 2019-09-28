@@ -9,6 +9,12 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.21.0.0 to 3.22.0.0
+* More liftLX, commX and envX functions. (KommuSoft)
+* New module: Text.LaTeX.Packages.Acronym. (KommuSoft)
+* Expanded BibLaTeX module with new functionality. (leftaroundabout)
+* Dropped support for GHC-7.8 (and earlier version).
+
 ## From 3.20.0.1 to 3.21.0.0
 
 * Replace wl-pprint-extras with prettyprinter in the latex pretty-printer.
