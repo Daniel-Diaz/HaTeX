@@ -1,0 +1,29 @@
+{-# LANGUAGE OverloadedStrings, CPP #-}
+
+-- | Do ??? using this module.
+--
+--   ???
+module Text.LaTeX.Packages.???
+ ( -- * Acronym package
+   p???
+   -- * Package options
+ , ???
+ -- * Types
+ , ???
+ -- * functions
+, ???
+   ) where
+
+import Text.LaTeX.Base.Class(LaTeXC, comm0, comm1, comm2, liftL, liftL2)
+import Text.LaTeX.Base.Syntax(LaTeX(TeXComm, TeXEnv), TeXArg(FixArg, OptArg))
+import Text.LaTeX.Base.Types(PackageName)
+
+-- | The '???' package.
+--
+-- > usepackage [] ???
+p??? :: PackageName
+p??? = "???"
+
+-- | Package option ???
+??? :: LaTeXC l => l
+??? = "???"
