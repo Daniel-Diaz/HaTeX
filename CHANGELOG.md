@@ -13,7 +13,7 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 * More liftLX, commX and envX functions. (KommuSoft)
 * New module: Text.LaTeX.Packages.Acronym. (KommuSoft)
 * Expanded BibLaTeX module with new functionality. (leftaroundabout)
-* Dropped support for GHC-7.8 (and earlier version).
+* Dropped support for GHC-7.8 (and earlier versions).
 
 ## From 3.20.0.1 to 3.21.0.0
 
