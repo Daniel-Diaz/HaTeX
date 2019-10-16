@@ -56,7 +56,7 @@ Basic functions are defined in the "Text.LaTeX.Base.Commands" module. Roughly sp
 it contains functions to generate blocks containing LaTeX commands and environments that
 are always defined. In the other hand, 'LaTeX' is an instance of the 'IsString' class.
 This allow us to insert LaTeX code containing simple text by just writing it as a 'String'
-and enabling the @OverlaodedStrings@ language extension.
+and enabling the @OverloadedStrings@ language extension.
 -}
 
 {- $rnd
