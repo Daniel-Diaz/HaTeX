@@ -22,10 +22,11 @@ module Text.LaTeX.Base.Render
  , showFloat
    ) where
 
-import Data.Text (Text,lines,unlines)
+import Data.Text (Text,lines,unlines,uncons)
 import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class
 import Data.String
+import Data.Char (isAlpha)
 import Data.Text.Encoding
 import Data.List (intersperse)
 import qualified Data.ByteString as B
@@ -137,6 +138,11 @@ instance Render LaTeX where
    in if null xs then "%\n"
                  else Data.Text.unlines $ fmap ("%" <>) xs
 
+  render (TeXSeq l1@(TeXCommS _) l2) = let r2 = render l2 in
+    render l1 <> (case uncons r2 of
+      Just (c,_) | isIdentChar c -> " "
+      _ -> "") <> r2
+    where isIdentChar = isAlpha
   render (TeXSeq l1 l2) = render l1 <> render l2
   render TeXEmpty = mempty
 
