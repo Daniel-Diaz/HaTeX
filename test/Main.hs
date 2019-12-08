@@ -1,7 +1,6 @@
 {-# LANGUAGE CPP #-}
 
 import Text.LaTeX
-import Text.LaTeX.Base.Parser
 
 import Test.Tasty
 import qualified Test.Tasty.QuickCheck as QC
