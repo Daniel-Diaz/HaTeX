@@ -132,7 +132,9 @@ lessdot = comm0 "lessdot"
 gtrdot :: LaTeXC l => l
 gtrdot = comm0 "gtrdot"
 
--- | \(\square\) symbol - square, often used to denote the end of a proof
+-- | \(\square\) symbol - square.
+--   For the QED “tombstone”, see 'Text.LaTeX.Packages.AMSThm.qed' instead; it is normally the
+--   same symbol but gives the suitable text alignment.
 square :: LaTeXC l => l
 square = comm0 "square"
 

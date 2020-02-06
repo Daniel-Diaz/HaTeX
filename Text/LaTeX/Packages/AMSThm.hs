@@ -9,6 +9,7 @@ module Text.LaTeX.Packages.AMSThm
  , newtheorem
  , theorem
  , proof
+ , qed
  , qedhere
  , TheoremStyle (..)
  , theoremstyle
@@ -48,7 +49,13 @@ proof :: LaTeXC l => Maybe l -> l -> l
 proof  Nothing = liftL $ TeXEnv "proof" []
 proof (Just n) = liftL2 (\m -> TeXEnv "proof" [OptArg m]) n
 
--- | Insert the /QED/ symbol.
+-- | Insert the /QED/ symbol \(\square\), as a concluding right-aligned terminator.
+--   Note that within a 'proof' environment, this is automatically done at the end.
+qed :: LaTeXC l => l
+qed = comm0 "qed"
+
+-- | Insert the /QED/ symbol. This is supposed to be used within a 'proof' environment,
+--   to change the default behaviour of putting the \(\square\) at the end.
 qedhere :: LaTeXC l => l
 qedhere = comm0 "qedhere"
 
