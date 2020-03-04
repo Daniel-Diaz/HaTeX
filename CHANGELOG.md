@@ -9,6 +9,11 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.22.0.0 to 3.22.1.0
+* Export PlainDOI type synonym.
+* Comment out QuickCheck parser test. See https://github.com/Daniel-Diaz/HaTeX/issues/144.
+* New function `qed`.
+
 ## From 3.21.0.0 to 3.22.0.0
 * More liftLX, commX and envX functions. (KommuSoft)
 * New module: Text.LaTeX.Packages.Acronym. (KommuSoft)
