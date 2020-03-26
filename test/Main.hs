@@ -19,7 +19,7 @@ main = defaultMain $ testGroup "HaTeX"
     , QC.testProperty "LaTeX mappend" $
          \l1 l2 l3 -> l1 <> (l2 <> l3) == (l1 <> l2) <> (l3 :: LaTeX)
     ]
---  , testGroup "Parser"
+
 --    [ QC.testProperty "render . parse = id" $
 --         \l -> let t = render (l :: LaTeX)
 --               in  fmap render (parseLaTeX t) == Right t

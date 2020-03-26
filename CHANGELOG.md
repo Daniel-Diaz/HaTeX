@@ -9,6 +9,9 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.22.1.0 to 3.22.2.0
+* New render method: renderBuilder.
+
 ## From 3.22.0.0 to 3.22.1.0
 * Export PlainDOI type synonym.
 * Comment out QuickCheck parser test. See https://github.com/Daniel-Diaz/HaTeX/issues/144.
