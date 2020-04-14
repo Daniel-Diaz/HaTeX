@@ -80,7 +80,7 @@ module Text.LaTeX.Base.Math
    -- *** Misc operators
  , vee , wedge
  , oplus , ominus , otimes
- , oslash , odot
+ , oslash , odot , uplus
    -- *** Accents
  , hat, tilde, bar, vec, widehat, widetilde
  , dot
@@ -683,6 +683,10 @@ oslash  = between $ comm0 "oslash"
 -- | Circled dot operator \(\odot\).
 odot :: LaTeXC l => l -> l -> l
 odot  = between $ comm0 "odot"
+
+-- | Disjoint sum operator \(\uplus\).
+uplus :: LaTeXC l => l -> l -> l
+uplus  = between $ comm0 "uplus"
 
 --- Accemts
 {-
