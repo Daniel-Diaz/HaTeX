@@ -1,86 +1,125 @@
 #!/usr/bin/env stack
--- stack --resolver lts-15.11 script --package template-haskell
+-- stack --resolver lts-15.11 script --package template-haskell --package filepath
 
-{-# LANGUAGE TemplateHaskell, TemplateHaskellQuotes #-}
-
-import Data.List
+import Data.Bool(bool)
+import Data.Char(toLower, toUpper)
+import Data.List(intercalate, sort)
 
 import Language.Haskell.TH.Ppr(pprint)
-import Language.Haskell.TH.Syntax
+import Language.Haskell.TH.Syntax(Body(NormalB), Clause(Clause), Dec(FunD, SigD), Exp(LitE), Lit(StringL), Name, Type(AppT, ConT, ForallT, VarT), mkName, nameBase)
 
-import System.Console.GetOpt
-import System.Environment
+import System.Console.GetOpt(OptDescr(Option), ArgDescr(NoArg, ReqArg), ArgOrder(Permute), getOpt, usageInfo)
+import System.Environment(getArgs)
+import System.FilePath.Posix((</>))
+import System.IO(Handle, IOMode(WriteMode), hFlush, hPutStrLn, openFile, stdout)
 
-docSection :: String -> IO ()
-docSection = putStrLn . ("    -- * " <>)
+type StringName = (String, Name)
+
+firstLower :: String -> String
+firstLower "" = ""
+firstLower (x:xs) = toLower x : xs
+
+firstUpper :: String -> String
+firstUpper "" = ""
+firstUpper (x:xs) = toUpper x : xs
+
+toPackageName :: String -> (String, Name)
+toPackageName = (,) <*> (mkName . ('p':) . firstUpper)
+
+toPackageOptionName :: String -> (String, Name)
+toPackageOptionName = (,) <*> (mkName . firstLower)
+
+docSection :: Handle -> String -> IO ()
+docSection h = hPutStrLn h . ("    -- * " <>)
+
+importSection :: Handle -> String -> IO ()
+importSection handle = hPutStrLn handle . ("import " <>)
 
 tPackageName :: Type
 tPackageName = ConT (mkName "PackageName")
 
-tOption :: Type
-tOption = ForallT [] [AppT (ConT (mkName "LaTeXC")) (VarT l)] (VarT l)
+tPackageOption :: Type
+tPackageOption = ForallT [] [AppT (ConT (mkName "LaTeXC")) (VarT l)] (VarT l)
     where l = mkName "l"
 
 _stringLiteral :: String -> Clause
 _stringLiteral pn = Clause [] (NormalB (LitE (StringL pn))) []
 
-packageOption :: String -> [Dec]
-packageOption opt = [
-    SigD nopt tOption
-  , FunD nopt [_stringLiteral opt]
+stringDec' :: Type -> StringName -> [Dec]
+stringDec' typ (s, n) = [
+    SigD n typ
+  , FunD n [_stringLiteral s]
   ]
-  where nopt = mkName opt
 
-packageConstant :: String -> Name
-packageConstant = mkName . ('p':)
+stringDec :: (StringName -> [String]) -> Type -> StringName -> String
+stringDec doc typ sn = haddock (doc sn) <> pprint (stringDec' typ sn)
 
-optionConstant :: String -> Name
-optionConstant = mkName
+_packageDoc :: StringName -> [String]
+_packageDoc (s,n) = ["The @" <> s <> "@ package.", "", "> usepackage [] " <> nameBase n]
 
-declarations :: Name -> String -> [String] -> [[Dec]]
-declarations pName name opts = [
-    SigD pName tPackageName
-  , FunD pName [_stringLiteral name]
-  ] : map packageOption opts
+_package :: StringName -> String
+_package = stringDec _packageDoc tPackageName
 
-data LaTeXPackage = LaTeXPackage { packageName :: String, packageOptions :: [String], pragmas :: [String] }
+_optionDoc :: StringName -> [String]
+_optionDoc (s,_) = ["The @" <> s <> "@ option."]
 
-initialPackage :: LaTeXPackage
-initialPackage = LaTeXPackage "" [] ["OverloadedStrings"]
+_packageOption :: StringName -> String
+_packageOption = ('\n' :) . stringDec _optionDoc tPackageOption
+
+exportFuncs :: Handle -> [StringName] -> IO ()
+exportFuncs handle = hPutStrLn handle . ("  " <>) . concatMap ((", " <>) . nameBase . snd)
+
+data LaTeXPackage = LaTeXPackage { packageName :: String, packageOptions :: [String], pragmas :: [String], imports :: [String], write :: Bool }
+
+initialImports :: [String]
+initialImports = [
+    "Text.LaTeX.Base.Class(LaTeXC, comm0, comm1, comm2, liftL, liftL2)"
+  , "Text.LaTeX.Base.Syntax(LaTeX(TeXComm, TeXEnv), TeXArg(FixArg, OptArg))"
+  , "Text.LaTeX.Base.Types(PackageName)"
+  ]
+
+initialPackage :: String -> [String] -> LaTeXPackage
+initialPackage p ps = LaTeXPackage p ps ["OverloadedStrings"] initialImports False
 
 header :: String
-header = "Usage: stack new-package [OPTION...]"
+header = "Usage: stack new-package PACKAGENAME PACKAGEOPTIONS... [OPTION...]"
 
--- options :: [OptDescr (LaTeXPackage -> LaTeXPackage)]
--- options = [
---     Option ['p'] ["package-name"]   (ReqArg (\s l -> l { packageName=s }) "package-name") "The name of the package"
---   , Option ['o'] ["package-option"] (ReqArg (\o l@LaTeXPackage{packageOptions=os} -> l {packageOptions=(o:os)}) "option-name")  "library directory"
---   , Option ['r'] ["pragma"] (ReqArg (\p l@LaTeXPackage{pragmas=ps} -> l {pragmas=(p:ps)}) "pragma-name")  "pragmas used in the module"
---   ]
+options :: [OptDescr (LaTeXPackage -> LaTeXPackage)]
+options = [
+    Option ['r'] ["pragma"] (ReqArg (\p l@LaTeXPackage {pragmas=ps} -> l{pragmas=p:ps}) "pragma-name")  "pragmas used in the module"
+  , Option ['i'] ["import"] (ReqArg (\i l@LaTeXPackage {imports=is} -> l{imports=i:is}) "import-statement")  "import statements used"
+  , Option ['w'] ["write"] (NoArg (\l -> l{write=True}))  "write to a file"
+  ]
 
 haddock :: [String] -> String
 haddock [] = []
 haddock (l:ls) = unlines (("-- | " ++ l) : map ("-- " ++) ls)
 
+printUsageInfo :: IO ()
+printUsageInfo = putStrLn (usageInfo header options)
+
 main = do
     argv <- getArgs
-    l@LaTeXPackage{packageName=n,packageOptions=os, pragmas=ps} <- case getOpt Permute options argv of
-         (o,_,[]) -> pure (foldr ($) initialPackage o)
-         (_,_,errs) -> ioError (userError (concat errs ++ usageInfo header options))
-    let pName = packageConstant n
-    putStrLn ("{-# LANGUAGE " <> (intercalate ", " (sort ps)) <> " #-}\n\nmodule Text.LaTeX.Packages." <> n <> " (")
-    docSection (n <> " package")
-    putStrLn ("    " <> nameBase pName)
-    docSection "Package options"
-    docSection "Types"
-    docSection "Functions"
-    putStrLn "  )"
-    r <- runQ (pure (declarations pName n os))
-    putStrLn (haddock ["The '???' package.", "", "> usepackage [] p????"])
-    putStrLn (haddock ["Package option ???"])
-    -- | The '???' package.
---
--- > usepackage [] p???
-    mapM_ (putStrLn . ('\n':) . pprint) r -- "Constructing a new package"
+    l@LaTeXPackage{packageName=n,packageOptions=os, pragmas=ps, imports=is, write=w} <- case getOpt Permute options argv of
+         (o, p:pos, []) -> pure (foldr ($) (initialPackage p pos) o)
+         (o, [], []) -> printUsageInfo >> putStrLn (usageInfo header options) >>  ioError (userError "No packagename specified.)")
+         (_, _, errs) -> printUsageInfo >> ioError (userError (concat errs))
+    let fileName = firstUpper n
+    let mName = "Text.LaTeX.Packages." <> fileName
+    let pns@(_, pn) = toPackageName n
+    let snos = map toPackageOptionName os
+    handle <- bool (pure stdout) (openFile ("Text" </> "LaTeX" </> "Packages" </> (fileName <> ".hs")) WriteMode) w
+    hPutStrLn handle ("{-# LANGUAGE " <> intercalate ", " (sort ps) <> " #-}\n\nmodule " <> mName <> " (")
+    docSection handle (n <> " package")
+    hPutStrLn handle ("    " <> nameBase pn)
+    docSection handle "Package options"
+    exportFuncs handle snos
+    mapM_ (docSection handle) ["Types", "Functions"]
+    hPutStrLn handle "  )\n"
+    mapM_ (importSection handle) is
+    hPutStrLn handle ""
+    hPutStrLn handle (_package pns)
+    mapM_ (hPutStrLn handle . _packageOption) snos
+    hFlush handle
 
 -- vim:ft=haskell
