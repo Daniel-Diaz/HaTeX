@@ -115,7 +115,7 @@ main = do
     docSection handle "Package options"
     exportFuncs handle snos
     mapM_ (docSection handle) ["Types", "Functions"]
-    hPutStrLn handle "  )\n"
+    hPutStrLn handle "  ) where\n"
     mapM_ (importSection handle) is
     hPutStrLn handle ""
     hPutStrLn handle (_package pns)
