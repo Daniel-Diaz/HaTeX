@@ -1,347 +1,132 @@
-
-{-# LANGUAGE CPP, DeriveDataTypeable, DeriveGeneric #-}
-
--- | LaTeX syntax description in the definition of the 'LaTeX' datatype.
---   If you want to add new commands or environments not defined in
---   the library, import this module and use 'LaTeX' data constructors.
-module Text.LaTeX.Base.Syntax
+{-# LANGUAGE PatternSynonyms #-}
+module Text.LaTeX.Base.Syntax 
  ( -- * @LaTeX@ datatype
-   Measure (..)
- , MathType (..)
- , LaTeX (..)
- , TeXArg (..)
- , (<>), between
+   S.MathType (..)
+ , Measure
+ , pattern Pt
+ , pattern Mm
+ , pattern Cm
+ , pattern In
+ , pattern Ex
+ , pattern Em
+ , pattern CustomMeasure
+
+ , LaTeX
+ , pattern TeXRaw
+ , pattern TeXComm
+ , pattern TeXCommS
+ , pattern TeXEnv
+ , pattern TeXMath
+ , pattern TeXLineBreak
+ , pattern TeXBraces
+ , pattern TeXComment
+ , pattern TeXSeq
+ , pattern TeXEmpty
+
+ , TeXArg
+ , pattern FixArg
+ , pattern OptArg
+ , pattern MOptArg
+ , pattern SymArg
+ , pattern MSymArg
+ , pattern ParArg
+ , pattern MParArg
+ , (<>), S.between
    -- * Escaping reserved characters
- , protectString
- , protectText
+ , S.protectString
+ , S.protectText
    -- * Syntax analysis
- , matchCommand
- , lookForCommand
- , matchEnv
- , lookForEnv
- , texmap
- , texmapM
+ , S.matchCommand
+ , S.lookForCommand
+ , S.matchEnv
+ , S.lookForEnv
+ , S.texmap
+ , S.texmapM
    -- ** Utils
- , getBody
- , getPreamble
+ , S.getBody
+ , S.getPreamble
    ) where
 
-import Data.Text (Text,pack)
-import qualified Data.Text
-import qualified Data.Semigroup as Semigroup
-import Data.String
-import Control.Applicative
-import Control.Monad (replicateM)
-import Data.Functor.Identity (runIdentity)
-import Data.Data (Data)
-import Data.Typeable
-import Test.QuickCheck
-import Data.Hashable
-import GHC.Generics (Generic)
-#if !MIN_VERSION_base(4,11,0)
-import Data.Monoid
-#endif
+import           Data.Text(Text)
 
--- | Measure units defined in LaTeX. Use 'CustomMeasure' to use commands like 'textwidth'.
---   For instance:
---
--- > rule Nothing (CustomMeasure linewidth) (Pt 2)
---
--- This will create a black box (see 'rule') as wide as the text and two points tall.
---
-data Measure =
-   Pt Double -- ^ A point is 1/72.27 inch, that means about 0.0138 inch or 0.3515 mm.
- | Mm Double -- ^ Millimeter.
- | Cm Double -- ^ Centimeter.
- | In Double -- ^ Inch.
- | Ex Double -- ^ The height of an \"x\" in the current font.
- | Em Double -- ^ The width of an \"M\" in the current font.
- | CustomMeasure LaTeX -- ^ You can introduce a 'LaTeX' expression as a measure.
-   deriving (Data, Eq, Generic, Show, Typeable)
+import qualified Text.LaTeX.Base.Syntax.WithParm as S
 
--- | Different types of syntax for mathematical expressions.
-data MathType = Parentheses | Square | Dollar | DoubleDollar
-  deriving (Data, Eq, Generic, Show, Typeable)
+type Measure = S.Measure ()
+type LaTeX   = S.LaTeX ()
+type TeXArg  = S.TeXArg ()
 
--- | Type of @LaTeX@ blocks.
-data LaTeX =
-   TeXRaw Text -- ^ Raw text.
- | TeXComm String [TeXArg] -- ^ Constructor for commands.
-                           -- First argument is the name of the command.
-                           -- Second, its arguments.
- | TeXCommS String -- ^ Constructor for commands with no arguments.
-                   --   When rendering, no space or @{}@ will be added at
-                   --   the end.
- | TeXEnv String [TeXArg] LaTeX -- ^ Constructor for environments.
-                                -- First argument is the name of the environment.
-                                -- Second, its arguments.
-                                -- Third, its content.
- | TeXMath MathType LaTeX -- ^ Mathematical expressions.
- | TeXLineBreak (Maybe Measure) Bool -- ^ Line break command.
- | TeXBraces LaTeX -- ^ A expression between braces.
- | TeXComment Text -- ^ Comments.
- | TeXSeq LaTeX LaTeX -- ^ Sequencing of 'LaTeX' expressions.
-                      -- Use '<>' preferably.
- | TeXEmpty -- ^ An empty block.
-            -- /Neutral element/ of '<>'.
-   deriving (Data, Eq, Generic, Show, Typeable)
+{-# COMPLETE TeXRaw, TeXComm , TeXCommS , TeXEnv , TeXMath , TeXLineBreak
+           , TeXBraces , TeXSeq , TeXEmpty #-}
+pattern TeXRaw :: Text -> LaTeX
+pattern TeXRaw t = S.TeXRaw () t
 
--- | An argument for a 'LaTeX' command or environment.
-data TeXArg =
-   FixArg LaTeX    -- ^ Fixed argument.
- | OptArg LaTeX    -- ^ Optional argument.
- | MOptArg [LaTeX] -- ^ Multiple optional argument.
- | SymArg LaTeX    -- ^ An argument enclosed between @\<@ and @\>@.
- | MSymArg [LaTeX] -- ^ Version of 'SymArg' with multiple options.
- | ParArg LaTeX    -- ^ An argument enclosed between @(@ and @)@.
- | MParArg [LaTeX] -- ^ Version of 'ParArg' with multiple options.
-   deriving (Data, Eq, Generic, Show, Typeable)
+pattern TeXComm :: String -> [TeXArg] -> LaTeX
+pattern TeXComm s l = S.TeXComm () s l
 
--- Monoid instance for 'LaTeX'.
+pattern TeXCommS :: String -> LaTeX
+pattern TeXCommS s = S.TeXCommS () s
 
--- | Method 'mappend' is strict in both arguments (except in the case when the first argument is 'TeXEmpty').
-instance Monoid LaTeX where
- mempty = TeXEmpty
- mappend TeXEmpty x = x
- mappend x TeXEmpty = x
- -- This equation is to make 'mappend' associative.
- mappend (TeXSeq x y) z = TeXSeq x $ mappend y z
- --
- mappend x y = TeXSeq x y
+pattern TeXEnv :: String -> [TeXArg] -> LaTeX -> LaTeX
+pattern TeXEnv s l e = S.TeXEnv () () s l e
 
-instance Semigroup.Semigroup LaTeX where
-  (<>) = mappend
+pattern TeXMath :: S.MathType -> LaTeX -> LaTeX
+pattern TeXMath m e = S.TeXMath () m e
 
--- | Calling 'between' @c l1 l2@ puts @c@ between @l1@ and @l2@ and
---   appends them.
---
--- > between c l1 l2 = l1 <> c <> l2
-between :: Monoid m => m -> m -> m -> m
-between c l1 l2 = l1 <> c <> l2
+pattern TeXLineBreak :: Maybe (Measure) -> Bool -> LaTeX
+pattern TeXLineBreak m e = S.TeXLineBreak () m e
 
--- | Method 'fromString' escapes LaTeX reserved characters using 'protectString'.
-instance IsString LaTeX where
- fromString = TeXRaw . fromString . protectString
+pattern TeXComment :: Text -> LaTeX
+pattern TeXComment t = S.TeXComment () t
 
--- | Escape LaTeX reserved characters in a 'String'.
-protectString :: String -> String
-protectString = mconcat . fmap protectChar
+pattern TeXBraces :: LaTeX -> LaTeX
+pattern TeXBraces t = S.TeXBraces () t
 
--- | Escape LaTeX reserved characters in a 'Text'.
-protectText :: Text -> Text
-protectText = Data.Text.concatMap (fromString . protectChar)
+pattern TeXSeq :: LaTeX -> LaTeX -> LaTeX
+pattern TeXSeq m n = S.TeXSeq m n
 
-protectChar :: Char -> String
-protectChar '#'  = "\\#"
-protectChar '$'  = "\\$"
-protectChar '%'  = "\\%"
-protectChar '^'  = "\\^{}"
-protectChar '&'  = "\\&"
-protectChar '{'  = "\\{"
-protectChar '}'  = "\\}"
-protectChar '~'  = "\\~{}"
-protectChar '\\' = "\\textbackslash{}"
-protectChar '_'  = "\\_{}"
-protectChar x = [x]
+pattern TeXEmpty :: LaTeX
+pattern TeXEmpty = S.TeXEmpty
 
--- Syntax analysis
+{-# COMPLETE FixArg , OptArg , MOptArg , SymArg , MSymArg , ParArg , MParArg #-}
+pattern FixArg :: LaTeX -> TeXArg
+pattern FixArg m = S.FixArg () m
 
--- | Look into a 'LaTeX' syntax tree to find any call to the command with
---   the given name. It returns a list of arguments with which this command
---   is called.
---
--- > lookForCommand = (fmap snd .) . matchCommand . (==)
---
---   If the returned list is empty, the command was not found. However,
---   if the list contains empty lists, those are callings to the command
---   with no arguments.
---
---   For example
---
--- > lookForCommand "author" l
---
---   would look for the argument passed to the @\\author@ command in @l@.
-lookForCommand :: String -- ^ Name of the command.
-               -> LaTeX  -- ^ LaTeX syntax tree.
-               -> [[TeXArg]] -- ^ List of arguments passed to the command.
-lookForCommand = (fmap snd .) . matchCommand . (==)
+pattern OptArg :: LaTeX -> TeXArg
+pattern OptArg x = S.OptArg () x
 
--- | Traverse a 'LaTeX' syntax tree and returns the commands (see 'TeXComm' and
---   'TeXCommS') that matches the condition and their arguments in each call.
-matchCommand :: (String -> Bool) -> LaTeX -> [(String,[TeXArg])]
-matchCommand f (TeXComm str as) =
-  let xs = concatMap (matchCommandArg f) as
-  in  if f str then (str,as) : xs else xs
-matchCommand f (TeXCommS str) = [(str, []) | f str]
-matchCommand f (TeXEnv _ as l) =
-  let xs = concatMap (matchCommandArg f) as
-  in  xs ++ matchCommand f l
-matchCommand f (TeXMath _ l) = matchCommand f l
-matchCommand f (TeXBraces l) = matchCommand f l
-matchCommand f (TeXSeq l1 l2) = matchCommand f l1 ++ matchCommand f l2
-matchCommand _ _ = []
+pattern MOptArg :: [LaTeX] -> TeXArg
+pattern MOptArg x = S.MOptArg () x
 
-matchCommandArg :: (String -> Bool) -> TeXArg -> [(String,[TeXArg])]
-matchCommandArg f (OptArg  l ) = matchCommand f l
-matchCommandArg f (FixArg  l ) = matchCommand f l
-matchCommandArg f (MOptArg ls) = concatMap (matchCommand f) ls
-matchCommandArg f (SymArg  l ) = matchCommand f l
-matchCommandArg f (MSymArg ls) = concatMap (matchCommand f) ls
-matchCommandArg f (ParArg  l ) = matchCommand f l
-matchCommandArg f (MParArg ls) = concatMap (matchCommand f) ls
+pattern SymArg :: LaTeX -> TeXArg
+pattern SymArg x = S.SymArg () x
 
--- | Similar to 'lookForCommand', but applied to environments.
---   It returns a list with arguments passed and content of the
---   environment in each call.
---
--- > lookForEnv = (fmap (\(_,as,l) -> (as,l)) .) . matchEnv . (==)
---
-lookForEnv :: String -> LaTeX -> [([TeXArg],LaTeX)]
-lookForEnv = (fmap (\(_,as,l) -> (as,l)) .) . matchEnv . (==)
+pattern MSymArg :: [LaTeX] -> TeXArg
+pattern MSymArg x = S.MSymArg () x
 
--- | Traverse a 'LaTeX' syntax tree and returns the environments (see
---   'TeXEnv') that matches the condition, their arguments and their content
---   in each call.
-matchEnv :: (String -> Bool) -> LaTeX -> [(String,[TeXArg],LaTeX)]
-matchEnv f (TeXComm _ as) = concatMap (matchEnvArg f) as
-matchEnv f (TeXEnv str as l) =
-  let xs = concatMap (matchEnvArg f) as
-      ys = matchEnv f l
-      zs = xs ++ ys
-  in  if f str then (str,as,l) : zs else zs
-matchEnv f (TeXMath _ l) = matchEnv f l
-matchEnv f (TeXBraces l) = matchEnv f l
-matchEnv f (TeXSeq l1 l2) = matchEnv f l1 ++ matchEnv f l2
-matchEnv _ _ = []
+pattern ParArg :: LaTeX -> TeXArg
+pattern ParArg x = S.ParArg () x
 
-matchEnvArg :: (String -> Bool) -> TeXArg -> [(String,[TeXArg],LaTeX)]
-matchEnvArg f (OptArg  l ) = matchEnv f l
-matchEnvArg f (FixArg  l ) = matchEnv f l
-matchEnvArg f (MOptArg ls) = concatMap (matchEnv f) ls
-matchEnvArg f (SymArg  l ) = matchEnv f l
-matchEnvArg f (MSymArg ls) = concatMap (matchEnv f) ls
-matchEnvArg f (ParArg  l ) = matchEnv f l
-matchEnvArg f (MParArg ls) = concatMap (matchEnv f) ls
+pattern MParArg :: [LaTeX] -> TeXArg
+pattern MParArg x = S.MParArg () x
 
--- | The function 'texmap' looks for subexpressions that match a given
---   condition and applies a function to them.
---
--- > texmap c f = runIdentity . texmapM c (pure . f)
-texmap :: (LaTeX -> Bool) -- ^ Condition.
-       -> (LaTeX -> LaTeX) -- ^ Function to apply when the condition matches.
-       ->  LaTeX -> LaTeX
-texmap c f = runIdentity . texmapM c (pure . f)
+{-# COMPLETE Pt , Mm , Cm , In , Ex , Em , CustomMeasure #-}
+pattern Pt :: Double -> Measure
+pattern Pt x = S.Pt x
 
--- | Version of 'texmap' where the function returns values in a 'Monad'.
-texmapM :: (Applicative m, Monad m)
-        => (LaTeX -> Bool) -- ^ Condition.
-        -> (LaTeX -> m LaTeX) -- ^ Function to apply when the condition matches.
-        ->  LaTeX -> m LaTeX
-texmapM c f = go
-  where
-   go l@(TeXComm str as)  = if c l then f l else TeXComm str <$> mapM go' as
-   go l@(TeXEnv str as b) = if c l then f l else TeXEnv str <$> mapM go' as <*> go b
-   go l@(TeXMath t b)     = if c l then f l else TeXMath t <$> go b
-   go l@(TeXBraces b)     = if c l then f l else TeXBraces <$> go b
-   go l@(TeXSeq l1 l2)    = if c l then f l else liftA2 TeXSeq (go l1) (go l2)
-   go l = if c l then f l else pure l
-   --
-   go' (FixArg  l ) = FixArg  <$> go l
-   go' (OptArg  l ) = OptArg  <$> go l
-   go' (MOptArg ls) = MOptArg <$> mapM go ls
-   go' (SymArg  l ) = SymArg  <$> go l
-   go' (MSymArg ls) = MSymArg <$> mapM go ls
-   go' (ParArg  l ) = ParArg  <$> go l
-   go' (MParArg ls) = MParArg <$> mapM go ls
+pattern Mm :: Double -> Measure
+pattern Mm x = S.Mm x
 
--- | Extract the content of the 'document' environment, if present.
-getBody :: LaTeX -> Maybe LaTeX
-getBody l =
-  case lookForEnv "document" l of
-    ((_,b):_) -> Just b
-    _ -> Nothing
+pattern Cm :: Double -> Measure
+pattern Cm x = S.Cm x
 
--- | Extract the preamble of a 'LaTeX' document (everything before the 'document'
---   environment). It could be empty.
-getPreamble :: LaTeX -> LaTeX
-getPreamble (TeXEnv "document" _ _) = mempty
-getPreamble (TeXSeq l1 l2) = getPreamble l1 <> getPreamble l2
-getPreamble l = l
+pattern In :: Double -> Measure
+pattern In x = S.In x
 
----------------------------------------
--- LaTeX Arbitrary instance
+pattern Ex :: Double -> Measure
+pattern Ex x = S.Ex x
 
-arbitraryChar :: Gen Char
-arbitraryChar = elements $
-     ['A'..'Z']
-  ++ ['a'..'z']
-  ++ "\n-+*/!\"().,:;'@<>? "
+pattern Em :: Double -> Measure
+pattern Em x = S.Em x
 
--- | Utility for the instance of 'LaTeX' to 'Arbitrary'.
---   We generate a short sequence of characters and
---   escape reserved characters with 'protectText'.
-arbitraryRaw :: Gen Text
-arbitraryRaw = do
-  n <- choose (1,20)
-  protectText . pack <$> replicateM n arbitraryChar
-
--- | Generator for names of command and environments.
---   We use only alphabetical characters.
-arbitraryName :: Gen String
-arbitraryName = do
-  n <- choose (1,10)
-  replicateM n $ elements $ ['a' .. 'z'] ++ ['A' .. 'Z']
-
-instance Arbitrary Measure where
-  arbitrary = do
-     n <- choose (0,5)
-     let f = [Pt,Mm,Cm,In,Ex,Em] !! n
-     f <$> arbitrary
-
-instance Arbitrary LaTeX where
-  arbitrary = arbitraryLaTeX False
-
-arbitraryLaTeX :: Bool -> Gen LaTeX
-arbitraryLaTeX inDollar = do
-  -- We give more chances to 'TeXRaw'.
-  -- This results in arbitrary 'LaTeX' values
-  -- not getting too large.
-  n <- choose (0,16 :: Int)
-  case n of
-    0 -> if inDollar then arbitraryLaTeX True else pure TeXEmpty
-    1 -> do m <- choose (0,5)
-            TeXComm <$> arbitraryName <*> vectorOf m arbitrary
-    2 -> TeXCommS <$> arbitraryName
-    3 -> do m <- choose (0,5)
-            TeXEnv <$> arbitraryName <*> vectorOf m arbitrary <*> arbitrary
-    4 -> if inDollar
-            then arbitraryLaTeX True
-            else do m <- choose (0,3)
-                    let t = [Parentheses,Square,Dollar,DoubleDollar] !! m
-                    TeXMath <$> pure t <*> arbitraryLaTeX (t == Dollar || t == DoubleDollar)
-    5 -> TeXLineBreak <$> arbitrary <*> arbitrary
-    6 -> TeXBraces <$> arbitrary
-    7 -> TeXComment <$> arbitraryRaw
-    8 -> TeXSeq <$> (if inDollar then arbitraryLaTeX True else arbitrary) <*> arbitrary
-    _ -> TeXRaw <$> arbitraryRaw
-
-instance Arbitrary TeXArg where
-  arbitrary = do
-     n <- choose (0,6 :: Int)
-     case n of
-       0 -> OptArg <$> arbitrary
-       1 -> do m <- choose (1,5)
-               MOptArg <$> vectorOf m arbitrary
-       2 -> SymArg <$> arbitrary
-       3 -> do m <- choose (1,5)
-               MSymArg <$> vectorOf m arbitrary
-       4 -> ParArg <$> arbitrary
-       5 -> do m <- choose (1,5)
-               MParArg <$> vectorOf m arbitrary
-       _ -> FixArg <$> arbitrary
-
-
-instance Hashable Measure
-instance Hashable MathType
-instance Hashable TeXArg
-instance Hashable LaTeX
+pattern CustomMeasure :: LaTeX -> Measure
+pattern CustomMeasure x = S.CustomMeasure x

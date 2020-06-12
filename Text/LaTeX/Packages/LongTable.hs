@@ -13,7 +13,7 @@ module Text.LaTeX.Packages.LongTable
    -- * Package Options
    ) where
 
-import Text.LaTeX.Base.Syntax (LaTeX(TeXEnv, TeXRaw, TeXComm), TeXArg(FixArg, OptArg))
+import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class (LaTeXC, fromLaTeX, liftL)
 import Text.LaTeX.Base.Render (render, renderAppend)
 import Text.LaTeX.Base.Types (PackageName, Pos, TableSpec)

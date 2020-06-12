@@ -22,7 +22,7 @@ module Text.LaTeX.Base.Render
  , showFloat
    ) where
 
-import Text.LaTeX.Base.Syntax
+import Text.LaTeX.Base.Syntax.WithParm
 import Text.LaTeX.Base.Class
 import Data.String
 import Data.List (intersperse)
@@ -105,12 +105,12 @@ readFileTex = fmap decodeUtf8 . B.readFile
 --
 -- /Warning: /'rendertex'/ does not escape LaTeX reserved characters./
 -- /Use /'protectText'/ to escape them./
-rendertex :: (Render a,LaTeXC l) => a -> l
-rendertex = fromLaTeX . TeXRaw . render
+rendertex :: (Render a, LaTeXC l) => a -> l
+rendertex = fromLaTeX . TeXRaw () . render
 
 -- Render instances
 
-instance Render Measure where
+instance (Show a) => Render (Measure a) where
  render (Pt x) = render x <> "pt"
  render (Mm x) = render x <> "mm"
  render (Cm x) = render x <> "cm"
@@ -121,18 +121,18 @@ instance Render Measure where
 
 -- LaTeX instances
 
-instance Render LaTeX where
+instance (Show a) => Render (LaTeX a) where
   
-  renderBuilder (TeXRaw t) = Builder.fromText t
+  renderBuilder (TeXRaw _ t) = Builder.fromText t
   
-  renderBuilder (TeXComm name []) = "\\" <> fromString name <> "{}"
-  renderBuilder (TeXComm name args) =
+  renderBuilder (TeXComm _ name []) = "\\" <> fromString name <> "{}"
+  renderBuilder (TeXComm _ name args) =
       "\\"
    <> fromString name
    <> renderAppendBuilder args
-  renderBuilder (TeXCommS name) = "\\" <> fromString name
+  renderBuilder (TeXCommS _ name) = "\\" <> fromString name
   
-  renderBuilder (TeXEnv name args c) =
+  renderBuilder (TeXEnv _ _ name args c) =
       "\\begin{"
    <> fromString name
    <> "}"
@@ -142,16 +142,16 @@ instance Render LaTeX where
    <> fromString name
    <> "}"
 
-  renderBuilder (TeXMath Dollar l) = "$" <> renderBuilder l <> "$"
-  renderBuilder (TeXMath DoubleDollar l) = "$$" <> renderBuilder l <> "$$"
-  renderBuilder (TeXMath Square l) = "\\[" <> renderBuilder l <> "\\]"
-  renderBuilder (TeXMath Parentheses l) = "\\(" <> renderBuilder l <> "\\)"
+  renderBuilder (TeXMath _ Dollar l) = "$" <> renderBuilder l <> "$"
+  renderBuilder (TeXMath _ DoubleDollar l) = "$$" <> renderBuilder l <> "$$"
+  renderBuilder (TeXMath _ Square l) = "\\[" <> renderBuilder l <> "\\]"
+  renderBuilder (TeXMath _ Parentheses l) = "\\(" <> renderBuilder l <> "\\)"
 
-  renderBuilder (TeXLineBreak m b) = "\\\\" <> maybe mempty (\x -> "[" <> renderBuilder x <> "]") m <> ( if b then "*" else mempty )
+  renderBuilder (TeXLineBreak _ m b) = "\\\\" <> maybe mempty (\x -> "[" <> renderBuilder x <> "]") m <> ( if b then "*" else mempty )
 
-  renderBuilder (TeXBraces l) = "{" <> renderBuilder l <> "}"
+  renderBuilder (TeXBraces _ l) = "{" <> renderBuilder l <> "}"
 
-  renderBuilder (TeXComment c) =
+  renderBuilder (TeXComment _ c) =
    let xs = Data.Text.lines c
    in if null xs then "%\n"
                  else Builder.fromText $ Data.Text.unlines $ fmap ("%" <>) xs
@@ -161,17 +161,17 @@ instance Render LaTeX where
 
   render = renderDefault
 
-instance Render TeXArg where
- renderBuilder (FixArg l) = "{" <> renderBuilder l <> "}"
- renderBuilder (OptArg l) = "[" <> renderBuilder l <> "]"
- renderBuilder (MOptArg []) = mempty
- renderBuilder (MOptArg ls) = "[" <> renderCommasBuilder ls <> "]"
- renderBuilder (SymArg l) = "<" <> renderBuilder l <> ">"
- renderBuilder (MSymArg []) = mempty
- renderBuilder (MSymArg ls) = "<" <> renderCommasBuilder ls <> ">"
- renderBuilder (ParArg l) = "(" <> renderBuilder l <> ")"
- renderBuilder (MParArg []) = mempty
- renderBuilder (MParArg ls) = "(" <> renderCommasBuilder ls <> ")"
+instance (Show a) => Render (TeXArg a) where
+ renderBuilder (FixArg _ l) = "{" <> renderBuilder l <> "}"
+ renderBuilder (OptArg _ l) = "[" <> renderBuilder l <> "]"
+ renderBuilder (MOptArg _ []) = mempty
+ renderBuilder (MOptArg _ ls) = "[" <> renderCommasBuilder ls <> "]"
+ renderBuilder (SymArg _ l) = "<" <> renderBuilder l <> ">"
+ renderBuilder (MSymArg _ []) = mempty
+ renderBuilder (MSymArg _ ls) = "<" <> renderCommasBuilder ls <> ">"
+ renderBuilder (ParArg _ l) = "(" <> renderBuilder l <> ")"
+ renderBuilder (MParArg _ []) = mempty
+ renderBuilder (MParArg _ ls) = "(" <> renderCommasBuilder ls <> ")"
  render = renderDefault
 
 -- Other instances
