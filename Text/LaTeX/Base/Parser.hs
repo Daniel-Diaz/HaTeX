@@ -25,6 +25,8 @@ module Text.LaTeX.Base.Parser (
     -- * The parser
     parseLaTeX
   , parseLaTeXFile
+  , parseLaTeXPos
+  , parseLaTeXPosFile
     -- * Parsing errors
   , ParseError
   , errorPos
@@ -42,6 +44,8 @@ module Text.LaTeX.Base.Parser (
   , defaultParserConf
   , parseLaTeXWith
   , parseLaTeXFileWith
+  , parseLaTeXPosWith
+  , parseLaTeXPosFileWith
     -- * Parser combinators
   , Parser
   , latexParser
@@ -97,26 +101,41 @@ type Parser = Parsec Text ParserConf
 -- | Parse a 'Text' sequence as a 'LaTeX' block. If it fails, it returns
 --   an error string.
 parseLaTeX :: Text -> Either ParseError LaTeX
-parseLaTeX = parseLaTeXWith defaultParserConf
+parseLaTeX = fmap (fmap (const ())) . parseLaTeXPos
+
+-- | Parse a 'Text' sequence as a 'LaTeXL' block. If it fails, it returns
+--   an error string.
+parseLaTeXPos :: Text -> Either ParseError (LaTeXL SourcePos)
+parseLaTeXPos = parseLaTeXPosWith defaultParserConf
 
 parseLaTeXWith :: ParserConf -> Text -> Either ParseError LaTeX
-parseLaTeXWith conf t
+parseLaTeXWith conf = fmap (fmap (const ())) . parseLaTeXPosWith conf
+
+parseLaTeXPosWith :: ParserConf -> Text -> Either ParseError (LaTeXL SourcePos)
+parseLaTeXPosWith conf t
   | T.null t  = return TeXEmpty
   | otherwise = runParser latexParser conf "parseLaTeX input" t
 
 -- | Read a file and parse it as 'LaTeX'.
+parseLaTeXPosFile :: FilePath -> IO (Either ParseError (LaTeXL SourcePos))
+parseLaTeXPosFile = parseLaTeXPosFileWith defaultParserConf
+
+-- | Read a file and parse it as 'LaTeX'.
 parseLaTeXFile :: FilePath -> IO (Either ParseError LaTeX)
-parseLaTeXFile = parseLaTeXFileWith defaultParserConf
+parseLaTeXFile = fmap (fmap $ fmap $ const ()) . parseLaTeXPosFileWith defaultParserConf
 
 parseLaTeXFileWith :: ParserConf -> FilePath -> IO (Either ParseError LaTeX)
-parseLaTeXFileWith conf fp = runParser latexParser conf fp <$> readFileTex fp
+parseLaTeXFileWith conf = fmap (fmap $ fmap $ const ()) . parseLaTeXFileWith conf
+
+parseLaTeXPosFileWith :: ParserConf -> FilePath -> IO (Either ParseError (LaTeXL SourcePos))
+parseLaTeXPosFileWith conf fp = runParser latexParser conf fp <$> readFileTex fp
 
 -- | The 'LaTeX' parser.
-latexParser :: Parser LaTeX
+latexParser :: Parser (LaTeXL SourcePos)
 latexParser = mconcat <$> latexBlockParser `manyTill` eof
 
 -- | Parser of a single 'LaTeX' constructor, no appending blocks.
-latexBlockParser :: Parser LaTeX
+latexBlockParser :: Parser (LaTeXL SourcePos)
 latexBlockParser = foldr1 (<|>)
   [ text            <?> "text"
   , dolMath         <?> "inline math ($)"
@@ -134,48 +153,54 @@ latexBlockParser = foldr1 (<|>)
 nottext :: Set Char
 nottext = fromList "$%\\{]}"
 
-text :: Parser LaTeX
+text :: Parser (LaTeXL SourcePos)
 text = do
+  pos <- getPosition
   mbC <- peekChar
   case mbC of
     Nothing -> fail "text: Empty input."
     Just c | c `member` nottext -> fail "not text"
-           | otherwise          -> TeXRaw <$> takeTill (`member` nottext)
+           | otherwise          -> TeXRawL pos <$> takeTill (`member` nottext)
 
 ------------------------------------------------------------------------
 -- Text without stopping on ']'
 ------------------------------------------------------------------------
-text2 :: Parser LaTeX
+text2 :: Parser (LaTeXL SourcePos)
 text2 = do
   _ <- char ']'
-  t <- try (text <|> return (TeXRaw T.empty))
-  return $ TeXRaw (T.pack "]") <> t
+  p <- getPosition
+  t <- try (text <|> return (TeXRawL p T.empty))
+  return $ TeXRawL p (T.pack "]") <> t
 
 ------------------------------------------------------------------------
 -- Environment
 ------------------------------------------------------------------------
-environment :: Parser LaTeX
+environment :: Parser (LaTeXL SourcePos)
 environment = anonym <|> env
 
-anonym :: Parser LaTeX
+anonym :: Parser (LaTeXL SourcePos)
 anonym = do
   _ <- char '{'
   l <- TeXBraces . mconcat <$> many latexBlockParser
   _ <- char '}'
   return l
 
-env :: Parser LaTeX
+env :: Parser (LaTeXL SourcePos)
 env = do
-  n  <- char '\\' *> envName "begin"
+  p0  <- getPosition
+  n   <- char '\\' *> envName "begin"
   sps <- many $ char ' '
-  let lsps = if null sps then mempty else TeXRaw $ T.pack sps
+  let lsps = if null sps then mempty else TeXRawL p0 $ T.pack sps
   as <- cmdArgs
   verbatims <- verbatimEnvironments <$> getState
   if n `elem` verbatims
      then let endenv = try $ string "\\end" >> spaces >> string ("{" <> n <> "}")
-          in  TeXEnv n (fromMaybe [] as) . TeXRaw . T.pack <$> manyTill anyChar endenv
-     else do b <- envBody n 
-             return $ TeXEnv n (fromMaybe [] as) $
+          in do cont <- manyTill anyChar endenv
+                p1   <- getPosition
+                return $ TeXEnvL p0 p1 n (fromMaybe [] as) $ TeXRawL p0 (T.pack cont)
+     else do b  <- envBody n 
+             p1 <- getPosition
+             return $ TeXEnvL p0 p1 n (fromMaybe [] as) $
                case as of
                 Just [] -> lsps <> TeXBraces mempty <> b
                 Nothing -> lsps <> b
@@ -189,11 +214,11 @@ envName k = do
   _ <- char '}'
   return $ T.unpack n
 
-envBody :: String -> Parser LaTeX
+envBody :: String -> Parser (LaTeXL SourcePos)
 envBody n = mconcat <$> bodyBlock n `manyTill` endenv
   where endenv = try $ string "\\end" >> spaces >> string ("{" <> n <> "}")
 
-bodyBlock :: String -> Parser LaTeX
+bodyBlock :: String -> Parser (LaTeXL SourcePos)
 bodyBlock n = do
   c <- peekChar
   case c of 
@@ -203,7 +228,7 @@ bodyBlock n = do
 ------------------------------------------------------------------------
 -- Command
 ------------------------------------------------------------------------
-command :: Parser LaTeX
+command :: Parser (LaTeXL SourcePos)
 command = do
   _    <- char '\\'
   mbX  <- peekChar
@@ -212,18 +237,19 @@ command = do
     Just x  -> if isSpecial x
                   then special
                   else do
+                    p0 <- getPosition
                     c  <- takeTill endCmd
-                    maybe (TeXCommS $ T.unpack c) (TeXComm $ T.unpack c) <$> cmdArgs
+                    maybe (TeXCommSL p0 $ T.unpack c) (TeXCommL p0 $ T.unpack c) <$> cmdArgs
 
 ------------------------------------------------------------------------
 -- Command Arguments
 ------------------------------------------------------------------------
-cmdArgs :: Parser (Maybe [TeXArg])
+cmdArgs :: Parser (Maybe [TeXArgL SourcePos])
 cmdArgs = try (string "{}" >> return (Just []))
             <|> fmap Just (try $ many1 cmdArg)
             <|> return Nothing
 
-cmdArg :: Parser TeXArg
+cmdArg :: Parser (TeXArgL SourcePos)
 cmdArg = do
   c <- char '[' <|> char '{'
   let e = case c of
@@ -239,7 +265,7 @@ cmdArg = do
 ------------------------------------------------------------------------
 -- Special commands (consisting of one char)
 ------------------------------------------------------------------------
-special :: Parser LaTeX
+special :: Parser (LaTeXL SourcePos)
 special = do
   x <- anyChar
   case x of
@@ -258,7 +284,7 @@ isSpecial = (`elem` specials)
 -- Line break
 ------------------------------------------------------------------------
 
-lbreak :: Parser LaTeX
+lbreak :: Parser (LaTeXL SourcePos)
 lbreak = do
   y <- try (char '[' <|> char '*' <|> return ' ')  
   case y of
@@ -269,16 +295,16 @@ lbreak = do
                _   -> return (TeXLineBreak Nothing True)
     _   -> return (TeXLineBreak Nothing False)
 
-linebreak :: Bool -> Parser LaTeX
+linebreak :: Bool -> Parser (LaTeXL SourcePos)
 linebreak t = do m <- measure <?> "measure"
                  _ <- char ']'
                  s <- try (char '*' <|> return ' ')
                  return $ TeXLineBreak (Just m) (t || s == '*')
 
-measure :: Parser Measure
+measure :: Parser (MeasureL SourcePos)
 measure = try (floating >>= unit) <|> (CustomMeasure . mconcat) <$> manyTill latexBlockParser (lookAhead $ char ']')
 
-unit :: Double -> Parser Measure
+unit :: Double -> Parser (MeasureL SourcePos)
 unit f = do
   u1 <- anyChar
   u2 <- anyChar
@@ -294,40 +320,42 @@ unit f = do
 ------------------------------------------------------------------------
 -- Right or left brace or vertical
 ------------------------------------------------------------------------
-rbrace, lbrace,vert :: Parser LaTeX
+rbrace, lbrace,vert :: Parser (LaTeXL SourcePos)
 lbrace = brace "{"
 rbrace = brace "}"
 vert   = brace "|"
 
-brace :: String -> Parser LaTeX
-brace = return . TeXCommS -- The same as commS?
+brace :: String -> Parser (LaTeXL SourcePos)
+brace s = flip TeXCommSL s <$> getPosition -- The same as commS?
 
-commS :: String -> Parser LaTeX
-commS = return . TeXCommS
+commS :: String -> Parser (LaTeXL SourcePos)
+commS s = flip TeXCommSL s <$> getPosition
 
 ------------------------------------------------------------------------
 -- Math
 ------------------------------------------------------------------------
-dolMath :: Parser LaTeX
+dolMath :: Parser (LaTeXL SourcePos)
 dolMath = do
+  p <- getPosition
   _ <- char '$' 
   choice
     [ do _ <- char '$'
          b <- mconcat <$> latexBlockParser `manyTill` try (string "$$")
-         return $ TeXMath DoubleDollar b
+         return $ TeXMathL p DoubleDollar b
     , do b <- mconcat <$> latexBlockParser `manyTill` char '$'
-         return $ TeXMath Dollar b
+         return $ TeXMathL p Dollar b
       ]
 
-math :: MathType -> String -> Parser LaTeX
+math :: MathType -> String -> Parser (LaTeXL SourcePos)
 math t eMath = do
+   p <- getPosition
    b <- mconcat <$> latexBlockParser `manyTill` try (string eMath)
-   return $ TeXMath t b
+   return $ TeXMathL p t b
 
 ------------------------------------------------------------------------
 -- Comment 
 ------------------------------------------------------------------------
-comment :: Parser LaTeX
+comment :: Parser (LaTeXL SourcePos)
 comment = do
   _  <- char '%'
   c  <- takeTill (== '\n')
