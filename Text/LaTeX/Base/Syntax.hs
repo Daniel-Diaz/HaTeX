@@ -3,8 +3,12 @@
 
 -- | LaTeX syntax description in the definition of the 'LaTeX' datatype.
 --   If you want to add new commands or environments not defined in
---   the library, import this module and use 'LaTeX' data constructors.
-module Text.LaTeX.Base.Syntax.WithParm
+--   the library, import this module and use 'LaTeXL' data constructors.
+--
+--   The 'LaTeX' type is defined as @LaTeXL ()@ and ignores the
+--   additional information (such as source location) carried by 'LaTeXL'.
+--   The constructors with an @L@ suffix carry said location data.
+module Text.LaTeX.Base.Syntax
  ( -- * @LaTeX@ datatype
    MeasureL (..) , Measure
  , MathType (..)
@@ -62,7 +66,7 @@ data MeasureL a =
    deriving (Data, Eq, Generic, Show, Typeable, Functor)
 
 -- | Different types of syntax for mathematical expressions.
-data MathType = Parentheses | Square | Dollar | DoubleDollar | LHSInline
+data MathType = Parentheses | Square | Dollar | DoubleDollar 
   deriving (Data, Eq, Generic, Show, Typeable)
 
 -- | Type of @LaTeX@ blocks with additional information of type @a@ annotated
