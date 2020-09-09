@@ -24,8 +24,6 @@ module Text.LaTeX.Packages.AMSMath
    -- ** Referencing
  , eqref , nonumber
    -- * Symbols and utilities
-   -- | The unicode approximations do, of course, not reliably represent how
-   --   LaTeX renders these symbols.
    
    -- ** Brackets / delimiters
  , autoParens
