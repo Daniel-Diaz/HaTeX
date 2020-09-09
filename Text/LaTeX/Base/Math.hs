@@ -660,7 +660,7 @@ subset  = between $ comm0 "subset"
 
 -- | Subset-of-or-equal \(\subseteq\).
 subseteq :: LaTeXC l => l -> l -> l
-subseteq  = between $ comm0 "subset"
+subseteq  = between $ comm0 "subseteq"
 
 -- | Superset-of \(\supset\).
 supset :: LaTeXC l => l -> l -> l
