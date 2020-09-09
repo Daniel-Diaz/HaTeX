@@ -76,9 +76,14 @@ module Text.LaTeX.Packages.AMSMath
  , propto
  , parallel
  , perp
+ , approx
+ , sim
+ , simeq
+ , cong
    -- *** Sets
  , in_ , ni , notin
  , subset , supset
+ , subseteq , supseteq
  , cap , cup
  , setminus
    -- *** Misc operators

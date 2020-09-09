@@ -72,9 +72,12 @@ module Text.LaTeX.Base.Math
  , propto
  , parallel
  , perp
+ , approx
+ , sim, simeq
+ , cong
    -- *** Sets
  , in_ , ni , notin
- , subset , supset
+ , subset , supset, subseteq, supseteq
  , cap , cup
  , setminus
    -- *** Misc operators
@@ -616,6 +619,23 @@ propto  = between $ comm0 "propto"
 perp :: LaTeXC l => l -> l -> l
 perp = between $ comm0 "perp"
 
+-- | Approximate equality \(\approx\)
+approx :: LaTeXC l => l -> l -> l
+approx = between $ comm0 "approx"
+
+-- | Generic equivalence relation \(\sim\).
+sim :: LaTeXC l => l -> l -> l
+sim = between $ comm0 "sim"
+
+-- | Equivalence relation \(\simeq\). Sometimes used for approximate
+--   equality or isomorphism.
+simeq :: LaTeXC l => l -> l -> l
+simeq = between $ comm0 "simeq"
+
+-- | Congruence \(\cong\).
+cong :: LaTeXC l => l -> l -> l
+cong = between $ comm0 "cong"
+
 -- | Parallel \(\parallel\).
 parallel :: LaTeXC l => l -> l -> l
 parallel = between $ comm0 "parallel"
@@ -640,9 +660,17 @@ notin = between $ comm0 "notin"
 subset :: LaTeXC l => l -> l -> l
 subset  = between $ comm0 "subset"
 
--- | Superset-of \(supset\).
+-- | Subset-of-or-equal \(\subseteq\).
+subseteq :: LaTeXC l => l -> l -> l
+subseteq  = between $ comm0 "subset"
+
+-- | Superset-of \(\supset\).
 supset :: LaTeXC l => l -> l -> l
 supset  = between $ comm0 "supset"
+
+-- | Superset-of-or-equal \(\supseteq\).
+supseteq :: LaTeXC l => l -> l -> l
+supseteq  = between $ comm0 "supseteq"
 
 -- | Set intersection \(\cap\).
 cap :: LaTeXC l => l -> l -> l
