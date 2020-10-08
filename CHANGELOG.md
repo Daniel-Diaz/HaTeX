@@ -9,6 +9,9 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.22.2.0 to 3.22.3.0
+* Add more math symbols. (leftaroundabout)
+
 ## From 3.22.1.0 to 3.22.2.0
 * New render method: renderBuilder.
 
