@@ -27,9 +27,6 @@ Description: This library implements the LaTeX syntax and provides some useful a
              Browse the @examples@ directory in the source distribution to see some simple examples.
              It might help you to get started. The HaTeX User's Guide is available at
              <https://github.com/Daniel-Diaz/hatex-guide/blob/master/README.md>.
-             We also have a mailing list (<http://projects.haskell.org/cgi-bin/mailman/listinfo/hatex>)
-             and an IRC channel (@#hatex@). If you just want to read a short introduction, read
-             the "Text.LaTeX" module.
              .
              If you prefer to write in LaTeX and all you want is to /program/ some parts of the document,
              or if you already have the LaTeX document written and you just want to add some automatically
