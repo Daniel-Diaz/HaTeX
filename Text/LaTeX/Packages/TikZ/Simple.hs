@@ -54,6 +54,8 @@ type Point = (Double,Double)
 -- | A figure in the plane.
 data Figure =
    Line [Point] -- ^ Line along a list of points.
+ | Arrow [Point] -- ^ Line along a list of points with an arrowhead .
+ | Curvy [Point]
  | Polygon [Point] -- ^ Line along a list of points, but the last point will be joined
                    --   with the first one.
  | PolygonFilled [Point] -- ^ Same as 'Polygon', but the inner side will be filled with color.
@@ -79,10 +81,18 @@ castpoint (x,y) = T.pointAtXY x y
 radiansToDegrees :: Double -> Double
 radiansToDegrees x = (180 * x) / pi
 
+toTPoint :: Point -> T.TPoint
+toTPoint = uncurry T.pointAtXY
+
 -- | Translate a 'Figure' to a 'TikZ' script.
 figuretikz :: Figure -> TikZ
 figuretikz (Line []) = emptytikz
 figuretikz (Line (p:ps)) = T.draw $ foldl (\y x -> y T.->- castpoint x) (T.Start $ castpoint p) ps
+figuretikz (Arrow []) = emptytikz
+figuretikz (Arrow (p:ps)) = T.path [T.Draw, T.Arrow] $ foldl (\y x -> y T.->- castpoint x) (T.Start $ castpoint p) ps
+figuretikz (Curvy []) = emptytikz
+--figuretikz (Curvy (p:ps)) = T.path [T.Draw, T.Smooth] $ foldl (\y x -> y T.->- castpoint x) (T.Start $ castpoint p) ps
+figuretikz (Curvy (ps)) = T.Curvy (toTPoint <$> ps)
 figuretikz (Polygon []) = emptytikz
 figuretikz (Polygon (p:ps)) = T.draw $ T.Cycle $ foldl (\y x -> y T.->- castpoint x) (T.Start $ castpoint p) ps
 figuretikz (PolygonFilled []) = emptytikz
