@@ -11,7 +11,7 @@ module Text.LaTeX.Packages.Acronym
  , footnote, nohyperlinks, printonlyused, withpage, smaller, dua, nolist
  -- * Types
  , Acronym(..)
- -- functions
+ -- * functions
  , ac, acf, acs, acl, acp, acfp, acsp, aclp, acfi, acsu, aclu, iac, iac2
  , ac', acf', acs', acl', acp', acfp', acsp', aclp', acfi', acsu', aclu', iac', iac2'
  , acresetall, acused
