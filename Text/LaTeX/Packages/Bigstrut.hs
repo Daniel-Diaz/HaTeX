@@ -11,7 +11,7 @@ module Text.LaTeX.Packages.Bigstrut
  , bigstrutBottom
  ) where
 
-import Text.LaTeX.Base.Syntax (LaTeX(TeXComm), TeXArg(OptArg))
+import Text.LaTeX.Base.Syntax 
 import Text.LaTeX.Base.Class (LaTeXC, fromLaTeX)
 import Text.LaTeX.Base.Types (PackageName)
 

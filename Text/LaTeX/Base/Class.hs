@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP , TypeSynonymInstances , FlexibleInstances #-}
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
 
 -- | Definition of the 'LaTeXC' class, used to combine the classic applicative and

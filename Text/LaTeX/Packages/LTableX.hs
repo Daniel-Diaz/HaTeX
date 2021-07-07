@@ -11,7 +11,7 @@ module Text.LaTeX.Packages.LTableX
  , module Text.LaTeX.Packages.LongTable
  ) where
 
-import Text.LaTeX.Base.Syntax (LaTeX(TeXComm))
+import Text.LaTeX.Base.Syntax 
 import Text.LaTeX.Base.Class (LaTeXC, fromLaTeX)
 import Text.LaTeX.Base.Types (PackageName)
 import Text.LaTeX.Packages.TabularX (tabularx)

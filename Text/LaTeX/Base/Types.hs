@@ -1,5 +1,4 @@
-
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings , PatternSynonyms #-}
 
 -- | Some types shared along the library.
 module Text.LaTeX.Base.Types (
@@ -10,7 +9,8 @@ module Text.LaTeX.Base.Types (
  , createLabel , labelName
  , Pos (..) , HPos (..)
  , TableSpec (..)
- , Measure (..)
+ , Measure , pattern Pt , pattern Mm , pattern Cm , pattern In
+ , pattern Ex , pattern Em , pattern CustomMeasure
  ) where
 
 import Text.LaTeX.Base.Syntax

@@ -9,7 +9,7 @@ module Text.LaTeX.Packages.Lscape
  , pdftex
  ) where
 
-import Text.LaTeX.Base.Syntax (LaTeX(TeXEnv))
+import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class (LaTeXC, liftL)
 import Text.LaTeX.Base.Types (PackageName)
 

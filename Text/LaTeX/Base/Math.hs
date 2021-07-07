@@ -1,6 +1,7 @@
-
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE CPP               #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE OverloadedStrings    #-}
+{-# LANGUAGE CPP                  #-}
 
 -- | This module contains the maths-specific part of "Text.LaTeX.Base.Commands",
 --  i.e. of the commands that are available in LaTeX out of the box without

@@ -12,7 +12,7 @@ module Text.LaTeX.Packages.Multirow
 
 import qualified Data.Semigroup as SG ((<>))
 import Data.Maybe (catMaybes)
-import Text.LaTeX.Base.Syntax (LaTeX(TeXComm), TeXArg(FixArg, OptArg))
+import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class (LaTeXC, liftL)
 import Text.LaTeX.Base.Types (PackageName, Pos, Measure)
 import Text.LaTeX.Base.Render (Render, render, rendertex)
