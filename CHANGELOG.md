@@ -9,6 +9,9 @@ https://github.com/Daniel-Diaz/HaTeX/commits/master
 
 # Changelog by versions
 
+## From 3.22.3.1 to 3.22.3.2
+* Relax transformers dependency upper bound from `< 0.6` to `< 0.7`.
+
 ## From 3.22.3.0 to 3.22.3.1
 * Allow bytestring version 0.11 (#153).
 * Allow hashable 1.4 and text 2.0 (#154).
