@@ -1,11 +1,11 @@
 Name: HaTeX
 Version: 3.22.3.2
-Author: Daniel Díaz
+Author: Daniel Casanueva
 Category: LaTeX
 Build-type: Simple
 License: BSD3
 License-file: license
-Maintainer: Daniel Díaz (dhelta `dot` diaz `at` gmail `dot` com)
+Maintainer: Daniel Casanueva
 Bug-reports: https://github.com/Daniel-Diaz/HaTeX/issues
 homepage: https://github.com/Daniel-Diaz/HaTeX/blob/master/README.md
 Synopsis: The Haskell LaTeX library.
