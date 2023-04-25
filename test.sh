@@ -6,6 +6,12 @@
 # This makes the script stop after the first error.
 set -e
 
+# Run stack init when stack.yaml is missing.
+if [ ! -f stack.yaml ]
+then
+  stack init
+fi
+
 # Function to test the code using the resolver passed as argument.
 function build {
 echo -e "\e[92m>> Building using resolver $1...\e[0m"
