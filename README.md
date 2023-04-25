@@ -71,13 +71,3 @@ There are many ways to get involved in the HaTeX project. Use the most comfortab
 within a LaTeX file.
 * [TeX-my-math](https://github.com/leftaroundabout/Symbolic-math-HaTeX): Experimental library to ease the production
 of mathematical expressions using HaTeX.
-
-## Travis automatic build
-
-For every code push to the GitHub repository, an automatic build checks that the library compiles with several
-versions of GHC (check [.travis.yml](https://github.com/Daniel-Diaz/HaTeX/blob/master/.travis.yml) for the complete list of versions)
-and that all tests pass. This label indicates the result of the last automatic build.
-
-[![Build Status](https://travis-ci.org/Daniel-Diaz/HaTeX.png?branch=master)](https://travis-ci.org/Daniel-Diaz/HaTeX)
-
-Currently, automatic builds are only running under Linux.
