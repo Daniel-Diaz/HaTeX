@@ -138,6 +138,7 @@ Test-Suite hatex-test
                , tasty-quickcheck
                , parsec
   ghc-options: -Wall -fno-warn-orphans
+
 Test-Suite parser-tests
   Default-language: Haskell2010
   type: exitcode-stdio-1.0

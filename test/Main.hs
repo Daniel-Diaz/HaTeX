@@ -1,14 +1,11 @@
 {-# LANGUAGE CPP #-}
 
 import Text.LaTeX
+import Text.LaTeX.Base.Parser
 
 import Test.Tasty
 import qualified Test.Tasty.QuickCheck as QC
-
-#if !MIN_VERSION_parsec(3,1,9)
-instance Eq ParseError where
-  _ == _ = undefined
-#endif
+import Data.Either (isRight)
 
 main :: IO ()
 main = defaultMain $ testGroup "HaTeX"
@@ -19,9 +16,8 @@ main = defaultMain $ testGroup "HaTeX"
     , QC.testProperty "LaTeX mappend" $
          \l1 l2 l3 -> l1 <> (l2 <> l3) == (l1 <> l2) <> (l3 :: LaTeX)
     ]
---  , testGroup "Parser"
---    [ QC.testProperty "render . parse = id" $
---         \l -> let t = render (l :: LaTeX)
---               in  fmap render (parseLaTeX t) == Right t
---    ]
+  , testGroup "Parser"
+    [ QC.testProperty "isRight . parse . render" $
+         \l -> isRight $ parseLaTeX (render (l :: LaTeX))
+    ]
   ]
