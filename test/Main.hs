@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 
 import Text.LaTeX
 import Text.LaTeX.Base.Parser
