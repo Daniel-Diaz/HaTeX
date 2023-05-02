@@ -19,6 +19,7 @@ module Text.LaTeX.Packages.BibLaTeX
  , textC
  , DOIReference
  , ReferenceQueryT
+ , applyDOIReferenceResolves
  , masterBibFile
  ) where
 
@@ -63,6 +64,8 @@ printbibliography :: LaTeXC l => l
 printbibliography = comm0 "printbibliography"
 
 
+-- | All-inclusive preparation of a document containing DOI references.
+--   Uses 'applyDOIReferenceResolves' under the hood.
 documentWithDOIReferences :: (MonadIO m, LaTeXC (m ()), SG.Semigroup (m ()), r ~ DOIReference)
   => (r -> m (Maybe BibTeX.T)) -- ^ Reference-resolver function, for looking up BibTeX
                                --   entries for a given DOI.
@@ -75,7 +78,25 @@ documentWithDOIReferences :: (MonadIO m, LaTeXC (m ()), SG.Semigroup (m ()), r ~
                                --   in @\\begin…end{document}@ here and an
                                --   automatically-generated @.bib@ file included, but
                                --   you still need to 'usepackage' 'biblatex' yourself.
-documentWithDOIReferences resolver (ReferenceQueryT refq) = do
+documentWithDOIReferences resolver docW = do
+    (refsMap, docConts) <- applyDOIReferenceResolves resolver docW
+    let bibfileConts = unlines $ BibTeX.entry . snd <$> Map.toList refsMap
+        bibfileName = showHex (abs $ hash bibfileConts) $ ".bib"
+    liftIO $ writeFile bibfileName bibfileConts
+    () <- addbibresource bibfileName
+    document docConts
+    
+-- | More manual version of 'documentWithDOIReferences', only retrieving suitable
+--   BibTeX entries for the DOI-references contained in the document, but not
+--   generating any @.bib@ files or wrapping the content in it.
+applyDOIReferenceResolves :: (MonadIO m, LaTeXC (m ()), SG.Semigroup (m ()), r ~ DOIReference)
+  => (r -> m (Maybe BibTeX.T)) -- ^ Reference-resolver function.
+  -> ReferenceQueryT r m ()    -- ^ The document content.
+  -> m ( Map.Map DOIReference BibTeX.T
+       , m ())                 -- ^ All the BibTeX entries found, and a version of the
+                               --   document with all its doi-references changed to point to
+                               --   the identifiers in that file.
+applyDOIReferenceResolves resolver (ReferenceQueryT refq) = do
     (allRefs, (), useRefs) <- refq
     resolved <- fmap catMaybes . forM (allRefs[]) $ \r -> do
        r' <- resolver r
@@ -83,11 +104,7 @@ documentWithDOIReferences resolver (ReferenceQueryT refq) = do
          Just entry -> Just (r, entry)
          Nothing -> Nothing
     let refsMap = Map.fromList resolved
-        bibfileConts = unlines $ BibTeX.entry . snd <$> Map.toList refsMap
-        bibfileName = showHex (abs $ hash bibfileConts) $ ".bib"
-    liftIO $ writeFile bibfileName bibfileConts
-    () <- addbibresource bibfileName
-    document . useRefs $ \r flavour -> case Map.lookup r refsMap of
+    return (refsMap, useRefs $ \r flavour -> case Map.lookup r refsMap of
         Just a -> let citeC = liftL $ \l -> (`TeXComm`[FixArg l]) $ case flavour of
                         Flavour_cite      -> "cite" 
                         Flavour_Cite      -> "Cite"
@@ -101,6 +118,7 @@ documentWithDOIReferences resolver (ReferenceQueryT refq) = do
                         Flavour_Smartcite -> "Smartcite"
                   in citeC . raw . fromString $ BibTeX.identifier a
         Nothing -> makeshift r
+     )
  where makeshift :: (LaTeXC l, SG.Semigroup l) => DOIReference -> l
        makeshift (DOIReference doi synops) = footnote $
            fromLaTeX synops SG.<> ". DOI:" SG.<> fromString doi
@@ -111,7 +129,7 @@ type PlainDOI = String
 data DOIReference = DOIReference {
        _referenceDOI :: PlainDOI
      , _referenceSynopsis :: LaTeX
-     } deriving (Generic)
+     } deriving (Generic, Show)
 instance Eq DOIReference where
   DOIReference doi₀ _ == DOIReference doi₁ _ = doi₀ == doi₁
 instance Ord DOIReference where
