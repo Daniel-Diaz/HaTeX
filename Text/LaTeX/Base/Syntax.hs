@@ -1,15 +1,21 @@
-
-{-# LANGUAGE CPP, DeriveDataTypeable, DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances, CPP, DeriveDataTypeable, DeriveGeneric
+           , DeriveFunctor , PatternSynonyms #-}
 
 -- | LaTeX syntax description in the definition of the 'LaTeX' datatype.
 --   If you want to add new commands or environments not defined in
---   the library, import this module and use 'LaTeX' data constructors.
+--   the library, import this module and use 'LaTeXL' data constructors.
+--
+--   The 'LaTeX' type is defined as @LaTeXL ()@ and ignores the
+--   additional information (such as source location) carried by 'LaTeXL'.
+--   The constructors with an @L@ suffix carry said location data.
 module Text.LaTeX.Base.Syntax
  ( -- * @LaTeX@ datatype
-   Measure (..)
+   MeasureL (..) , Measure
  , MathType (..)
- , LaTeX (..)
- , TeXArg (..)
+ , LaTeXL (..)
+ , LaTeX , pattern TeXRaw , pattern TeXComm , pattern TeXCommS
+ , pattern TeXEnv , pattern TeXMath
+ , TeXArgL (..) , TeXArg
  , (<>), between
    -- * Escaping reserved characters
  , protectString
@@ -19,7 +25,7 @@ module Text.LaTeX.Base.Syntax
  , lookForCommand
  , matchEnv
  , lookForEnv
- , texmap
+ , texmap 
  , texmapM
    -- ** Utils
  , getBody
@@ -49,58 +55,96 @@ import Data.Monoid
 --
 -- This will create a black box (see 'rule') as wide as the text and two points tall.
 --
-data Measure =
+data MeasureL a =
    Pt Double -- ^ A point is 1/72.27 inch, that means about 0.0138 inch or 0.3515 mm.
  | Mm Double -- ^ Millimeter.
  | Cm Double -- ^ Centimeter.
  | In Double -- ^ Inch.
  | Ex Double -- ^ The height of an \"x\" in the current font.
  | Em Double -- ^ The width of an \"M\" in the current font.
- | CustomMeasure LaTeX -- ^ You can introduce a 'LaTeX' expression as a measure.
-   deriving (Data, Eq, Generic, Show, Typeable)
+ | CustomMeasure (LaTeXL a) -- ^ You can introduce a 'LaTeX' expression as a measure.
+   deriving (Data, Eq, Generic, Show, Typeable, Functor)
 
 -- | Different types of syntax for mathematical expressions.
-data MathType = Parentheses | Square | Dollar | DoubleDollar
+data MathType = Parentheses | Square | Dollar | DoubleDollar 
   deriving (Data, Eq, Generic, Show, Typeable)
 
--- | Type of @LaTeX@ blocks.
-data LaTeX =
-   TeXRaw Text -- ^ Raw text.
- | TeXComm String [TeXArg] -- ^ Constructor for commands.
-                           -- First argument is the name of the command.
-                           -- Second, its arguments.
- | TeXCommS String -- ^ Constructor for commands with no arguments.
-                   --   When rendering, no space or @{}@ will be added at
-                   --   the end.
- | TeXEnv String [TeXArg] LaTeX -- ^ Constructor for environments.
-                                -- First argument is the name of the environment.
-                                -- Second, its arguments.
-                                -- Third, its content.
- | TeXMath MathType LaTeX -- ^ Mathematical expressions.
- | TeXLineBreak (Maybe Measure) Bool -- ^ Line break command.
- | TeXBraces LaTeX -- ^ A expression between braces.
+-- | Type of @LaTeX@ blocks with additional information of type @a@ annotated
+-- through the tree. This is used, for example, to track source location
+-- on the parser. If you wish to use the AST with no annotations, see 'LaTeX'.
+data LaTeXL a =
+   TeXRawL a Text -- ^ Raw text, first argument is the location in the source file.
+ | TeXCommL a String [TeXArgL a] -- ^ Constructor for commands.
+                                 -- First is the location in the source
+                                 -- Second argument is the name of the command.
+                                 -- Third, its arguments.
+ | TeXCommSL a String -- ^ Constructor for commands with no arguments.
+                      --   When rendering, no space or @{}@ will be added at
+                      --   the end.
+ | TeXEnvL a a String [TeXArgL a] (LaTeXL a) -- ^ Constructor for environments.
+                                             -- First two arguments are the locations of
+                                             -- its \begin and \end; then the name of the environment.
+                                             -- Fourth, its arguments.
+                                             -- Fifth, its content.
+ | TeXMathL a MathType (LaTeXL a) -- ^ Mathematical expressions.
+ | TeXLineBreak (Maybe (MeasureL a)) Bool -- ^ Line break command.
+ | TeXBraces (LaTeXL a) -- ^ A expression between braces.
  | TeXComment Text -- ^ Comments.
- | TeXSeq LaTeX LaTeX -- ^ Sequencing of 'LaTeX' expressions.
-                      -- Use '<>' preferably.
+ | TeXSeq (LaTeXL a) (LaTeXL a) -- ^ Sequencing of 'LaTeXL' expressions.
+                                -- Use '<>' preferably.
  | TeXEmpty -- ^ An empty block.
             -- /Neutral element/ of '<>'.
-   deriving (Data, Eq, Generic, Show, Typeable)
+   deriving (Data, Eq, Generic, Show, Typeable, Functor)
 
--- | An argument for a 'LaTeX' command or environment.
-data TeXArg =
-   FixArg LaTeX    -- ^ Fixed argument.
- | OptArg LaTeX    -- ^ Optional argument.
- | MOptArg [LaTeX] -- ^ Multiple optional argument.
- | SymArg LaTeX    -- ^ An argument enclosed between @\<@ and @\>@.
- | MSymArg [LaTeX] -- ^ Version of 'SymArg' with multiple options.
- | ParArg LaTeX    -- ^ An argument enclosed between @(@ and @)@.
- | MParArg [LaTeX] -- ^ Version of 'ParArg' with multiple options.
-   deriving (Data, Eq, Generic, Show, Typeable)
+-- | Type of @LaTeX@ blocks without source locations.
+type LaTeX  = LaTeXL ()
 
--- Monoid instance for 'LaTeX'.
+-- | Type of @LaTeX@ arguments without source locations.
+type TeXArg = TeXArgL ()
+
+-- | Type of @LaTeX@ measures without source locations.
+type Measure = MeasureL ()
+
+
+{-# COMPLETE TeXRaw, TeXComm , TeXCommS , TeXEnv , TeXMath , TeXLineBreak , TeXBraces , TeXSeq , TeXEmpty #-}
+
+-- | Same as 'TeXRawL' but defaults @a@ to @()@
+pattern TeXRaw :: Text -> LaTeX
+pattern TeXRaw t = TeXRawL () t
+
+-- | Same as 'TeXCommL' but defaults @a@ to @()@
+pattern TeXComm :: String -> [TeXArg] -> LaTeX
+pattern TeXComm s l = TeXCommL () s l
+
+-- | Same as 'TeXCommSL' but defaults @a@ to @()@
+pattern TeXCommS :: String -> LaTeX
+pattern TeXCommS s = TeXCommSL () s
+
+-- | Same as 'TeXEnv' but defaults @a@ to @()@
+pattern TeXEnv :: String -> [TeXArg] -> LaTeX -> LaTeX
+pattern TeXEnv s l e = TeXEnvL () () s l e
+
+-- | Same as 'TeXMath' but defaults @a@ to @()@
+pattern TeXMath :: MathType -> LaTeX -> LaTeX
+pattern TeXMath m e = TeXMathL () m e
+
+-- | An argument for a 'LaTeXL' command or environment that can carry additional
+-- information through the parameter @a@. See 'TeXArg' if you wish to ignore the
+-- parameter @a@ entirely.
+data TeXArgL a =
+   FixArg (LaTeXL a)  -- ^ Fixed argument.
+ | OptArg (LaTeXL a)  -- ^ Optional argument.
+ | MOptArg [LaTeXL a] -- ^ Multiple optional argument.
+ | SymArg (LaTeXL a)  -- ^ An argument enclosed between @\<@ and @\>@.
+ | MSymArg [LaTeXL a] -- ^ Version of 'SymArg' with multiple options.
+ | ParArg (LaTeXL a)  -- ^ An argument enclosed between @(@ and @)@.
+ | MParArg [LaTeXL a] -- ^ Version of 'ParArg' with multiple options.
+   deriving (Data, Eq, Generic, Show, Typeable, Functor)
+
+-- Monoid instance for 'LaTeXL'.
 
 -- | Method 'mappend' is strict in both arguments (except in the case when the first argument is 'TeXEmpty').
-instance Monoid LaTeX where
+instance Monoid (LaTeXL a) where
  mempty = TeXEmpty
  mappend TeXEmpty x = x
  mappend x TeXEmpty = x
@@ -109,7 +153,7 @@ instance Monoid LaTeX where
  --
  mappend x y = TeXSeq x y
 
-instance Semigroup.Semigroup LaTeX where
+instance Semigroup.Semigroup (LaTeXL a) where
   (<>) = mappend
 
 -- | Calling 'between' @c l1 l2@ puts @c@ between @l1@ and @l2@ and
@@ -120,8 +164,8 @@ between :: Monoid m => m -> m -> m -> m
 between c l1 l2 = l1 <> c <> l2
 
 -- | Method 'fromString' escapes LaTeX reserved characters using 'protectString'.
-instance IsString LaTeX where
- fromString = TeXRaw . fromString . protectString
+instance IsString (LaTeXL ()) where
+ fromString = TeXRawL () . fromString . protectString
 
 -- | Escape LaTeX reserved characters in a 'String'.
 protectString :: String -> String
@@ -146,7 +190,7 @@ protectChar x = [x]
 
 -- Syntax analysis
 
--- | Look into a 'LaTeX' syntax tree to find any call to the command with
+-- | Look into a 'LaTeXL' syntax tree to find any call to the command with
 --   the given name. It returns a list of arguments with which this command
 --   is called.
 --
@@ -161,27 +205,27 @@ protectChar x = [x]
 -- > lookForCommand "author" l
 --
 --   would look for the argument passed to the @\\author@ command in @l@.
-lookForCommand :: String -- ^ Name of the command.
-               -> LaTeX  -- ^ LaTeX syntax tree.
-               -> [[TeXArg]] -- ^ List of arguments passed to the command.
+lookForCommand :: String  -- ^ Name of the command.
+               -> LaTeXL a -- ^ LaTeX syntax tree.
+               -> [[TeXArgL a]] -- ^ List of arguments passed to the command.
 lookForCommand = (fmap snd .) . matchCommand . (==)
 
--- | Traverse a 'LaTeX' syntax tree and returns the commands (see 'TeXComm' and
+-- | Traverse a 'LaTeXL' syntax tree and returns the commands (see 'TeXComm' and
 --   'TeXCommS') that matches the condition and their arguments in each call.
-matchCommand :: (String -> Bool) -> LaTeX -> [(String,[TeXArg])]
-matchCommand f (TeXComm str as) =
+matchCommand :: (String -> Bool) -> LaTeXL a -> [(String,[TeXArgL a])]
+matchCommand f (TeXCommL _ str as) =
   let xs = concatMap (matchCommandArg f) as
   in  if f str then (str,as) : xs else xs
-matchCommand f (TeXCommS str) = [(str, []) | f str]
-matchCommand f (TeXEnv _ as l) =
+matchCommand f (TeXCommSL _ str) = [(str, []) | f str]
+matchCommand f (TeXEnvL _ _ _ as l) =
   let xs = concatMap (matchCommandArg f) as
   in  xs ++ matchCommand f l
-matchCommand f (TeXMath _ l) = matchCommand f l
-matchCommand f (TeXBraces l) = matchCommand f l
-matchCommand f (TeXSeq l1 l2) = matchCommand f l1 ++ matchCommand f l2
+matchCommand f (TeXMathL _ _ l) = matchCommand f l
+matchCommand f (TeXBraces l)   = matchCommand f l
+matchCommand f (TeXSeq l1 l2)  = matchCommand f l1 ++ matchCommand f l2
 matchCommand _ _ = []
 
-matchCommandArg :: (String -> Bool) -> TeXArg -> [(String,[TeXArg])]
+matchCommandArg :: (String -> Bool) -> TeXArgL a -> [(String,[TeXArgL a])]
 matchCommandArg f (OptArg  l ) = matchCommand f l
 matchCommandArg f (FixArg  l ) = matchCommand f l
 matchCommandArg f (MOptArg ls) = concatMap (matchCommand f) ls
@@ -196,25 +240,25 @@ matchCommandArg f (MParArg ls) = concatMap (matchCommand f) ls
 --
 -- > lookForEnv = (fmap (\(_,as,l) -> (as,l)) .) . matchEnv . (==)
 --
-lookForEnv :: String -> LaTeX -> [([TeXArg],LaTeX)]
+lookForEnv :: String -> LaTeXL a -> [([TeXArgL a],LaTeXL a)]
 lookForEnv = (fmap (\(_,as,l) -> (as,l)) .) . matchEnv . (==)
 
--- | Traverse a 'LaTeX' syntax tree and returns the environments (see
+-- | Traverse a 'LaTeXL' syntax tree and returns the environments (see
 --   'TeXEnv') that matches the condition, their arguments and their content
 --   in each call.
-matchEnv :: (String -> Bool) -> LaTeX -> [(String,[TeXArg],LaTeX)]
-matchEnv f (TeXComm _ as) = concatMap (matchEnvArg f) as
-matchEnv f (TeXEnv str as l) =
+matchEnv :: (String -> Bool) -> LaTeXL a -> [(String,[TeXArgL a],LaTeXL a)]
+matchEnv f (TeXCommL _ _ as) = concatMap (matchEnvArg f) as
+matchEnv f (TeXEnvL _ _ str as l) =
   let xs = concatMap (matchEnvArg f) as
       ys = matchEnv f l
       zs = xs ++ ys
   in  if f str then (str,as,l) : zs else zs
-matchEnv f (TeXMath _ l) = matchEnv f l
-matchEnv f (TeXBraces l) = matchEnv f l
-matchEnv f (TeXSeq l1 l2) = matchEnv f l1 ++ matchEnv f l2
+matchEnv f (TeXMathL _ _ l) = matchEnv f l
+matchEnv f (TeXBraces l)   = matchEnv f l
+matchEnv f (TeXSeq l1 l2)  = matchEnv f l1 ++ matchEnv f l2
 matchEnv _ _ = []
 
-matchEnvArg :: (String -> Bool) -> TeXArg -> [(String,[TeXArg],LaTeX)]
+matchEnvArg :: (String -> Bool) -> TeXArgL a -> [(String,[TeXArgL a],LaTeXL a)]
 matchEnvArg f (OptArg  l ) = matchEnv f l
 matchEnvArg f (FixArg  l ) = matchEnv f l
 matchEnvArg f (MOptArg ls) = concatMap (matchEnv f) ls
@@ -227,23 +271,23 @@ matchEnvArg f (MParArg ls) = concatMap (matchEnv f) ls
 --   condition and applies a function to them.
 --
 -- > texmap c f = runIdentity . texmapM c (pure . f)
-texmap :: (LaTeX -> Bool) -- ^ Condition.
-       -> (LaTeX -> LaTeX) -- ^ Function to apply when the condition matches.
-       ->  LaTeX -> LaTeX
+texmap :: (LaTeXL a -> Bool)    -- ^ Condition.
+       -> (LaTeXL a -> LaTeXL a) -- ^ Function to apply when the condition matches.
+       ->  LaTeXL a -> LaTeXL a
 texmap c f = runIdentity . texmapM c (pure . f)
 
 -- | Version of 'texmap' where the function returns values in a 'Monad'.
 texmapM :: (Applicative m, Monad m)
-        => (LaTeX -> Bool) -- ^ Condition.
-        -> (LaTeX -> m LaTeX) -- ^ Function to apply when the condition matches.
-        ->  LaTeX -> m LaTeX
+        => (LaTeXL a -> Bool) -- ^ Condition.
+        -> (LaTeXL a -> m (LaTeXL a)) -- ^ Function to apply when the condition matches.
+        ->  LaTeXL a -> m (LaTeXL a)
 texmapM c f = go
   where
-   go l@(TeXComm str as)  = if c l then f l else TeXComm str <$> mapM go' as
-   go l@(TeXEnv str as b) = if c l then f l else TeXEnv str <$> mapM go' as <*> go b
-   go l@(TeXMath t b)     = if c l then f l else TeXMath t <$> go b
-   go l@(TeXBraces b)     = if c l then f l else TeXBraces <$> go b
-   go l@(TeXSeq l1 l2)    = if c l then f l else liftA2 TeXSeq (go l1) (go l2)
+   go l@(TeXCommL a str as)  = if c l then f l else TeXCommL a str <$> mapM go' as
+   go l@(TeXEnvL a a' str as b) = if c l then f l else TeXEnvL a a' str <$> mapM go' as <*> go b
+   go l@(TeXMathL a t b)     = if c l then f l else TeXMathL a t <$> go b
+   go l@(TeXBraces b)        = if c l then f l else TeXBraces <$> go b
+   go l@(TeXSeq l1 l2)       = if c l then f l else liftA2 TeXSeq (go l1) (go l2)
    go l = if c l then f l else pure l
    --
    go' (FixArg  l ) = FixArg  <$> go l
@@ -255,21 +299,21 @@ texmapM c f = go
    go' (MParArg ls) = MParArg <$> mapM go ls
 
 -- | Extract the content of the 'document' environment, if present.
-getBody :: LaTeX -> Maybe LaTeX
+getBody :: LaTeXL a -> Maybe (LaTeXL a)
 getBody l =
   case lookForEnv "document" l of
     ((_,b):_) -> Just b
     _ -> Nothing
 
--- | Extract the preamble of a 'LaTeX' document (everything before the 'document'
+-- | Extract the preamble of a 'LaTeXL' document (everything before the 'document'
 --   environment). It could be empty.
-getPreamble :: LaTeX -> LaTeX
-getPreamble (TeXEnv "document" _ _) = mempty
+getPreamble :: LaTeXL a -> LaTeXL a
+getPreamble (TeXEnvL _ _ "document" _ _) = mempty
 getPreamble (TeXSeq l1 l2) = getPreamble l1 <> getPreamble l2
 getPreamble l = l
 
 ---------------------------------------
--- LaTeX Arbitrary instance
+-- LaTeXL Arbitrary instance
 
 arbitraryChar :: Gen Char
 arbitraryChar = elements $
@@ -277,7 +321,7 @@ arbitraryChar = elements $
   ++ ['a'..'z']
   ++ "\n-+*/!\"().,:;'@<>? "
 
--- | Utility for the instance of 'LaTeX' to 'Arbitrary'.
+-- | Utility for the instance of 'LaTeXL' to 'Arbitrary'.
 --   We generate a short sequence of characters and
 --   escape reserved characters with 'protectText'.
 arbitraryRaw :: Gen Text
@@ -292,40 +336,40 @@ arbitraryName = do
   n <- choose (1,10)
   replicateM n $ elements $ ['a' .. 'z'] ++ ['A' .. 'Z']
 
-instance Arbitrary Measure where
+instance Arbitrary (MeasureL a) where
   arbitrary = do
      n <- choose (0,5)
      let f = [Pt,Mm,Cm,In,Ex,Em] !! n
      f <$> arbitrary
 
-instance Arbitrary LaTeX where
-  arbitrary = arbitraryLaTeX False
+instance Arbitrary a => Arbitrary (LaTeXL a) where
+  arbitrary = arbitraryLaTeXL False
 
-arbitraryLaTeX :: Bool -> Gen LaTeX
-arbitraryLaTeX inDollar = do
+arbitraryLaTeXL :: Arbitrary a => Bool -> Gen (LaTeXL a)
+arbitraryLaTeXL inDollar = do
   -- We give more chances to 'TeXRaw'.
-  -- This results in arbitrary 'LaTeX' values
+  -- This results in arbitrary 'LaTeXL' values
   -- not getting too large.
   n <- choose (0,16 :: Int)
   case n of
-    0 -> if inDollar then arbitraryLaTeX True else pure TeXEmpty
+    0 -> if inDollar then arbitraryLaTeXL True else pure TeXEmpty
     1 -> do m <- choose (0,5)
-            TeXComm <$> arbitraryName <*> vectorOf m arbitrary
-    2 -> TeXCommS <$> arbitraryName
+            TeXCommL <$> arbitrary <*> arbitraryName <*> vectorOf m arbitrary
+    2 -> TeXCommSL <$> arbitrary <*> arbitraryName
     3 -> do m <- choose (0,5)
-            TeXEnv <$> arbitraryName <*> vectorOf m arbitrary <*> arbitrary
+            TeXEnvL <$> arbitrary <*> arbitrary <*> arbitraryName <*> vectorOf m arbitrary <*> arbitrary
     4 -> if inDollar
-            then arbitraryLaTeX True
+            then arbitraryLaTeXL True
             else do m <- choose (0,3)
                     let t = [Parentheses,Square,Dollar,DoubleDollar] !! m
-                    TeXMath <$> pure t <*> arbitraryLaTeX (t == Dollar || t == DoubleDollar)
+                    TeXMathL <$> arbitrary <*> pure t <*> arbitraryLaTeXL (t == Dollar || t == DoubleDollar)
     5 -> TeXLineBreak <$> arbitrary <*> arbitrary
     6 -> TeXBraces <$> arbitrary
     7 -> TeXComment <$> arbitraryRaw
-    8 -> TeXSeq <$> (if inDollar then arbitraryLaTeX True else arbitrary) <*> arbitrary
-    _ -> TeXRaw <$> arbitraryRaw
+    8 -> TeXSeq <$> (if inDollar then arbitraryLaTeXL True else arbitrary) <*> arbitrary
+    _ -> TeXRawL <$> arbitrary <*> arbitraryRaw
 
-instance Arbitrary TeXArg where
+instance Arbitrary a => Arbitrary (TeXArgL a) where
   arbitrary = do
      n <- choose (0,6 :: Int)
      case n of
@@ -341,7 +385,7 @@ instance Arbitrary TeXArg where
        _ -> FixArg <$> arbitrary
 
 
-instance Hashable Measure
+instance Hashable a => Hashable (MeasureL a)
 instance Hashable MathType
-instance Hashable TeXArg
-instance Hashable LaTeX
+instance Hashable a => Hashable (TeXArgL a)
+instance Hashable a => Hashable (LaTeXL a)

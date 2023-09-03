@@ -105,12 +105,12 @@ readFileTex = fmap decodeUtf8 . B.readFile
 --
 -- /Warning: /'rendertex'/ does not escape LaTeX reserved characters./
 -- /Use /'protectText'/ to escape them./
-rendertex :: (Render a,LaTeXC l) => a -> l
-rendertex = fromLaTeX . TeXRaw . render
+rendertex :: (Render a, LaTeXC l) => a -> l
+rendertex = fromLaTeX . TeXRawL () . render
 
 -- Render instances
 
-instance Render Measure where
+instance (Show a) => Render (MeasureL a) where
  render (Pt x) = render x <> "pt"
  render (Mm x) = render x <> "mm"
  render (Cm x) = render x <> "cm"
@@ -121,18 +121,18 @@ instance Render Measure where
 
 -- LaTeX instances
 
-instance Render LaTeX where
+instance (Show a) => Render (LaTeXL a) where
   
-  renderBuilder (TeXRaw t) = Builder.fromText t
+  renderBuilder (TeXRawL _ t) = Builder.fromText t
   
-  renderBuilder (TeXComm name []) = "\\" <> fromString name <> "{}"
-  renderBuilder (TeXComm name args) =
+  renderBuilder (TeXCommL _ name []) = "\\" <> fromString name <> "{}"
+  renderBuilder (TeXCommL _ name args) =
       "\\"
    <> fromString name
    <> renderAppendBuilder args
-  renderBuilder (TeXCommS name) = "\\" <> fromString name
+  renderBuilder (TeXCommSL _ name) = "\\" <> fromString name
   
-  renderBuilder (TeXEnv name args c) =
+  renderBuilder (TeXEnvL _ _ name args c) =
       "\\begin{"
    <> fromString name
    <> "}"
@@ -142,10 +142,10 @@ instance Render LaTeX where
    <> fromString name
    <> "}"
 
-  renderBuilder (TeXMath Dollar l) = "$" <> renderBuilder l <> "$"
-  renderBuilder (TeXMath DoubleDollar l) = "$$" <> renderBuilder l <> "$$"
-  renderBuilder (TeXMath Square l) = "\\[" <> renderBuilder l <> "\\]"
-  renderBuilder (TeXMath Parentheses l) = "\\(" <> renderBuilder l <> "\\)"
+  renderBuilder (TeXMathL _ Dollar l) = "$" <> renderBuilder l <> "$"
+  renderBuilder (TeXMathL _ DoubleDollar l) = "$$" <> renderBuilder l <> "$$"
+  renderBuilder (TeXMathL _ Square l) = "\\[" <> renderBuilder l <> "\\]"
+  renderBuilder (TeXMathL _ Parentheses l) = "\\(" <> renderBuilder l <> "\\)"
 
   renderBuilder (TeXLineBreak m b) = "\\\\" <> maybe mempty (\x -> "[" <> renderBuilder x <> "]") m <> ( if b then "*" else mempty )
 
@@ -161,7 +161,7 @@ instance Render LaTeX where
 
   render = renderDefault
 
-instance Render TeXArg where
+instance (Show a) => Render (TeXArgL a) where
  renderBuilder (FixArg l) = "{" <> renderBuilder l <> "}"
  renderBuilder (OptArg l) = "[" <> renderBuilder l <> "]"
  renderBuilder (MOptArg []) = mempty

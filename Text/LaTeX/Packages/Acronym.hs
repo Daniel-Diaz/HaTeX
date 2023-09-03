@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, CPP #-}
+{-# LANGUAGE OverloadedStrings, CPP , PatternSynonyms #-}
 
 -- | Add acronyms to your documents using this module.
 --
@@ -24,7 +24,7 @@ module Text.LaTeX.Packages.Acronym
 import Data.String(IsString(fromString))
 
 import Text.LaTeX.Base.Class(LaTeXC, comm0, comm1, comm2, liftL, liftL2)
-import Text.LaTeX.Base.Syntax(LaTeX(TeXComm, TeXEnv), TeXArg(FixArg, OptArg))
+import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Types(PackageName)
 import Text.LaTeX.Base.Writer(LaTeXT)
 

@@ -8,7 +8,7 @@ module Text.LaTeX.Packages.TabularX
  , tabularx
  ) where
 
-import Text.LaTeX.Base.Syntax (LaTeX(TeXEnv, TeXRaw), TeXArg(FixArg, OptArg))
+import Text.LaTeX.Base.Syntax
 import Text.LaTeX.Base.Class (LaTeXC, liftL)
 import Text.LaTeX.Base.Render (render, renderAppend)
 import Text.LaTeX.Base.Types (PackageName, Pos, TableSpec, Measure)
