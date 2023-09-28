@@ -1,3 +1,6 @@
+_This repository has been moved to:_
+
+https://gitlab.com/daniel-casanueva/haskell/HaTeX
 
 # The HaTeX library
 
