@@ -31,7 +31,7 @@ module Text.LaTeX.Packages.TikZ.Syntax (
   , Color (..)
   , Word8
     -- * TikZ
-  , TikZ
+  , TikZ (..)
   , emptytikz
   , path
   , scope
@@ -245,13 +245,14 @@ instance Render Parameter where
 -- | A Ti/k/Z script.
 data TikZ =
     PathAction [ActionType] TPath
+  | Curvy [TPoint]
   | Scope [Parameter] TikZ
   | TikZSeq (S.Seq TikZ)
     deriving Show
 
 -- | Different types of actions that can be performed
 --   with a 'TPath'. See 'path' for more information.
-data ActionType = Draw | Fill | Clip | Shade deriving Show
+data ActionType = Draw | Fill | Clip | Shade | Arrow deriving Show
 
 -- | Just an empty script.
 emptytikz :: TikZ
@@ -259,14 +260,20 @@ emptytikz = TikZSeq mempty
 
 instance Render TikZ where
  render (PathAction ts p) = "\\path" <> render ts <> " " <> render p <> " ; "
+ render (Curvy ps) = "\\draw[->] plot [smooth] coordinates { " <> (renderPoints ps) <> " } ; "
  render (Scope ps t) = "\\begin{scope}" <> render ps <> render t <> "\\end{scope}"
  render (TikZSeq ts) = foldMap render ts
+
+renderPoints :: [TPoint] -> Text
+renderPoints [] = ""
+renderPoints (p:ps) = render p <> " " <> renderPoints ps
 
 instance Render ActionType where
  render Draw  = "draw"
  render Fill  = "fill"
  render Clip  = "clip"
  render Shade = "shade"
+ render Arrow = "->"
 
 -- | A path can be used in different ways.
 --
